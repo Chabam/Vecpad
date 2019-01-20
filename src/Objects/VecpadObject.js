@@ -12,7 +12,7 @@ class VecpadObject {
     }
 
     colorsAsArray() {
-        return this.vertices.reduce((colors) => colors.concat(this.color.asArray()), [])
+        return this.vertices.reduce((colors) => colors.concat(this.color.asArray()), []);
     }
 
     asArrays() {
