@@ -1,0 +1,40 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#root {
+    display: flex;
+    flex: 1;
+}
+
+#vecpad-container {
+    flex: 1;
+    display: flex;
+}
+
+#visualizer-container {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#toolbar {
+    min-height: 50px;
+    border: 1px solid black;
+}
+
+#visualizer {
+    flex: 1;
+}
+
+#sidebar {
+    flex: 3;
+    border: 1px solid black;
+}
