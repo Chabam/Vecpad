@@ -1,6 +1,6 @@
-import { VecpadObject } from "./VecpadObject";
-import { BLACK } from "./Color";
-import { Plane } from "./Plane";
+import { VecpadObject } from './VecpadObject';
+import { BLACK } from './Color';
+import { Plane } from './Plane';
 
 class Cube extends VecpadObject {
     constructor(name, p1, p2, p3, p4, p5, p6, p7, p8, color=BLACK) {

@@ -4,23 +4,27 @@ class GLWrapper {
 
     // Initializing functions
 
-    init(gl) {
+    initContext(gl) {
         this.gl = gl;
-        this.shaderProgram = this.initProgram();
-        this.programInfo = {
-            program: shaderProgram,
+        this.shaderProgram = this.createProgram();
+
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+
+        this.context = {
+            program: this.shaderProgram,
             attribLocations: {
-                vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-                vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+                vertexPosition: gl.getAttribLocation(this.shaderProgram, 'aVertexPosition'),
+                vertexColor: gl.getAttribLocation(this.shaderProgram, 'aVertexColor'),
             },
             uniformLocations: {
-                projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+                projectionMatrix: gl.getUniformLocation(this.shaderProgram, 'uProjectionMatrix'),
+                modelViewMatrix: gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix'),
             },
         };
     }
 
-    initProgram() {
+    createProgram() {
         const vertexShader = this.compileShader(vsSource, this.gl.VERTEX_SHADER);
         const fragmentShader = this.compileShader(fsSource, this.gl.FRAGMENT_SHADER);
 
@@ -50,9 +54,28 @@ class GLWrapper {
 
     // Utility functions
 
-    clear(color) {
+    clear() {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    }
+
+    setClearColor(color) {
         this.gl.clearColor(color.r, color.g, color.b, color.a);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    }
+
+    createBuffer() {
+        return this.gl.createBuffer();
+    }
+
+    bindArrayBuffer(buffer) {
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    }
+
+    bindDataToBuffer(data) {
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(data), this.gl.STATIC_DRAW);
+    }
+
+    getContext() {
+        return this.context;
     }
 }
 

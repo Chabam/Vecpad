@@ -1,10 +1,13 @@
-import { BLACK } from "./Color";
+import { BLACK } from './Color';
+import { v4 } from 'uuid';
 
 class VecpadObject {
     constructor(name, vertices, color=BLACK) {
+        this.id = v4();
         this.name = name;
         this.vertices = vertices;
         this.color = color;
+        this.dirty = false;
     }
 
     verticesAsArray() {
@@ -20,6 +23,10 @@ class VecpadObject {
             'colors'    : this.colorsAsArray(),
             'vertices'  : this.verticesAsArray()
         }
+    }
+
+    getVerticesCount() {
+        return this.vertices.length();
     }
 
     static concatVertices() {

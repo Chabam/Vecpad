@@ -1,4 +1,4 @@
-const vsSource = `
+const fsSource = `
 varying lowp vec4 vColor;
 
 void main(void) {
@@ -6,7 +6,7 @@ void main(void) {
 }
 `;
 
-const fsSource = `
+const vsSource = `
 attribute vec4 aVertexPosition;
 attribute vec4 aVertexColor;
 
