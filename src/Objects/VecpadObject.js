@@ -1,37 +1,18 @@
-import { BLACK } from './Color';
-import { v4 } from 'uuid';
+import LabelFactory from './LabelFactory';
 
-class VecpadObject {
-    constructor(name, vertices, color=BLACK) {
-        this.id = v4();
-        this.name = name;
-        this.vertices = vertices;
-        this.color = color;
-        this.dirty = false;
+export default class VecpadObject {
+    constructor(mesh) {
+        this.mesh = mesh;
+        this.labelSprite = null;
     }
 
-    verticesAsArray() {
-        return this.vertices.reduce((vertices, vertex) => vertices.concat(vertex.asArray()), []);
-    }
-
-    colorsAsArray() {
-        return this.vertices.reduce((colors) => colors.concat(this.color.asArray()), []);
-    }
-
-    asArrays() {
-        return {
-            'colors'    : this.colorsAsArray(),
-            'vertices'  : this.verticesAsArray()
-        }
-    }
-
-    getVerticesCount() {
-        return this.vertices.length();
-    }
-
-    static concatVertices() {
-        return Array.from(arguments).reduce((vertices, object) => vertices.concat(object.vertices), []);
+    createLabel(label, vertices) {
+        let average = array => array.reduce((sum, elem) => sum + elem, 0) / array.length;
+        let highestY = Math.max(...vertices.map((vertex) => vertex.y)) + 0.25;
+        let averageX = average(vertices.map((vertex) => vertex.x));
+        let averageZ = average(vertices.map((vertex) => vertex.z));
+        let labelFactory = new LabelFactory();
+        this.labelSprite = labelFactory.createLabelSprite(label);
+        this.labelSprite.position.set(averageX, highestY, averageZ);
     }
 }
-
-export { VecpadObject };

@@ -31,10 +31,16 @@ html, body {
 }
 
 #visualizer {
-    flex: 1;
+    display: flex;
+    flex: 1 1 auto;
 }
 
 #sidebar {
-    flex: 3;
+    width: 250px;
     border: 1px solid black;
+}
+
+.object-label {
+    color: black;
+    pointer-events:none;
 }

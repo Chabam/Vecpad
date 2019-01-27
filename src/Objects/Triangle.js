@@ -1,15 +1,11 @@
-import { VecpadObject } from './VecpadObject';
-import { BLACK } from './Color';
-import { Vector } from './Vector';
+import Object2D from './Object2D';
+import * as THREE from 'three';
 
-class Triangle extends VecpadObject {
-    constructor(name, p1, p2, p3, color=BLACK) {
-        let u = new Vector(`${name}'s u`, p1, p2, color);
-        let v = new Vector(`${name}'s v`, p2, p3, color);
-        let w = new Vector(`${name}'s w`, p1, p3, color);
-        let vertices = VecpadObject.concatVertices(u, v, w);
-        super(name, vertices, color);
+export default class Triangle extends Object2D {
+    constructor(p1, p2, p3, color, label) {
+        let geometry = new THREE.Geometry();
+        geometry.vertices.push(p1, p2, p3);
+        geometry.faces.push(new THREE.Face3(0, 1, 2));
+        super(geometry, color, label);
     }
 }
-
-export { Triangle };
