@@ -2,7 +2,7 @@ import RendererHelper from './RendererHelper';
 import CameraHelper from './CameraHelper';
 import SceneHelper from './SceneHelper';
 
-export default class THREEWrapper {
+export default class THREEHelper {
     constructor() {
         this.rendererHelper = new RendererHelper();
         this.cameraHelper = new CameraHelper();

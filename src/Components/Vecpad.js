@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import Visualizer from './Visualizer';
 import Sidebar from './Sidebar';
-import THREEWrapper from '../THREE/THREEWrapper';
+import THREEHelper from '../THREE/THREEHelper';
 
 class Vecpad extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      THREEWrapper: new THREEWrapper()
+      THREEHelper: new THREEHelper()
     };
   }
 
   render() {
-    const { THREEWrapper } = this.state;
+    const { THREEHelper } = this.state;
     return (
       <div id="vecpad-container">
-        <Visualizer THREEWrapper={THREEWrapper}></Visualizer>
+        <Visualizer THREEHelper={THREEHelper}></Visualizer>
         <Sidebar></Sidebar>
       </div>
     );

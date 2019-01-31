@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import Toolbar from './Toolbar';
+import Cube from '../Objects/Cube';
 
 export default class Visualizer extends Component {
     constructor(props) {
         super(props);
-        this.THREEWrapper = props.THREEWrapper;
+        this.THREEHelper = props.THREEHelper;
     }
 
     componentDidMount() {
-        this.THREEWrapper.init();
+        this.THREEHelper.init();
     }
 
     render() {
