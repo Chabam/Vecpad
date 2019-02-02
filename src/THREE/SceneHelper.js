@@ -3,74 +3,28 @@ import * as THREE from 'three';
 export default class SceneHelper {
     constructor() {
         this.THREEScene = new THREE.Scene();
-        this.groundSize = 2;
-        this.ground = this.createGround(this.groundSize);
-        this.THREEScene.add(this.ground);
+        this.FILL = 0;
+        this.OUTLINE = 1;
+        this.BOTH = 2;
+        this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+        this.directionalLight.position.set(1, 1, 1).normalize();
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.5);
+        this.addObject(this.directionalLight, this.ambientLight, this.hemisphereLight);
     }
 
-    addObject(object) {
-        this.THREEScene.add(object.mesh);
+    addObject(...object) {
+        this.THREEScene.add(...object);
     }
 
-    createGround(subdivision) {
-        if (subdivision % 2 === 1) {
-            console.warn(`The ground has to be divisible by two, you provided ${subdivision}. It will be changed to ${subdivision + 1}.`)
-            subdivision = subdivision + 1;
-        }
-        let lines = new THREE.Geometry();
-        let maxCoord = subdivision/2;
-        let minCoord = -maxCoord;
-
-        let topLeft     = new THREE.Vector3(minCoord, 0, minCoord);
-        let topRight    = new THREE.Vector3(maxCoord, 0, minCoord);
-        let bottomLeft  = new THREE.Vector3(minCoord, 0, maxCoord);
-        let bottomRight = new THREE.Vector3(maxCoord, 0, maxCoord);
-
-        lines.vertices.push(
-            topLeft, topRight,
-            topRight, bottomRight,
-            bottomRight, bottomLeft,
-            bottomLeft, topLeft
-        );
-
-        for (let i = 1; i < subdivision; i++) {
-            let currentValue = minCoord + i;
-            let currentXCoord = new THREE.Vector3(currentValue, 0, minCoord);
-            let currentZCoord = new THREE.Vector3(minCoord, 0, currentValue);
-            let destXCoord    = new THREE.Vector3(currentValue, 0, maxCoord);
-            let destZCoord    = new THREE.Vector3(maxCoord, 0, currentValue);
-            lines.vertices.push(
-                currentXCoord, destXCoord,
-                currentZCoord, destZCoord
-            );
-        }
-
-        let ground = new THREE.LineSegments(lines, new THREE.LineBasicMaterial({
-            color: 0x555555,
-        }));
-
-        let subLines = new THREE.Geometry();
-        for (let i = 1; i < subdivision * 4; i++) {
-            let currentValue = minCoord + (i / 4);
-
-            if (Number.isInteger(currentValue)) {
-                continue;
+    applyDisplayMode(mode, ground) {
+        this.THREEScene.children.forEach((object) => {
+            if (object === ground || object instanceof THREE.Light) {
+                return;
             }
-            let currentXCoord = new THREE.Vector3(currentValue, 0, minCoord);
-            let currentZCoord = new THREE.Vector3(minCoord, 0, currentValue);
-            let destXCoord    = new THREE.Vector3(currentValue, 0, maxCoord);
-            let destZCoord    = new THREE.Vector3(maxCoord, 0, currentValue);
-            subLines.vertices.push(
-                currentXCoord, destXCoord,
-                currentZCoord, destZCoord
-            );
-        }
-        let subdividedGround = new THREE.LineSegments(subLines, new THREE.LineBasicMaterial({
-            color: 0xcccccc,
-        }));
 
-        ground.add(subdividedGround);
-
-        return ground;
+            object.material.transparent = (mode === this.OUTLINE);
+            object.children[0].material.transparent = (mode === this.FILL);
+        });
     }
 }

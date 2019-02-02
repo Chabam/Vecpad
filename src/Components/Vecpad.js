@@ -3,7 +3,7 @@ import Visualizer from './Visualizer';
 import Sidebar from './Sidebar';
 import THREEHelper from '../THREE/THREEHelper';
 
-class Vecpad extends Component {
+export default class Vecpad extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,5 +21,3 @@ class Vecpad extends Component {
     );
   }
 }
-
-export default Vecpad;
