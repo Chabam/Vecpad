@@ -4,75 +4,105 @@ import SceneHelper from './SceneHelper';
 import ObjectHelper from './ObjectHelper';
 
 export default class THREEHelper {
-    constructor() {
-        this.rendererHelper = new RendererHelper();
-        this.cameraHelper = new CameraHelper();
-        this.sceneHelper = new SceneHelper();
-        this.objectHelper = new ObjectHelper();
-        this.toolbarElement = null;
-        this.sidebarElement = null;
-        this.height = 0;
-        this.width = 0;
-        this.groundSize = 2;
-        this.ground = this.objectHelper.createGround(this.groundSize);
-        this.sceneHelper.addObject(this.ground);
-    }
 
-    init() {
-        this.toolbarElement = document.getElementById('toolbar');
-        this.sidebarElement = document.getElementById('sidebar');
-        this.setDimensions();
+	static FILL = 1;
+	static OUTLINE = 2;
+	static BOTH = 3;
 
-        let rendererDomElem = this.rendererHelper.init(this.width, this.height);
-        this.cameraHelper.init(this.width / this.height, rendererDomElem);
+	constructor() {
+		this.rendererHelper = new RendererHelper();
+		this.cameraHelper = new CameraHelper();
+		this.sceneHelper = new SceneHelper();
 
-        document.getElementById('visualizer').appendChild(rendererDomElem);
-        window.addEventListener('resize', () => this.setDimensions(true));
+		this.toolbarElement = null;
+		this.sidebarElement = null;
+		this.height = 0;
+		this.width = 0;
 
-        this.renderLoop();
-    }
+		this.groundSize = 2;
+		this.ground = ObjectHelper.createGround(this.groundSize);
+		this.sceneHelper.addObject(this.ground);
 
-    setDimensions(update=false) {
-        let sidebarWidth = this.sidebarElement.offsetWidth;
-        let toolbarHeight = this.toolbarElement.offsetHeight;
-        let windowWidth = window.innerWidth;
-        let windowHeight = window.innerHeight;
-        let width = windowWidth - sidebarWidth;
-        let height = windowHeight - toolbarHeight;
-        if (this.width !== width || this.height !== height) {
-            this.height = height;
-            this.width = width;
-            if (update) {
-                this.cameraHelper.setAspectRatio(this.width / this.height);
-                this.rendererHelper.setSize(this.width, this.height);
-            }
-        }
-    }
+		this.currentDisplayMode = THREEHelper.BOTH;
+	}
 
-    renderLoop() {
-        let loop = () => {
-            requestAnimationFrame(loop);
-            this.rendererHelper.render(this.sceneHelper.THREEScene, this.cameraHelper.THREECamera);
-        }
-        loop();
-    }
+	init = () => {
+		this.toolbarElement = document.getElementById('toolbar');
+		this.sidebarElement = document.getElementById('sidebar');
+		this.setDimensions();
 
-    addTriangle(sideWidth, color, outlineColor) {
-        let triangle = this.objectHelper.createTriangle(sideWidth, color, outlineColor);
-        this.sceneHelper.addObject(triangle);
-    }
+		let {THREE3DRendererDom, THREE2DRendererDom} = this.rendererHelper.init(this.width, this.height);
+		this.cameraHelper.init(this.width / this.height, THREE2DRendererDom);
 
-    addQuad(width, height, color, outlineColor) {
-        let quad = this.objectHelper.createQuad(width, height, color, outlineColor);
-        this.sceneHelper.addObject(quad);
-    }
+		document.getElementById('visualizer').appendChild(THREE3DRendererDom);
+		document.getElementById('visualizer').appendChild(THREE2DRendererDom);
 
-    addCube(width, height, depth, color, outlineColor) {
-        let cube = this.objectHelper.createCube(width, height, depth, color, outlineColor);
-        this.sceneHelper.addObject(cube);
-    }
+		window.addEventListener('resize', () => this.setDimensions(true));
 
-    setDisplayMode(mode) {
-        this.sceneHelper.applyDisplayMode(mode, this.ground);
-    }
+		this.renderLoop();
+	}
+
+	setDimensions = (update=false) => {
+		let sidebarWidth = this.sidebarElement.offsetWidth;
+		let toolbarHeight = this.toolbarElement.offsetHeight;
+		let windowWidth = window.innerWidth;
+		let windowHeight = window.innerHeight;
+		let width = windowWidth - sidebarWidth;
+		let height = windowHeight - toolbarHeight;
+		if (this.width !== width || this.height !== height) {
+			this.height = height;
+			this.width = width;
+			if (update) {
+				this.cameraHelper.setAspectRatio(this.width / this.height);
+				this.rendererHelper.setSize(this.width, this.height);
+			}
+		}
+	}
+
+	renderLoop = () => {
+		requestAnimationFrame(this.renderLoop);
+		this.rendererHelper.render(this.sceneHelper.THREEScene, this.cameraHelper.THREECamera);
+	}
+
+	addTriangle = (sideWidth, color, outlineColor, label) => {
+		let triangle = ObjectHelper.createTriangle(
+			sideWidth,
+			this.currentDisplayMode,
+			color,
+			outlineColor,
+			label);
+		this.sceneHelper.addObject(triangle);
+	}
+
+	addQuad = (width, height, color, outlineColor, label) => {
+		let quad = ObjectHelper.createQuad(
+			width,
+			height,
+			this.currentDisplayMode,
+			color,
+			outlineColor,
+			label);
+		this.sceneHelper.addObject(quad);
+	}
+
+	addCube = (width, height, depth, color, outlineColor, label) => {
+		let cube = ObjectHelper.createCube(
+			width,
+			height,
+			depth,
+			this.currentDisplayMode,
+			color,
+			outlineColor,
+			label);
+		this.sceneHelper.addObject(cube);
+	}
+
+	setDisplayMode = (mode) => {
+		if (mode === this.currentDisplayMode) {
+			return;
+		}
+
+		this.currentDisplayMode = mode;
+		this.sceneHelper.applyDisplayMode(this.currentDisplayMode, this.ground);
+	}
 }

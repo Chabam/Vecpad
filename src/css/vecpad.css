@@ -1,46 +1,53 @@
 html, body {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
 #root {
-    display: flex;
-    flex: 1;
+	display: flex;
+	flex: 1;
 }
 
 #vecpad-container {
-    flex: 1;
-    display: flex;
+	flex: 1;
+	display: flex;
 }
 
 #visualizer-container {
-    flex: 7;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+	flex: 7;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
 #toolbar {
-    min-height: 50px;
-    border: 1px solid black;
+	min-height: 50px;
+	border: 1px solid black;
+	display: flex;
+	flex-direction: row;
+}
+
+#toolbar > * {
+	flex: 1 auto;
 }
 
 #visualizer {
-    display: flex;
-    flex: 1 1 auto;
+	display: flex;
+	flex: 1 1 auto;
 }
 
 #sidebar {
-    width: 250px;
-    border: 1px solid black;
+	width: 250px;
+	border: 1px solid black;
 }
 
 .object-label {
-    color: black;
-    pointer-events:none;
+	color: black;
+	pointer-events:none;
+	font-family: monospace;
 }
