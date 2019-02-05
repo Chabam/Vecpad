@@ -15,14 +15,18 @@ export default class SceneHelper {
 		this.THREEScene.add(...object);
 	}
 
-	applyDisplayMode = (mode, ground) => {
-		this.THREEScene.children.forEach((object) => {
-			if (object === ground || object instanceof THREE.Light) {
-				return;
-			}
+	removeObject = (id) => {
+		let object = this.THREEScene.getObjectById(id);
+		object.remove(object.getObjectByName('label'));
+		this.THREEScene.remove(object);
+	}
 
+	applyDisplayMode = (mode, ground) => {
+		this.THREEScene.children.filter((object) =>
+			!(object === ground || object instanceof THREE.Light)
+		).forEach((object) => {
 			object.material.transparent = (mode === THREEHelper.OUTLINE);
-			object.children[0].material.transparent = (mode === THREEHelper.FILL);
+			object.getObjectByName('outline').material.transparent = (mode === THREEHelper.FILL);
 		});
 	}
 }

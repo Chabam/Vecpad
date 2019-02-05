@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import THREEHelper from '../THREE/THREEHelper'
 
 export default class Toolbar extends Component {
-	constructor(props) {
-		super(props);
-		this.updateDisplayMode = this.updateDisplayMode.bind(this);
-	}
 	render() {
 		return (
 			<nav id="toolbar">
@@ -28,11 +24,15 @@ export default class Toolbar extends Component {
 					<button onClick={this.props.addBasicQuad}>Add Quad</button>
 					<button onClick={this.props.addBasicCube}>Add Cube</button>
 				</div>
+				<div>
+					Current ground size: {this.props.groundSize}
+					<input type="range" min="2" max="100" step="2" onChange={this.updateGround} value={this.props.groundSize}/>
+				</div>
 			</nav>
 		);
 	}
 
-	updateDisplayMode(event) {
-		this.props.updateDisplayMode(parseInt(event.target.value));
-	}
+	updateDisplayMode = (event) => this.props.updateDisplayMode(parseInt(event.target.value));
+
+	updateGround = (event) => this.props.updateGround(parseInt(event.target.value))
 }

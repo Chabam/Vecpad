@@ -11,6 +11,7 @@ export default class CameraWrapper {
 		this.THREECamera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
 		this.THREECamera.position.z = 3;
 		this.THREEControls = new OrbitControls(this.THREECamera, rendererDomElement);
+		this.THREEControls.enablePan = false;
 	}
 
 	setAspectRatio = (ratio) => {

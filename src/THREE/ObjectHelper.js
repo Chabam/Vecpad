@@ -68,19 +68,20 @@ export default class ObjectHelper {
 		return ground;
 	}
 
-	static createTriangle = (width, displayMode, color, outlineColor, label) => {
+	static createTriangle = (width, displayMode, color, outlineColor, label='Triangle #') => {
 		let p1 = new THREE.Vector3(0, 0, 0);
 		let p2 = new THREE.Vector3(width, 0, 0);
-		let p3 = new THREE.Vector3(width, width, 0);
+		let p3 = new THREE.Vector3(0, width, 0);
 		let triangleGeometry = new THREE.Geometry();
 		triangleGeometry.vertices.push(p1, p2, p3);
 		triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
 		triangleGeometry.computeBoundingSphere();
 		triangleGeometry.computeFaceNormals();
+		triangleGeometry.translate(-(width/3), -(width/3), 0);
 		return ObjectHelper.createObject(triangleGeometry, displayMode, color, outlineColor, label);
 	}
 
-	static createQuad = (width, heigth, displayMode, color, outlineColor, label) => {
+	static createQuad = (width, heigth, displayMode, color, outlineColor, label='Quad #') => {
 		return ObjectHelper.createObject(
 			new THREE.PlaneGeometry(width, heigth),
 			displayMode,
@@ -89,7 +90,7 @@ export default class ObjectHelper {
 			label);
 	}
 
-	static createCube = (width, heigth, depth, displayMode, color, outlineColor, label) => {
+	static createCube = (width, heigth, depth, displayMode, color, outlineColor, label='Cube #') => {
 		return ObjectHelper.createObject(
 			new THREE.BoxGeometry(width, heigth, depth),
 			displayMode,
@@ -116,20 +117,23 @@ export default class ObjectHelper {
 		}));
 	}
 
-	static createObject = (geometry, displayMode, color=0xffffff, outlineColor=0x000000, label) => {
+	static createObject = (geometry, displayMode, color=0xffffff, outlineColor=0x000000, label='') => {
 		let object = ObjectHelper.createMesh(geometry, displayMode, color);
+
 		let objectOutlines = ObjectHelper.createOutlines(geometry, displayMode, outlineColor);
 		objectOutlines.name = 'outline';
+		object.name = label.concat(` ${object.id}`);
 		object.add(objectOutlines);
-		if (label) {
-			let labelObect = ObjectHelper.createLabel(label);
-			let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
-			let averageX = average(geometry.vertices.map((elem) => elem.x));
-			let averageZ = average(geometry.vertices.map((elem) => elem.z));
-			let highestY = Math.max(...geometry.vertices.map((elem) => elem.y)) + 0.25;
-			labelObect.position.set(averageX, highestY, averageZ);
-			object.add(labelObect);
-		}
+
+		let labelObect = ObjectHelper.createLabel(object.name);
+		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
+		let averageX = average(geometry.vertices.map((elem) => elem.x));
+		let averageZ = average(geometry.vertices.map((elem) => elem.z));
+		let highestY = Math.max(...geometry.vertices.map((elem) => elem.y)) + 0.25;
+		labelObect.position.set(averageX, highestY, averageZ);
+		labelObect.name = 'label';
+		object.add(labelObect);
+
 		return object;
 	}
 

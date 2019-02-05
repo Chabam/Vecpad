@@ -24,6 +24,7 @@ export default class THREEHelper {
 		this.sceneHelper.addObject(this.ground);
 
 		this.currentDisplayMode = THREEHelper.BOTH;
+		this.objectList = [];
 	}
 
 	init = () => {
@@ -71,7 +72,7 @@ export default class THREEHelper {
 			color,
 			outlineColor,
 			label);
-		this.sceneHelper.addObject(triangle);
+		this.addObject(triangle);
 	}
 
 	addQuad = (width, height, color, outlineColor, label) => {
@@ -82,7 +83,7 @@ export default class THREEHelper {
 			color,
 			outlineColor,
 			label);
-		this.sceneHelper.addObject(quad);
+		this.addObject(quad);
 	}
 
 	addCube = (width, height, depth, color, outlineColor, label) => {
@@ -94,7 +95,33 @@ export default class THREEHelper {
 			color,
 			outlineColor,
 			label);
-		this.sceneHelper.addObject(cube);
+		this.addObject(cube);
+	}
+
+	addObject = (object) => {
+		const {
+			id,
+			name,
+			geometry
+		} = object;
+		this.objectList.push({
+			id,
+			name,
+			vertices: geometry.vertices
+		});
+		this.sceneHelper.addObject(object);
+	}
+
+	updateGround = (size) => {
+		this.sceneHelper.removeObject(this.ground.id);
+		this.groundSize = size;
+		this.ground = ObjectHelper.createGround(this.groundSize);
+		this.sceneHelper.addObject(this.ground);
+	};
+
+	removeObject = (id) => {
+		this.objectList = this.objectList.filter((object) => object.id !== id);
+		this.sceneHelper.removeObject(id);
 	}
 
 	setDisplayMode = (mode) => {
