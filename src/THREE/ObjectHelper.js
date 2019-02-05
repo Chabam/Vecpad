@@ -88,6 +88,13 @@ export default class ObjectHelper {
 		return object;
 	}
 
+	static createLabel = (text) => {
+		let objectDiv = document.createElement('div');
+		objectDiv.className = 'object-label';
+		objectDiv.textContent = text;
+		return new CSS2DObject(objectDiv);
+	}
+
 	static applyLabelOnObject = (object, text) => {
 		object.name = text || `Object #${object.id}`;
 		let vertices = object instanceof THREE.ArrowHelper ?
@@ -102,12 +109,4 @@ export default class ObjectHelper {
 		labelObject.name = 'label';
 		object.add(labelObject);
 	}
-
-	static createLabel = (text) => {
-		let objectDiv = document.createElement('div');
-		objectDiv.className = 'object-label';
-		objectDiv.textContent = text;
-		return new CSS2DObject(objectDiv);
-	}
-
 }

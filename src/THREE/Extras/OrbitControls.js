@@ -679,7 +679,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		// eslint-disable-next-line
 		switch ( event.button ) {
 
-			case scope.mouseButtons.LEFT:
+			case scope.mouseButtons.RIGHT:
 
 				if ( event.ctrlKey || event.metaKey || event.shiftKey ) {
 
@@ -711,7 +711,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				break;
 
-			case scope.mouseButtons.RIGHT:
+			case scope.mouseButtons.LEFT:
 
 				if ( scope.enablePan === false ) return;
 

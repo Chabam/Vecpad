@@ -26,6 +26,9 @@ export default class THREEHelper {
 
 		this.currentDisplayMode = THREEHelper.BOTH;
 		this.objectList = [];
+		this.rayCaster = new THREE.Raycaster();
+		this.mouseNormalizedCoords = new THREE.Vector2();
+		this.selectedObject = null;
 	}
 
 	init = () => {
@@ -40,6 +43,8 @@ export default class THREEHelper {
 		document.getElementById('visualizer').appendChild(THREE2DRendererDom);
 
 		window.addEventListener('resize', () => this.setDimensions(true));
+		THREE2DRendererDom.addEventListener('mousemove', this.updateMouseNormalizedCoords, false);
+		THREE2DRendererDom.addEventListener('click', this.setSelection, false);
 
 		this.renderLoop();
 	}
@@ -61,9 +66,38 @@ export default class THREEHelper {
 		}
 	}
 
+	updateMouseNormalizedCoords = (event) => {
+		this.mouseNormalizedCoords.x = (event.clientX / this.width) * 2 - 1;
+		this.mouseNormalizedCoords.y = -((event.clientY - this.toolbarElement.offsetHeight) / this.height) * 2 + 1;
+	}
+
+	setSelection = () => {
+		this.rayCaster.setFromCamera(this.mouseNormalizedCoords, this.cameraHelper.THREECamera);
+		let intersects = this.rayCaster.intersectObjects(
+			this.sceneHelper.THREEScene.children.filter((object) => object !== this.ground)
+		);
+		if (intersects.length > 0) {
+			intersects.forEach((intersection) => {
+				let object = intersection.object;
+				if (this.selectedObject !== object) {
+					if (this.selectedObject) {
+						this.selectedObject.material.color.setHex(this.selectedObject.previousColor);
+					}
+
+					this.selectedObject = object;
+					this.selectedObject.previousColor = object.material.color.getHex();
+					object.material.color.setHex(0xff0000);
+				}
+		});
+		} else if (this.selectedObject) {
+			this.selectedObject.material.color.setHex(this.selectedObject.previousColor);
+			this.selectedObject = null;
+		}
+	}
+
 	renderLoop = () => {
-		requestAnimationFrame(this.renderLoop);
 		this.rendererHelper.render(this.sceneHelper.THREEScene, this.cameraHelper.THREECamera);
+		requestAnimationFrame(this.renderLoop);
 	}
 
 	addTriangle = (sideWidth, color, outlineColor, label) => {
