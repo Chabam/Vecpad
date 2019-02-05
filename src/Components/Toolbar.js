@@ -20,6 +20,7 @@ export default class Toolbar extends Component {
 					</select>
 				</div>
 				<div>
+					<button onClick={this.props.addBasicVector}>Add Vector</button>
 					<button onClick={this.props.addBasicTriangle}>Add Triangle</button>
 					<button onClick={this.props.addBasicQuad}>Add Quad</button>
 					<button onClick={this.props.addBasicCube}>Add Cube</button>

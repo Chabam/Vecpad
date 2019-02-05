@@ -2,6 +2,7 @@ import RendererHelper from './RendererHelper';
 import CameraHelper from './CameraHelper';
 import SceneHelper from './SceneHelper';
 import ObjectHelper from './ObjectHelper';
+import * as THREE from 'three';
 
 export default class THREEHelper {
 
@@ -99,17 +100,25 @@ export default class THREEHelper {
 	}
 
 	addObject = (object) => {
-		const {
-			id,
-			name,
-			geometry
-		} = object;
 		this.objectList.push({
-			id,
-			name,
-			vertices: geometry.vertices
+			id: object.id,
+			name: object.name,
+			vertices: object instanceof THREE.ArrowHelper ?
+				object.userData.vertices :
+				object.geometry.vertices
 		});
 		this.sceneHelper.addObject(object);
+	}
+
+	addVector = (direction, origin, magnitude, color, label) => {
+		let vector = ObjectHelper.createVector(
+			direction,
+			origin,
+			magnitude,
+			color,
+			label
+		);
+		this.addObject(vector);
 	}
 
 	updateGround = (size) => {

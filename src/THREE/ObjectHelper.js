@@ -9,66 +9,25 @@ export default class ObjectHelper {
 			console.warn(`The ground has to be divisible by two, you provided ${subdivision}. It will be changed to ${subdivision + 1}.`)
 			subdivision = subdivision + 1;
 		}
-		let maxCoord = subdivision/2;
-		let minCoord = -maxCoord;
 
-		let topLeft     = new THREE.Vector3(minCoord, 0, minCoord);
-		let topRight    = new THREE.Vector3(maxCoord, 0, minCoord);
-		let bottomLeft  = new THREE.Vector3(minCoord, 0, maxCoord);
-		let bottomRight = new THREE.Vector3(maxCoord, 0, maxCoord);
-
-		let lines = new THREE.Geometry();
-		lines.vertices.push(
-			topLeft, topRight,
-			topRight, bottomRight,
-			bottomRight, bottomLeft,
-			bottomLeft, topLeft
-		);
-
-		for (let i = 1; i < subdivision; i++) {
-			let currentValue = minCoord + i;
-			let currentXCoord = new THREE.Vector3(currentValue, 0, minCoord);
-			let currentZCoord = new THREE.Vector3(minCoord, 0, currentValue);
-			let destXCoord    = new THREE.Vector3(currentValue, 0, maxCoord);
-			let destZCoord    = new THREE.Vector3(maxCoord, 0, currentValue);
-			lines.vertices.push(
-				currentXCoord, destXCoord,
-				currentZCoord, destZCoord
-			);
-		}
-
-		let ground = new THREE.LineSegments(lines, new THREE.LineBasicMaterial({
-			color: 0x555555
-		}));
-
-		let subLines = new THREE.Geometry();
-		for (let i = 1; i < subdivision * 4; i++) {
-			let currentValue = minCoord + (i / 4);
-
-			if (Number.isInteger(currentValue)) {
-				continue;
-			}
-
-			let currentXCoord = new THREE.Vector3(currentValue, 0, minCoord);
-			let currentZCoord = new THREE.Vector3(minCoord, 0, currentValue);
-			let destXCoord    = new THREE.Vector3(currentValue, 0, maxCoord);
-			let destZCoord    = new THREE.Vector3(maxCoord, 0, currentValue);
-			subLines.vertices.push(
-				currentXCoord, destXCoord,
-				currentZCoord, destZCoord
-			);
-		}
-
-		let subdividedGround = new THREE.LineSegments(subLines, new THREE.LineBasicMaterial({
-			color: 0xcccccc
-		}));
-
-		ground.add(subdividedGround);
-
-		return ground;
+		return new THREE.GridHelper(subdivision, subdivision);
 	}
 
-	static createTriangle = (width, displayMode, color, outlineColor, label='Triangle #') => {
+	static createVector = (direction, origin, magnitude, color=0x000000, label) => {
+		let vectorObject = new THREE.ArrowHelper(direction, origin, magnitude, color);
+
+		vectorObject.userData = {
+			vertices: [origin, origin.clone().addScalar(magnitude)],
+			origin: origin,
+			magnitude: magnitude
+		};
+
+		ObjectHelper.applyLabelOnObject(vectorObject, label);
+
+		return vectorObject;
+	}
+
+	static createTriangle = (width, displayMode, color, outlineColor, label) => {
 		let p1 = new THREE.Vector3(0, 0, 0);
 		let p2 = new THREE.Vector3(width, 0, 0);
 		let p3 = new THREE.Vector3(0, width, 0);
@@ -81,7 +40,7 @@ export default class ObjectHelper {
 		return ObjectHelper.createObject(triangleGeometry, displayMode, color, outlineColor, label);
 	}
 
-	static createQuad = (width, heigth, displayMode, color, outlineColor, label='Quad #') => {
+	static createQuad = (width, heigth, displayMode, color, outlineColor, label) => {
 		return ObjectHelper.createObject(
 			new THREE.PlaneGeometry(width, heigth),
 			displayMode,
@@ -90,7 +49,7 @@ export default class ObjectHelper {
 			label);
 	}
 
-	static createCube = (width, heigth, depth, displayMode, color, outlineColor, label='Cube #') => {
+	static createCube = (width, heigth, depth, displayMode, color, outlineColor, label) => {
 		return ObjectHelper.createObject(
 			new THREE.BoxGeometry(width, heigth, depth),
 			displayMode,
@@ -117,24 +76,31 @@ export default class ObjectHelper {
 		}));
 	}
 
-	static createObject = (geometry, displayMode, color=0xffffff, outlineColor=0x000000, label='') => {
+	static createObject = (geometry, displayMode, color=0xffffff, outlineColor=0x000000, label) => {
 		let object = ObjectHelper.createMesh(geometry, displayMode, color);
 
 		let objectOutlines = ObjectHelper.createOutlines(geometry, displayMode, outlineColor);
 		objectOutlines.name = 'outline';
-		object.name = label.concat(` ${object.id}`);
 		object.add(objectOutlines);
 
-		let labelObect = ObjectHelper.createLabel(object.name);
-		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
-		let averageX = average(geometry.vertices.map((elem) => elem.x));
-		let averageZ = average(geometry.vertices.map((elem) => elem.z));
-		let highestY = Math.max(...geometry.vertices.map((elem) => elem.y)) + 0.25;
-		labelObect.position.set(averageX, highestY, averageZ);
-		labelObect.name = 'label';
-		object.add(labelObect);
+		ObjectHelper.applyLabelOnObject(object, label);
 
 		return object;
+	}
+
+	static applyLabelOnObject = (object, text) => {
+		object.name = text || `Object #${object.id}`;
+		let vertices = object instanceof THREE.ArrowHelper ?
+			object.userData.vertices :
+			object.geometry.vertices;
+		let labelObject = ObjectHelper.createLabel(object.name);
+		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
+		let x = object instanceof THREE.ArrowHelper ? 0 : average(vertices.map((elem) => elem.x));
+		let z = object instanceof THREE.ArrowHelper ? 0 : average(vertices.map((elem) => elem.z));
+		let y = Math.max(...vertices.map((elem) => elem.y)) + 0.25;
+		labelObject.position.set(x, y, z);
+		labelObject.name = 'label';
+		object.add(labelObject);
 	}
 
 	static createLabel = (text) => {

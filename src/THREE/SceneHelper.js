@@ -23,7 +23,11 @@ export default class SceneHelper {
 
 	applyDisplayMode = (mode, ground) => {
 		this.THREEScene.children.filter((object) =>
-			!(object === ground || object instanceof THREE.Light)
+			!(
+				object === ground ||
+				object instanceof THREE.Light ||
+				object instanceof THREE.ArrowHelper
+			)
 		).forEach((object) => {
 			object.material.transparent = (mode === THREEHelper.OUTLINE);
 			object.getObjectByName('outline').material.transparent = (mode === THREEHelper.FILL);
