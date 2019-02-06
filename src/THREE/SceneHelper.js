@@ -17,7 +17,7 @@ export default class SceneHelper {
 
 	removeObject = (id) => {
 		let object = this.THREEScene.getObjectById(id);
-		object.remove(object.getObjectByName('label'));
+		object.remove(object.label);
 		this.THREEScene.remove(object);
 	}
 
@@ -26,11 +26,11 @@ export default class SceneHelper {
 			!(
 				object === ground ||
 				object instanceof THREE.Light ||
-				object instanceof THREE.ArrowHelper
+				object instanceof THREE.Line
 			)
 		).forEach((object) => {
 			object.material.transparent = (mode === THREEHelper.OUTLINE);
-			object.getObjectByName('outline').material.transparent = (mode === THREEHelper.FILL);
+			object.outline.material.transparent = (mode === THREEHelper.FILL);
 		});
 	}
 }

@@ -15,6 +15,7 @@ export default class THREEHelper {
 		this.cameraHelper = new CameraHelper();
 		this.sceneHelper = new SceneHelper();
 		this.rayCaster = new THREE.Raycaster();
+		this.rayCaster.linePrecision = 0.05;
 
 		this.toolbarElement = null;
 		this.sidebarElement = null;
@@ -92,23 +93,36 @@ export default class THREEHelper {
 
 	applySelectionOnObject = (object) => {
 		this.selectedObject = object;
-		if (this.currentDisplayMode === THREEHelper.FILL) {
+		const selectedColor = 0xff0000;
+		const selectedLineWidth = 2;
+
+		if (object instanceof THREE.Line) {
 			this.selectedObject.previousColor = object.material.color.getHex();
-			object.material.color.setHex(0xff0000);
+			object.material.color.setHex(selectedColor);
+			object.arrow.material.color.setHex(selectedColor);
+			object.material.linewidth = selectedLineWidth;
+		} else if (this.currentDisplayMode === THREEHelper.FILL) {
+			this.selectedObject.previousColor = object.material.color.getHex();
+			object.material.color.setHex(selectedColor);
 		} else {
-			this.selectedObject.previousColor = object.getObjectByName('outline').material.color.getHex();
-			object.getObjectByName('outline').material.color.setHex(0xff0000);
-			object.getObjectByName('outline').material.linewidth = 2;
+			this.selectedObject.previousColor = object.outline.material.color.getHex();
+			object.outline.material.color.setHex(selectedColor);
+			object.outline.material.linewidth = selectedLineWidth;
 		}
 	}
 
 	deselectObject = () => {
-		let previousColor = this.selectedObject.previousColor;
-		if (this.currentDisplayMode === THREEHelper.FILL) {
+		const previousColor = this.selectedObject.previousColor;
+		const unselectedLineWidth = 1;
+		if (this.selectedObject instanceof THREE.Line) {
+			this.selectedObject.material.color.setHex(previousColor);
+			this.selectedObject.arrow.material.color.setHex(previousColor);
+			this.selectedObject.material.linewidth = unselectedLineWidth;
+		} else if (this.currentDisplayMode === THREEHelper.FILL) {
 			this.selectedObject.material.color.setHex(previousColor);
 		} else {
-			this.selectedObject.getObjectByName('outline').material.color.setHex(previousColor);
-			this.selectedObject.getObjectByName('outline').material.linewidth = 1;
+			this.selectedObject.outline.material.color.setHex(previousColor);
+			this.selectedObject.outline.material.linewidth = unselectedLineWidth;
 		}
 	}
 
@@ -154,9 +168,7 @@ export default class THREEHelper {
 		this.objectList.push({
 			id: object.id,
 			name: object.name,
-			vertices: object instanceof THREE.ArrowHelper ?
-				object.userData.vertices :
-				object.geometry.vertices
+			vertices: object.geometry.vertices
 		});
 		this.sceneHelper.addObject(object);
 	}

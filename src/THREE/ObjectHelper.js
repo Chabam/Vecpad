@@ -14,13 +14,29 @@ export default class ObjectHelper {
 	}
 
 	static createVector = (direction, origin, magnitude, color=0x000000, label) => {
-		let vectorObject = new THREE.ArrowHelper(direction, origin, magnitude, color);
+		let vectorGeometry = new THREE.Geometry();
+		let destination = origin.clone().addScaledVector(direction, magnitude);
+		vectorGeometry.vertices.push(
+			origin,
+			destination
+		);
 
-		vectorObject.userData = {
-			vertices: [origin, origin.clone().addScalar(magnitude)],
-			origin: origin,
-			magnitude: magnitude
-		};
+		let vectorObject = new THREE.Line(vectorGeometry, new THREE.LineBasicMaterial({
+			color: color
+		}));
+
+		let arrowGeometry = new THREE.ConeGeometry(0.02, 0.04, 3);
+		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
+			color: color
+		}));
+
+		arrow.position.set(destination.x, destination.y, destination.z);
+		let axis = new THREE.Vector3();
+		axis.set( direction.z, 0, - direction.x ).normalize();
+		let radians = Math.acos( direction.y );
+		arrow.quaternion.setFromAxisAngle( axis, radians );
+		vectorObject.arrow = arrow;
+		vectorObject.add(arrow);
 
 		ObjectHelper.applyLabelOnObject(vectorObject, label);
 
@@ -80,7 +96,7 @@ export default class ObjectHelper {
 		let object = ObjectHelper.createMesh(geometry, displayMode, color);
 
 		let objectOutlines = ObjectHelper.createOutlines(geometry, displayMode, outlineColor);
-		objectOutlines.name = 'outline';
+		object.outline = objectOutlines;
 		object.add(objectOutlines);
 
 		ObjectHelper.applyLabelOnObject(object, label);
@@ -97,16 +113,15 @@ export default class ObjectHelper {
 
 	static applyLabelOnObject = (object, text) => {
 		object.name = text || `Object #${object.id}`;
-		let vertices = object instanceof THREE.ArrowHelper ?
-			object.userData.vertices :
-			object.geometry.vertices;
+
+		let vertices = object.geometry.vertices;
 		let labelObject = ObjectHelper.createLabel(object.name);
 		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
-		let x = object instanceof THREE.ArrowHelper ? 0 : average(vertices.map((elem) => elem.x));
-		let z = object instanceof THREE.ArrowHelper ? 0 : average(vertices.map((elem) => elem.z));
+		let x = average(vertices.map((elem) => elem.x));
+		let z = average(vertices.map((elem) => elem.z));
 		let y = Math.max(...vertices.map((elem) => elem.y)) + 0.25;
 		labelObject.position.set(x, y, z);
-		labelObject.name = 'label';
+		object.label = labelObject;
 		object.add(labelObject);
 	}
 }
