@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as OrbitControls from './Extras/OrbitControls';
 
+// The wrapper object around the THREE.js camera.
 export default class CameraWrapper {
 	constructor() {
 		this.THREECamera = null;

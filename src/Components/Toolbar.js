@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import THREEHelper from '../THREE/THREEHelper'
 
+/*
+	This component will be used to control common settings of the application.
+	For exemple: the display mode, adding an object, undo and redo, etc.
+*/
 export default class Toolbar extends Component {
 	render() {
 		return (

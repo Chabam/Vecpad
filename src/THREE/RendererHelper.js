@@ -1,8 +1,14 @@
 import * as THREE from 'three';
 import { CSS2DRenderer } from './Extras/CSS2DRenderer';
 
+// A wrapper around the canvas rendering of THREE.js
 export default class RendereHelper {
 	constructor() {
+		/*
+			We have effectively two renderer:
+				- THREE3DRenderer: for the 3D objects
+				- THREE2DRenderer: for the 2D labels
+		*/
 		this.THREE3DRenderer = null;
 		this.THREE2DRenderer = null;
 	}

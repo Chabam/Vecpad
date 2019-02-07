@@ -5,9 +5,14 @@ import Toolbar from './Toolbar';
 import THREEHelper from '../THREE/THREEHelper';
 import * as THREE from 'three';
 
+/*
+	This is the instance of the application, it is the only component that will
+	contain a state.
+*/
 export default class Vecpad extends Component {
 	constructor(props) {
 		super(props);
+		// This is our only state, which is an instance of THREEHelper.
 		this.state = {
 			THREEHelper: new THREEHelper()
 		}
@@ -35,6 +40,14 @@ export default class Vecpad extends Component {
 			);
 		}
 
+		/*
+			This is function is used to create a function that is able to manipulate
+			the THREEHelper while applying it to the state. The reason we need this function
+			is because THREEHelper manages its own "state", hence we can't use the setState
+			from React alone. In fact, we extract the current application state (THREEHelper)
+			and call the THREEHelper function on it, this will create a side effect.
+			We then set the state we this modified version of the object.
+		*/
 		createStateFunc = (func) => {
 			return () => {
 				this.setState((state) => {
@@ -44,6 +57,8 @@ export default class Vecpad extends Component {
 				});
 			}
 		}
+
+		// The rest of the functions are used to communicate with THREEHelper using createStateFunc
 
 		addVector =  this.createStateFunc((THREEHelper) => {
 			let origin = new THREE.Vector3(0, 0, 0);
