@@ -23,11 +23,8 @@ export default class ObjectHelper {
 		};
 
 		ObjectHelper.applyLabelOnObject(vectorObject, label);
-		vectorObject.line.geometry.computeBoundingSphere();
-		vectorObject.cone.geometry.computeBoundingSphere();
-		let box = new THREE.BoundingBoxHelper(vectorObject, 0xffff00);
-		vectorObject.add(box);
-		console.log(vectorObject);		return vectorObject;
+
+		return vectorObject;
 	}
 
 	static createTriangle = (width, displayMode, color, outlineColor, label) => {
