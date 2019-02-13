@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import THREEHelper from '../THREE/THREEHelper'
+import logo from '../Images/logo.svg'
 
 export default class Toolbar extends Component {
 	render() {
 		return (
 			<nav id="toolbar">
+				<div id='logo'>
+					<img src={logo} alt={'Vecpad\'s logo'}></img>
+				</div>
 				<div>
 					Display Mode:
 					<select onChange={this.updateDisplayMode} defaultValue={this.props.displayMode}>
