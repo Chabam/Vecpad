@@ -29,21 +29,35 @@ export default class ObjectHelper {
 			origin,
 			destination
 		);
+
 		let vectorObject = new THREE.Line(vectorGeometry, new THREE.LineBasicMaterial({
 			color: color
 		}));
 
-		let arrowGeometry = new THREE.ConeGeometry(0.02, 0.04, 3);
+		let arrowGeometry = new THREE.ConeGeometry(0.05, 0.05, 10);
 		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
 			color: color
 		}));
 
-		// This code section aligns the tip of the arrow towards the vector direction.
+		// This code section aligns the vector object to the direction.
+		// If the vector we are trying to align to is exactly the opposite of our up vector
+		if (direction.equals(new THREE.Vector3(0, -1, 0))) {
+			// We just flip the arrow upside down
+			arrow.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI)
+		} else {
+			/*
+				Otherwise we do the following:
+					Rotation axis = V1 x V2
+					Rotation angle = arccos(V1 * V2)
+					Rotate the arrow with the previous values.
+			*/
+			let rotationAxis = arrow.up.clone().cross(direction).normalize();
+			let rotationAngle = Math.acos(arrow.up.dot(direction));
+			arrow.rotateOnAxis(rotationAxis, rotationAngle);
+		}
+
 		arrow.position.set(destination.x, destination.y, destination.z);
-		let axis = new THREE.Vector3();
-		axis.set( direction.z, 0, -direction.x ).normalize();
-		let radians = Math.acos( direction.y );
-		arrow.quaternion.setFromAxisAngle( axis, radians );
+
 		vectorObject.arrow = arrow;
 		vectorObject.add(arrow);
 
