@@ -139,3 +139,16 @@ html, body {
 	cursor: pointer;
 	font-size: 2em;
 }
+
+.input-group, form fieldset, form button {
+	display: block;
+	margin-bottom: 10px;
+}
+
+form fieldset input {
+	margin:0 5px;
+}
+
+form .input-group label {
+	margin-right: 5px;
+}

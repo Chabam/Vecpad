@@ -17,6 +17,7 @@ export default class Vecpad extends Component {
 		// This is our only state, which is an instance of THREEHelper.
 		this.state = {
 			THREEHelper: new THREEHelper(this.updateReactState),
+			modalTitle: null,
 			modalContent: null
 		}
 	}
@@ -39,7 +40,7 @@ export default class Vecpad extends Component {
 	}
 
 	render() {
-		const { THREEHelper, modalContent } = this.state;
+		const { THREEHelper, modalTitle, modalContent } = this.state;
 		return (
 			<div id="vecpad-container">
 				<div id="visualizer-container">
@@ -48,7 +49,7 @@ export default class Vecpad extends Component {
 						updateDisplayMode={THREEHelper.setDisplayMode}
 						groundSize={THREEHelper.groundSize}
 						updateGround={THREEHelper.updateGround}
-						addObject={this.openModal}>
+						addObject={this.openObjectModal}>
 					</Toolbar>
 					<Visualizer initializeTHREE={THREEHelper.init}></Visualizer>
 				</div>
@@ -60,18 +61,25 @@ export default class Vecpad extends Component {
 						<SelectionEditor name={THREEHelper.selectedObject.name}></SelectionEditor>
 					}
 				</nav>
-				<Modal content={modalContent} closeModal={this.closeModal}></Modal>
+				<Modal title={modalTitle} content={modalContent} closeModal={this.closeModal}></Modal>
 			</div>
 		);
 	}
 
-	openModal = () => this.setState((state) => ({
+	openObjectModal = () => this.setState((state) => ({
 		...state,
-		modalContent: <ObjectCreator></ObjectCreator>
+		modalTitle: 'Create an object',
+		modalContent: <ObjectCreator
+			addVector={state.THREEHelper.addVector}
+			addTriangle={state.THREEHelper.addTriangle}
+			addQuad={state.THREEHelper.addQuad}
+			addCube={state.THREEHelper.addCube}
+			closeModal={this.closeModal}></ObjectCreator>
 	}));
 
 	closeModal = () => this.setState((state) => ({
 		...state,
+		modalTitle: null,
 		modalContent: null
 	}));
 

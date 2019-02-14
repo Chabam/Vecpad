@@ -47,7 +47,7 @@ export default class THREEHelper {
 		this.sceneHelper.addObject(this.ground);
 
 		// The information on the state of our application.
-		this.currentDisplayMode = THREEHelper.BOTH;
+		this.currentDisplayMode = THREEHelper.DisplayMode.BOTH;
 		this.objectList = [];
 		this.selectedObject = null;
 	}
@@ -67,8 +67,8 @@ export default class THREEHelper {
 		// The events we are registered to.
 		window.addEventListener('resize', this.setDimensions);
 		THREE2DRendererDom.addEventListener('click', this.setSelection, false);
-
 		this.renderLoop();
+		this.updateReact();
 	}
 
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
@@ -152,7 +152,7 @@ export default class THREEHelper {
 			object.material.color.setHex(selectedColor);
 			object.arrow.material.color.setHex(selectedColor);
 			object.material.linewidth = selectedLineWidth;
-		} else if (this.currentDisplayMode === THREEHelper.FILL) {
+		} else if (this.currentDisplayMode === THREEHelper.DisplayMode.FILL) {
 			// If the display mode is FILL we apply the color to the lambertian material.
 			this.selectedObject.previousColor = object.material.color.getHex();
 			object.material.color.setHex(selectedColor);
@@ -172,7 +172,7 @@ export default class THREEHelper {
 			this.selectedObject.material.color.setHex(previousColor);
 			this.selectedObject.arrow.material.color.setHex(previousColor);
 			this.selectedObject.material.linewidth = unselectedLineWidth;
-		} else if (this.currentDisplayMode === THREEHelper.FILL) {
+		} else if (this.currentDisplayMode === THREEHelper.DisplayMode.FILL) {
 			this.selectedObject.material.color.setHex(previousColor);
 		} else {
 			this.selectedObject.outline.material.color.setHex(previousColor);
@@ -181,7 +181,8 @@ export default class THREEHelper {
 	}
 
 	// Function used to add object to the scene and to the object list.
-	addObject = (object) => {
+	addObject = (origin, object) => {
+		object.position.set(origin.x, origin.y, origin.z);
 		this.objectList.push({
 			id: object.id,
 			name: object.name,
@@ -194,13 +195,19 @@ export default class THREEHelper {
 	// Inverse function of addObject.
 	removeObject = (id) => {
 		this.objectList = this.objectList.filter((object) => object.id !== id);
+
+		// We have to check if we deleted our selection!
+		if (id === this.selectedObject.id) {
+			this.selectedObject = null;
+		}
+
 		this.sceneHelper.removeObject(id);
 		this.updateReact();
 	}
 
 	// These functions are used to add certain type of objects to the scene.
 
-	addVector = (direction, origin, magnitude, color, label) => {
+	addVector = (origin, direction, magnitude, color, label) => {
 		let vector = ObjectHelper.createVector(
 			direction,
 			origin,
@@ -208,20 +215,20 @@ export default class THREEHelper {
 			color,
 			label
 		);
-		this.addObject(vector);
+		this.addObject(origin, vector);
 	}
 
-	addTriangle = (sideWidth, color, outlineColor, label) => {
+	addTriangle = (origin, sideWidth, color, outlineColor, label) => {
 		let triangle = ObjectHelper.createTriangle(
 			sideWidth,
 			this.currentDisplayMode,
 			color,
 			outlineColor,
 			label);
-		this.addObject(triangle);
+		this.addObject(origin, triangle);
 	}
 
-	addQuad = (width, height, color, outlineColor, label) => {
+	addQuad = (origin, width, height, color, outlineColor, label) => {
 		let quad = ObjectHelper.createQuad(
 			width,
 			height,
@@ -229,10 +236,10 @@ export default class THREEHelper {
 			color,
 			outlineColor,
 			label);
-		this.addObject(quad);
+		this.addObject(origin, quad);
 	}
 
-	addCube = (width, height, depth, color, outlineColor, label) => {
+	addCube = (origin, width, height, depth, color, outlineColor, label) => {
 		let cube = ObjectHelper.createCube(
 			width,
 			height,
@@ -241,7 +248,7 @@ export default class THREEHelper {
 			color,
 			outlineColor,
 			label);
-		this.addObject(cube);
+		this.addObject(origin, cube);
 	}
 
 	// A function used to change the size of the grid at Y=0
