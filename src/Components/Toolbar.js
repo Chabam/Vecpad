@@ -6,7 +6,7 @@ import logo from '../Images/logo.svg'
 	This component will be used to control common settings of the application.
 	For exemple: the display mode, adding an object, undo and redo, etc.
 */
-const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize}) => {
+const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize, addObject}) => {
 	const callUpdateDisplayMode = (event) => updateDisplayMode(parseInt(event.target.value));
 
 	const callUpdateGround = (event) => updateGround(parseInt(event.target.value));
@@ -31,7 +31,7 @@ const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize}) => 
 				</select>
 			</div>
 			<div>
-				<button>Add an object</button>
+				<button onClick={addObject}>Add an object</button>
 			</div>
 			<div>
 				Current ground size: {groundSize}

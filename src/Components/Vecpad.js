@@ -21,6 +21,13 @@ export default class Vecpad extends Component {
 
 	componentDidMount() {
 		this.state.THREEHelper.init();
+
+		const modal = document.getElementById('modal-container');
+		window.addEventListener('click', (event) => {
+			if (event.target == modal) {
+				this.closeModal();
+			}
+		});
 	}
 
 	render() {
@@ -33,7 +40,7 @@ export default class Vecpad extends Component {
 						updateDisplayMode={THREEHelper.setDisplayMode}
 						groundSize={THREEHelper.groundSize}
 						updateGround={THREEHelper.updateGround}
-						addObject={this.openObjectModal}>
+						addObject={this.openModal}>
 					</Toolbar>
 					<Visualizer initializeTHREE={THREEHelper.init}></Visualizer>
 				</div>
@@ -42,10 +49,14 @@ export default class Vecpad extends Component {
 					removeObject={THREEHelper.removeObject}
 					selectedObject={THREEHelper.selectedObject}>
 				</Sidebar>
-				<Modal></Modal>
+				<Modal visible={modalVisible} closeModal={this.closeModal}></Modal>
 			</div>
 			);
 	}
+
+	openModal = () => this.setState((state) => ({modalVisible: true, THREEHelper: state.THREEHelper}));
+
+	closeModal = () => this.setState((state) => ({modalVisible: false, THREEHelper: state.THREEHelper}));
 
 	// Whenever THREEHelper changes it will call this function to update the UI.
 	updateReactState = (newTHREEState) => this.setState((state) => ({modalVisible: state.modalVisible, THREEHelper: newTHREEState}));
