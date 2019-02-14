@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Vecpad from './Components/Vecpad';
-import './css/vecpad.css'
+import './Sass/Vecpad.scss'
 
 /*
 	This is the main entry point of Vecpad, the next line instanciate the main React component of

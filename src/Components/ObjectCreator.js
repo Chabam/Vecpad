@@ -63,6 +63,7 @@ export default class ObjectCreator extends Component {
 						{name}
 						<CoordinatesPicker name="Origin"></CoordinatesPicker>
 						<CoordinatesPicker name="Direction" defaultX={1} defaultY={1} defaultZ={1}></CoordinatesPicker>
+						<small>* Note that the direction will be normalized</small>
 						<InputGroup name="Magnitude" id="magnitude">
 							<input required name="magnitude" type="number" defaultValue={1} step={0.01}></input>
 						</InputGroup>
