@@ -19,13 +19,13 @@ const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize, addO
 			<div>
 				Display Mode:
 				<select onChange={callUpdateDisplayMode} defaultValue={displayMode}>
-					<option value={THREEHelper.OUTLINE}>
+					<option value={THREEHelper.DisplayMode.OUTLINE}>
 						Outline
 					</option>
-					<option value={THREEHelper.FILL}>
+					<option value={THREEHelper.DisplayMode.FILL}>
 						Fill
 					</option>
-					<option value={THREEHelper.BOTH}>
+					<option value={THREEHelper.DisplayMode.BOTH}>
 						Both
 					</option>
 				</select>

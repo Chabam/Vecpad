@@ -40,8 +40,8 @@ export default class SceneHelper {
 		).forEach((object) => {
 
 			// See THREEHelper's display mode for details.
-			object.material.transparent = (mode === THREEHelper.OUTLINE);
-			object.outline.material.transparent = (mode === THREEHelper.FILL);
+			object.material.transparent = (mode === THREEHelper.DisplayMode.OUTLINE);
+			object.outline.material.transparent = (mode === THREEHelper.DisplayMode.FILL);
 		});
 	}
 }

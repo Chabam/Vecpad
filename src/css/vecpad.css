@@ -74,7 +74,7 @@ html, body {
 	flex: 3;
 	display: flex;
 	flex-flow: column;
-	min-width: 450px;
+	min-width: 30%;
 	align-content: stretch;
 }
 
@@ -108,14 +108,11 @@ html, body {
 #modal-window {
 	flex: 1;
 	display: flex;
+	flex-flow: column;
 	align-items: stretch;
 	max-width: 75%;
 	height: 75%;
 	background-color: white;
-}
-
-#modal-window > * {
-	flex: 1;
 }
 
 #modal-header {
@@ -125,6 +122,17 @@ html, body {
 	align-items: center;
 	height: 30px;
 	padding: 10px;
+}
+
+#modal-content {
+	flex: 1;
+	padding: 15px;
+	height: 100%;
+	overflow: auto;
+}
+
+#modal-content > * {
+	margin: 10px;
 }
 
 #modal-close {

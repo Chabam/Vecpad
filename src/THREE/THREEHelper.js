@@ -16,9 +16,11 @@ export default class THREEHelper {
 			- OUTLINE will show only the outline of the objects, meaning we can see through it.
 			- BOTH is the combination of the two previous ones.
 	*/
-	static FILL = 1;
-	static OUTLINE = 2;
-	static BOTH = 3;
+	static DisplayMode = {
+		FILL: 0,
+		OUTLINE: 1,
+		BOTH: 2
+	}
 
 	constructor(reactUpdateFunc) {
 		this.rendererHelper = new RendererHelper();

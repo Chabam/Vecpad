@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Visualizer from './Visualizer';
-import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
 import Modal from './Modal';
+import SelectionEditor from './SelectionEditor';
+import ObjectInfo from './ObjectInfo';
+import ObjectCreator from './ObjectCreator';
 import THREEHelper from '../THREE/THREEHelper';
 
 /*
@@ -15,23 +17,29 @@ export default class Vecpad extends Component {
 		// This is our only state, which is an instance of THREEHelper.
 		this.state = {
 			THREEHelper: new THREEHelper(this.updateReactState),
-			modalVisible: false
+			modalContent: null
 		}
 	}
+
+	// Whenever THREEHelper changes it will call this function to update the UI.
+	updateReactState = (newTHREEState) => this.setState((state) => ({
+		...state,
+		THREEHelper: newTHREEState
+	}));
 
 	componentDidMount() {
 		this.state.THREEHelper.init();
 
 		const modal = document.getElementById('modal-container');
 		window.addEventListener('click', (event) => {
-			if (event.target == modal) {
+			if (event.target === modal) {
 				this.closeModal();
 			}
 		});
 	}
 
 	render() {
-		const { THREEHelper, modalVisible } = this.state;
+		const { THREEHelper, modalContent } = this.state;
 		return (
 			<div id="vecpad-container">
 				<div id="visualizer-container">
@@ -44,20 +52,39 @@ export default class Vecpad extends Component {
 					</Toolbar>
 					<Visualizer initializeTHREE={THREEHelper.init}></Visualizer>
 				</div>
-				<Sidebar
-					objectList={THREEHelper.objectList}
-					removeObject={THREEHelper.removeObject}
-					selectedObject={THREEHelper.selectedObject}>
-				</Sidebar>
-				<Modal visible={modalVisible} closeModal={this.closeModal}></Modal>
+				<nav id="sidebar">
+					<div id="object-list">
+						{this.renderObjectList()}
+					</div>
+					{THREEHelper.selectedObject &&
+						<SelectionEditor name={THREEHelper.selectedObject.name}></SelectionEditor>
+					}
+				</nav>
+				<Modal content={modalContent} closeModal={this.closeModal}></Modal>
 			</div>
-			);
+		);
 	}
 
-	openModal = () => this.setState((state) => ({modalVisible: true, THREEHelper: state.THREEHelper}));
+	openModal = () => this.setState((state) => ({
+		...state,
+		modalContent: <ObjectCreator></ObjectCreator>
+	}));
 
-	closeModal = () => this.setState((state) => ({modalVisible: false, THREEHelper: state.THREEHelper}));
+	closeModal = () => this.setState((state) => ({
+		...state,
+		modalContent: null
+	}));
 
-	// Whenever THREEHelper changes it will call this function to update the UI.
-	updateReactState = (newTHREEState) => this.setState((state) => ({modalVisible: state.modalVisible, THREEHelper: newTHREEState}));
+	renderObjectList = () => {
+		let { THREEHelper } = this.state;
+		return THREEHelper.objectList.map((object) =>
+			<ObjectInfo
+				key={object.id}
+				id={object.id}
+				name={object.name}
+				vertices={object.vertices}
+				removeObject={THREEHelper.removeObject}>
+			</ObjectInfo>
+		);
+	}
 }
