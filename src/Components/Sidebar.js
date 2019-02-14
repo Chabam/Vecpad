@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ObjectInfo from './ObjectInfo';
+import SelectionEditor from './SelectionEditor';
 
 // This component will contain the objects that are rendered in the scene.
 export default class Sidebar extends Component {
@@ -14,7 +15,12 @@ export default class Sidebar extends Component {
 		);
 		return (
 			<nav id="sidebar">
-				{objectList}
+				<div id="object-list">
+					{objectList}
+				</div>
+				{this.props.selectedObject &&
+					<SelectionEditor selectedObject={this.props.selectedObject}></SelectionEditor>
+				}
 			</nav>
 		);
 	}

@@ -20,10 +20,14 @@ export default class THREEHelper {
 	static OUTLINE = 2;
 	static BOTH = 3;
 
-	constructor() {
+	constructor(reactUpdateFunc) {
 		this.rendererHelper = new RendererHelper();
 		this.cameraHelper = new CameraHelper();
 		this.sceneHelper = new SceneHelper();
+
+		// IMPORTANT!
+		// This function is used to tell React to update its state, be sure to use it everytime THREEHelper changes!
+		this.updateReact = () => reactUpdateFunc(this);
 
 		// The raycaster is used to select objects using rays.
 		this.rayCaster = new THREE.Raycaster();
@@ -129,6 +133,7 @@ export default class THREEHelper {
 			this.deselectObject();
 			this.selectedObject = null;
 		}
+		this.updateReact();
 	}
 
 	// This function stores the object we collided with and displays it accordingly.
@@ -181,12 +186,14 @@ export default class THREEHelper {
 			vertices: object.geometry.vertices
 		});
 		this.sceneHelper.addObject(object);
+		this.updateReact();
 	}
 
-	// Inverser function of addObject.
+	// Inverse function of addObject.
 	removeObject = (id) => {
 		this.objectList = this.objectList.filter((object) => object.id !== id);
 		this.sceneHelper.removeObject(id);
+		this.updateReact();
 	}
 
 	// These functions are used to add certain type of objects to the scene.
@@ -245,6 +252,7 @@ export default class THREEHelper {
 		this.groundSize = size;
 		this.ground = ObjectHelper.createGround(this.groundSize);
 		this.sceneHelper.addObject(this.ground);
+		this.updateReact();
 	};
 
 	// This function update the way the object are rendred according the display mode.
@@ -264,5 +272,6 @@ export default class THREEHelper {
 
 		// We then need to update the objects.
 		this.sceneHelper.applyDisplayMode(this.currentDisplayMode, this.ground);
+		this.updateReact();
 	}
 }

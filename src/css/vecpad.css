@@ -50,7 +50,15 @@ html, body {
 
 #sidebar {
 	flex: 3;
+	display: flex;
+	flex-flow: column;
 	min-width: 450px;
+	align-content: stretch;
+}
+
+#sidebar > * {
+	flex: 1 auto;
+	display: flex;
 	border: 1px solid black;
 }
 
