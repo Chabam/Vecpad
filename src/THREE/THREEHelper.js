@@ -68,7 +68,6 @@ export default class THREEHelper {
 		window.addEventListener('resize', this.setDimensions);
 		THREE2DRendererDom.addEventListener('click', this.setSelection, false);
 		this.renderLoop();
-		this.updateReact();
 	}
 
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
@@ -134,9 +133,18 @@ export default class THREEHelper {
 			// If we have no collision and a previously selected object we deselect it.
 			this.deselectObject();
 			this.selectedObject = null;
+			this.updateReact();
 		}
-		this.updateReact();
 	}
+
+	applySelectionOnID = (id) => {
+		if (this.selectedObject) {
+			this.deselectObject();
+			this.selectedObject = null;
+		}
+
+		this.applySelectionOnObject(this.getObjectById(id));
+	};
 
 	// This function stores the object we collided with and displays it accordingly.
 	applySelectionOnObject = (object) => {
@@ -162,6 +170,8 @@ export default class THREEHelper {
 			object.outline.material.color.setHex(selectedColor);
 			object.outline.material.linewidth = selectedLineWidth;
 		}
+
+		this.updateReact();
 	}
 
 	// This function is the inverse of applySelectionOnObject
@@ -182,26 +192,29 @@ export default class THREEHelper {
 
 	// Function used to add object to the scene and to the object list.
 	addObject = (origin, object) => {
+		let {id, type, name} = object;
 		object.position.set(origin.x, origin.y, origin.z);
 		this.objectList.push({
-			id: object.id,
-			name: object.name,
-			vertices: object.geometry.vertices
+			id,
+			type,
+			name
 		});
 		this.sceneHelper.addObject(object);
 		this.updateReact();
 	}
 
+	removeObjectById = (id) => this.removeObject(this.getObjectById(id));
+
 	// Inverse function of addObject.
-	removeObject = (id) => {
-		this.objectList = this.objectList.filter((object) => object.id !== id);
+	removeObject = (object) => {
+		this.objectList = this.objectList.filter((currObject) => currObject.id !== object.id);
 
 		// We have to check if we deleted our selection!
-		if (id === this.selectedObject.id) {
+		if (this.selectedObject && object.id === this.selectedObject.id) {
 			this.selectedObject = null;
 		}
 
-		this.sceneHelper.removeObject(id);
+		this.sceneHelper.removeObject(object);
 		this.updateReact();
 	}
 
@@ -210,7 +223,6 @@ export default class THREEHelper {
 	addVector = (origin, direction, magnitude, color, label) => {
 		let vector = ObjectHelper.createVector(
 			direction,
-			origin,
 			magnitude,
 			color,
 			label
@@ -257,7 +269,7 @@ export default class THREEHelper {
 			return;
 		}
 
-		this.sceneHelper.removeObject(this.ground.id);
+		this.sceneHelper.removeObject(this.ground);
 		this.groundSize = size;
 		this.ground = ObjectHelper.createGround(this.groundSize);
 		this.sceneHelper.addObject(this.ground);
@@ -283,4 +295,6 @@ export default class THREEHelper {
 		this.sceneHelper.applyDisplayMode(this.currentDisplayMode, this.ground);
 		this.updateReact();
 	}
+
+	getObjectById = (id) => this.sceneHelper.getObjectById(id);
 }

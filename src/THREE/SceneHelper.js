@@ -20,12 +20,14 @@ export default class SceneHelper {
 	}
 
 	// The function removes the object from the scene with an ID.
-	removeObject = (id) => {
-		let object = this.THREEScene.getObjectById(id);
-
+	removeObject = (object) => {
 		// For some reason we need to manually remove the label.
 		object.remove(object.label);
 		this.THREEScene.remove(object);
+	}
+
+	getObjectById = (id) => {
+		return this.THREEScene.getObjectById(id);
 	}
 
 	// This function changes the way an object is displayed
@@ -35,7 +37,7 @@ export default class SceneHelper {
 			!(
 				object === ground ||
 				object instanceof THREE.Light ||
-				object instanceof THREE.Line
+				object.type === 'Vector'
 			)
 		).forEach((object) => {
 

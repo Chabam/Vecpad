@@ -21,6 +21,7 @@ export default class RendereHelper {
 
 		this.THREE3DRenderer.setClearColor(0xffffff);
 		this.THREE2DRenderer.domElement.style.position = 'absolute';
+		this.THREE2DRenderer.domElement.id = 'label-renderer';
 		this.THREE3DRenderer.setPixelRatio(window.devicePixelRatio);
 		this.setSize(width, height);
 

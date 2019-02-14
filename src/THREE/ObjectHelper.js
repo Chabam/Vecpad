@@ -22,9 +22,12 @@ export default class ObjectHelper {
 	}
 
 	// Our vector is composed of a line and a cone.
-	static createVector = (direction, origin, magnitude, color=0x000000, label) => {
+	static createVector = (direction, magnitude, color=0x000000, label) => {
 		let vectorGeometry = new THREE.Geometry();
-		let destination = origin.clone().addScaledVector(direction, magnitude);
+		let origin = new THREE.Vector3(0, 0, 0);
+		let up = new THREE.Vector3(0, 1, 0);
+
+		let destination = origin.clone().addScaledVector(up, magnitude);
 		vectorGeometry.vertices.push(
 			origin,
 			destination
@@ -33,30 +36,30 @@ export default class ObjectHelper {
 		let vectorObject = new THREE.Line(vectorGeometry, new THREE.LineBasicMaterial({
 			color: color
 		}));
+		vectorObject.type = 'Vector';
 
 		let arrowGeometry = new THREE.ConeGeometry(0.05, 0.05, 10);
 		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
 			color: color
 		}));
+		arrow.position.set(destination.x, destination.y, destination.z);
 
 		// This code section aligns the vector object to the direction.
 		// If the vector we are trying to align to is exactly the opposite of our up vector
 		if (direction.equals(new THREE.Vector3(0, -1, 0))) {
-			// We just flip the arrow upside down
-			arrow.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI)
+			// We just flip the vector upside down
+			vectorObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI)
 		} else {
 			/*
 				Otherwise we do the following:
 					Rotation axis = V1 x V2
 					Rotation angle = arccos(V1 * V2)
-					Rotate the arrow with the previous values.
+					Rotate the vector with the previous values.
 			*/
-			let rotationAxis = arrow.up.clone().cross(direction).normalize();
-			let rotationAngle = Math.acos(arrow.up.dot(direction));
-			arrow.rotateOnAxis(rotationAxis, rotationAngle);
+			let rotationAxis = up.clone().cross(direction).normalize();
+			let rotationAngle = Math.acos(up.dot(direction));
+			vectorObject.rotateOnAxis(rotationAxis, rotationAngle);
 		}
-
-		arrow.position.set(destination.x, destination.y, destination.z);
 
 		vectorObject.arrow = arrow;
 		vectorObject.add(arrow);
@@ -78,11 +81,18 @@ export default class ObjectHelper {
 
 		// This line is to set the center of the triangle at (0,0,0)
 		triangleGeometry.translate(-(width/3), -(width/3), 0);
-		return ObjectHelper.createObject(triangleGeometry, displayMode, color, outlineColor, label);
+		return ObjectHelper.createObject(
+			'Triangle',
+			triangleGeometry,
+			displayMode,
+			color,
+			outlineColor,
+			label);
 	}
 
 	static createQuad = (width, heigth, displayMode, color, outlineColor, label) => {
 		return ObjectHelper.createObject(
+			'Quad',
 			new THREE.PlaneGeometry(width, heigth),
 			displayMode,
 			color,
@@ -92,6 +102,7 @@ export default class ObjectHelper {
 
 	static createCube = (width, heigth, depth, displayMode, color, outlineColor, label) => {
 		return ObjectHelper.createObject(
+			'Cube',
 			new THREE.BoxGeometry(width, heigth, depth),
 			displayMode,
 			color,
@@ -123,8 +134,9 @@ export default class ObjectHelper {
 		This function is called almost on all objects we create. It creates the mesh, the outlines and
 		a label on top of the object.
 	*/
-	static createObject = (geometry, displayMode, color=0xffffff, outlineColor=0x000000, label) => {
+	static createObject = (type, geometry, displayMode, color=0xffffff, outlineColor=0x000000, label) => {
 		let object = ObjectHelper.createMesh(geometry, displayMode, color);
+		object.type = type;
 
 		let objectOutlines = ObjectHelper.createOutlines(geometry, displayMode, outlineColor);
 		object.outline = objectOutlines;

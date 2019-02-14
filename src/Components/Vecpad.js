@@ -58,7 +58,7 @@ export default class Vecpad extends Component {
 						{this.renderObjectList()}
 					</div>
 					{THREEHelper.selectedObject &&
-						<SelectionEditor name={THREEHelper.selectedObject.name}></SelectionEditor>
+						<SelectionEditor object={THREEHelper.selectedObject}></SelectionEditor>
 					}
 				</nav>
 				<Modal title={modalTitle} content={modalContent} closeModal={this.closeModal}></Modal>
@@ -90,8 +90,9 @@ export default class Vecpad extends Component {
 				key={object.id}
 				id={object.id}
 				name={object.name}
-				vertices={object.vertices}
-				removeObject={THREEHelper.removeObject}>
+				type={object.type}
+				selectObject={THREEHelper.applySelectionOnID}
+				removeObject={THREEHelper.removeObjectById}>
 			</ObjectInfo>
 		);
 	}
