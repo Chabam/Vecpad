@@ -7,6 +7,7 @@ import ObjectCreator from './ObjectCreator';
 import SelectionEditor from './SelectionEditor';
 import Sidebar from './Sidebar';
 import ObjectList from './ObjectList';
+import TransformationCreator from './TransformationCreator';
 
 /*
 	This is the instance of the application, it is the only component that will
@@ -62,7 +63,11 @@ export default class Vecpad extends Component {
 						removeObject={THREEHelper.removeObjectById}
 						focusObject={THREEHelper.focusOnObjectID}/>
 						{THREEHelper.selectedObject &&
-						<SelectionEditor object={THREEHelper.selectedObject}/>}
+						<SelectionEditor
+							object={THREEHelper.selectedObject}
+							openTransformationModal={this.openTransformationModal}
+							applyTransformation={THREEHelper.applyTransformationStepOnObjectByID}
+						/>}
 				</Sidebar>
 				<Modal title={modalTitle} closeModal={this.closeModal}>{modalContent}</Modal>
 			</div>
@@ -77,7 +82,18 @@ export default class Vecpad extends Component {
 			addTriangle={state.THREEHelper.addTriangle}
 			addQuad={state.THREEHelper.addQuad}
 			addCube={state.THREEHelper.addCube}
-			closeModal={this.closeModal}></ObjectCreator>
+			closeModal={this.closeModal}
+		/>
+	}));
+
+	openTransformationModal = (id) => this.setState((state) => ({
+		...state,
+		modalTitle: 'Create an object',
+		modalContent: <TransformationCreator
+			id={id}
+			addTranslation={state.THREEHelper.addTranslationByID}
+			closeModal={this.closeModal}
+		/>
 	}));
 
 	closeModal = () => this.setState((state) => ({

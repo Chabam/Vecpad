@@ -3,6 +3,7 @@ import CameraHelper from './CameraHelper';
 import SceneHelper from './SceneHelper';
 import ObjectHelper from './ObjectHelper';
 import * as THREE from 'three';
+import Translation from '../Transformations/Translation';
 
 /*
 	This is probably the most important object within Vecpad. It is a sort of
@@ -44,11 +45,12 @@ export default class THREEHelper {
 		// Information on the grid at Y=0 that act as a reference for our scene.
 		this.groundSize = 2;
 		this.ground = ObjectHelper.createGround(this.groundSize);
+		this.sceneHelper.THREEScene.ground = this.ground;
 		this.sceneHelper.addObject(this.ground);
 
 		// The information on the state of our application.
 		this.currentDisplayMode = THREEHelper.DisplayMode.BOTH;
-		this.objectList = [];
+		this.objectList = this.sceneHelper.getObjectList();
 		this.selectedObject = null;
 	}
 
@@ -199,29 +201,66 @@ export default class THREEHelper {
 
 	// Function used to add object to the scene and to the object list.
 	addObject = (origin, object) => {
-		let {id, type, name} = object;
 		object.position.copy(origin);
-		this.objectList.push({
-			id,
-			type,
-			name
-		});
+		object.originalMatrix = object.matrix.clone();
+		object.transformations = [];
+		object.removeTransformation = (uuid) => {
+			object.transformations = object.transformations.filter((trans) => trans.uuid !== uuid);
+			this.updateReact();
+		}
 		this.sceneHelper.addObject(object);
+		this.updateObjectList();
 		this.updateReact();
+	}
+
+
+	addTranslationByID = (id, x, y, z) => this.addTransformationToObject(
+		this.getObjectById(id),
+		new Translation(x, y, z)
+	);
+
+	addTransformationToObject = (object, transformation) => {
+		object.transformations.push(transformation);
+		this.updateReact();
+	}
+
+	applyTransformationStepOnObjectByID = (id, transformationUUID, step) => {
+		let object = this.getObjectById(id);
+		let transformation = this.getTransformationByUUID(object, transformationUUID);
+		transformation.currentStep = step;
+		this.applyTransformationOnObject(object);
+	}
+
+	applyTransformationOnObject = (object) => {
+		object.matrix.copy(object.originalMatrix);
+		let transformations = object.transformations.reduce((matrix, trans) =>
+			matrix.multiply(trans.getMatrix()), new THREE.Matrix4()
+		);
+		object.applyMatrix(transformations);
+		this.updateReact();
+	}
+
+	removeTransformationFromObjectByID = (id, transformationUUID) => this.removeTransformationFromObject(
+		this.getObjectById(id),
+		transformationUUID
+	);
+
+	removeTransformationFromObject = (object, transformationUUID) => {
+		object.transformations = object.transformation.filter((trans) => trans.uuid !== transformationUUID);
+		this.applyTransformationOnObject(object);
 	}
 
 	removeObjectById = (id) => this.removeObject(this.getObjectById(id));
 
 	// Inverse function of addObject.
 	removeObject = (object) => {
-		this.objectList = this.objectList.filter((currObject) => currObject.id !== object.id);
-
 		// We have to check if we deleted our selection!
 		if (this.selectedObject && object.id === this.selectedObject.id) {
 			this.selectedObject = null;
 		}
 
 		this.sceneHelper.removeObject(object);
+		this.updateObjectList();
 		this.updateReact();
 	}
 
@@ -270,6 +309,8 @@ export default class THREEHelper {
 		this.addObject(origin, cube);
 	}
 
+	updateObjectList = () => this.objectList = this.sceneHelper.getObjectList();
+
 	// A function used to change the size of the grid at Y=0
 	updateGround = (size) => {
 		if (size === this.groundSize) {
@@ -297,4 +338,6 @@ export default class THREEHelper {
 	}
 
 	getObjectById = (id) => this.sceneHelper.getObjectById(id);
+
+	getTransformationByUUID = (object, UUID) => object.transformations.find((trans) => trans.uuid === UUID);
 }

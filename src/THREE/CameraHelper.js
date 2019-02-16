@@ -24,7 +24,7 @@ export default class CameraWrapper {
 
 	focusOnCoords = (coords) => {
 		this.THREECamera.position.copy(coords);
-		this.THREECamera.position.z -= 3;
+		this.THREECamera.position.z += 3;
 		this.THREEControls.target.copy(coords);
 		this.THREEControls.update();
 	}

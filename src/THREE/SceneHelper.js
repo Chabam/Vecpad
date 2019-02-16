@@ -26,16 +26,23 @@ export default class SceneHelper {
 		this.THREEScene.remove(object);
 	}
 
+	getObjectList = () => this.THREEScene.children.filter((object) =>
+		!(
+			object === this.THREEScene.ground ||
+			object instanceof THREE.Light
+		)
+	);
+
 	getObjectById = (id) => {
 		return this.THREEScene.getObjectById(id);
 	}
 
 	// This function changes the way an object is displayed
-	applyDisplayMode = (mode, ground) => {
+	applyDisplayMode = (mode) => {
 		this.THREEScene.children.filter((object) =>
 			// We don't change the ground, lights and vector objects.
 			!(
-				object === ground ||
+				object === this.THREEScene.ground ||
 				object instanceof THREE.Light ||
 				object.type === 'Vector'
 			)

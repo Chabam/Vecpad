@@ -91,6 +91,27 @@ html, body {
 		border: 1px solid black;
 		min-height: 50%;
 		padding: 15px;
+
+		#transformation-list {
+			border: 1px solid black;
+			margin-top: 15px;
+			min-height: 30%;
+			overflow: auto;
+
+			.transformation-info {
+				padding: 15px;
+				border-bottom: 1px solid black;
+
+				.transformation-slider * {
+					display: inline;
+
+				}
+
+				.transformation-slider input {
+					margin: 0 15px;
+				}
+			}
+		}
 	}
 }
 
