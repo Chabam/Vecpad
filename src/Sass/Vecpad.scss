@@ -40,6 +40,11 @@ html, body {
 		color: $foreground-color;
 		pointer-events:none;
 		font-family: monospace;
+
+		&.selected {
+			color: #FFA500;
+			font-weight: bold;
+		}
 	}
 }
 
@@ -148,12 +153,11 @@ html, body {
 				fieldset input {
 					margin:0 5px;
 				}
-
-				.input-group label {
-					margin-right: 5px;
-				}
 			}
 		}
 	}
+}
 
+.input-group label {
+	margin-right: 5px;
 }

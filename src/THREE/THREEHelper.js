@@ -6,7 +6,7 @@ import * as THREE from 'three';
 
 /*
 	This is probably the most important object within Vecpad. It is a sort of
-	wrapper for THREE.js, we also use it as a sort of state for the application.
+	wrapper for THREE.js, we also use it as a "state" for the application.
 */
 export default class THREEHelper {
 
@@ -66,7 +66,7 @@ export default class THREEHelper {
 
 		// The events we are registered to.
 		window.addEventListener('resize', this.setDimensions);
-		THREE2DRendererDom.addEventListener('click', this.setSelection, false);
+		THREE2DRendererDom.addEventListener('click', this.setSelectionFromMouse, false);
 		this.renderLoop();
 	}
 
@@ -92,6 +92,12 @@ export default class THREEHelper {
 		}
 	}
 
+	resetCamera = () => this.cameraHelper.reset();
+
+	focusOnObjectID = (id) => this.focusOnObject(this.getObjectById(id));
+
+	focusOnObject = (object) => this.cameraHelper.focusOnCoords(object.position);
+
 	// Our draw function.
 	renderLoop = () => {
 		requestAnimationFrame(this.renderLoop);
@@ -99,7 +105,7 @@ export default class THREEHelper {
 	}
 
 	// Set selection is used to check if the area where the user clicked contains an object, if so we select it.
-	setSelection = (event) => {
+	setSelectionFromMouse = (event) => {
 
 		// First we need to find out where our mouse is in the coordinates of the camera.
 		let mouseNormalizedCoords = new THREE.Vector2();
@@ -149,51 +155,52 @@ export default class THREEHelper {
 	// This function stores the object we collided with and displays it accordingly.
 	applySelectionOnObject = (object) => {
 		this.selectedObject = object;
-		const selectedColor = 0xff0000;
-		const selectedLineWidth = 2;
+		this.selectedObject.label.element.classList.add('selected');
+		const selectedColor = 0xffa500;
+		const selectedWidth = 2;
 
-		// If we have a vector
-		if (object instanceof THREE.Line) {
-
-			// We apply our selection color to the line and the arrow of the vector regardless of the display mode.
-			this.selectedObject.previousColor = object.material.color.getHex();
-			object.material.color.setHex(selectedColor);
-			object.arrow.material.color.setHex(selectedColor);
-			object.material.linewidth = selectedLineWidth;
-		} else if (this.currentDisplayMode === THREEHelper.DisplayMode.FILL) {
-			// If the display mode is FILL we apply the color to the lambertian material.
-			this.selectedObject.previousColor = object.material.color.getHex();
-			object.material.color.setHex(selectedColor);
+		if (object.type === 'Vector') {
+			let {arrow, material} = this.selectedObject;
+			this.selectedObject.previousColor = material.color.getHex();
+			material.color.setHex(selectedColor);
+			material.linewidth = selectedWidth;
+			arrow.material.color.setHex(selectedColor);
+			material.depthTest = false;
+			arrow.material.depthTest = false;
 		} else {
-			// If the display mode is OUTLINE or BOTH we only change the color of the outline.
-			this.selectedObject.previousColor = object.outline.material.color.getHex();
-			object.outline.material.color.setHex(selectedColor);
-			object.outline.material.linewidth = selectedLineWidth;
+			let selection = new THREE.LineSegments(this.selectedObject.outline.geometry, new THREE.LineBasicMaterial({
+				depthTest: false,
+				color: selectedColor,
+				linewidth: selectedWidth
+			}));
+			this.selectedObject.selection = selection;
+			this.selectedObject.add(selection);
 		}
-
 		this.updateReact();
 	}
 
 	// This function is the inverse of applySelectionOnObject
 	deselectObject = () => {
-		const previousColor = this.selectedObject.previousColor;
-		const unselectedLineWidth = 1;
-		if (this.selectedObject instanceof THREE.Line) {
-			this.selectedObject.material.color.setHex(previousColor);
-			this.selectedObject.arrow.material.color.setHex(previousColor);
-			this.selectedObject.material.linewidth = unselectedLineWidth;
-		} else if (this.currentDisplayMode === THREEHelper.DisplayMode.FILL) {
-			this.selectedObject.material.color.setHex(previousColor);
+		this.selectedObject.label.element.classList.remove('selected');
+		const unselectedWidth = 1;
+
+		if (this.selectedObject.type === 'Vector') {
+			let {arrow, material, previousColor} = this.selectedObject;
+			material.color.setHex(previousColor);
+			material.linewidth = unselectedWidth;
+			arrow.material.color.setHex(previousColor);
+			material.depthTest = true;
+			arrow.material.depthTest = true;
 		} else {
-			this.selectedObject.outline.material.color.setHex(previousColor);
-			this.selectedObject.outline.material.linewidth = unselectedLineWidth;
+			this.selectedObject.remove(this.selectedObject.selection);
+			this.selectedObject.selection = null;
 		}
 	}
 
 	// Function used to add object to the scene and to the object list.
 	addObject = (origin, object) => {
 		let {id, type, name} = object;
-		object.position.set(origin.x, origin.y, origin.z);
+		object.position.copy(origin);
 		this.objectList.push({
 			id,
 			type,
@@ -282,14 +289,7 @@ export default class THREEHelper {
 			return;
 		}
 
-		// If we have a selected object we need to update the way the selection appears.
-		if (this.selectedObject) {
-			this.deselectObject();
-			this.currentDisplayMode = mode;
-			this.applySelectionOnObject(this.selectedObject);
-		} else {
-			this.currentDisplayMode = mode;
-		}
+		this.currentDisplayMode = mode;
 
 		// We then need to update the objects.
 		this.sceneHelper.applyDisplayMode(this.currentDisplayMode, this.ground);

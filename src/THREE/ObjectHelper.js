@@ -32,6 +32,7 @@ export default class ObjectHelper {
 			origin,
 			destination
 		);
+		vectorGeometry.computeBoundingBox();
 
 		let vectorObject = new THREE.Line(vectorGeometry, new THREE.LineBasicMaterial({
 			color: color
@@ -42,7 +43,7 @@ export default class ObjectHelper {
 		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
 			color: color
 		}));
-		arrow.position.set(destination.x, destination.y, destination.z);
+		arrow.position.copy(destination);
 
 		// This code section aligns the vector object to the direction.
 		// If the vector we are trying to align to is exactly the opposite of our up vector
@@ -76,7 +77,6 @@ export default class ObjectHelper {
 		let triangleGeometry = new THREE.Geometry();
 		triangleGeometry.vertices.push(p1, p2, p3);
 		triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
-		triangleGeometry.computeBoundingSphere();
 		triangleGeometry.computeFaceNormals();
 
 		// This line is to set the center of the triangle at (0,0,0)

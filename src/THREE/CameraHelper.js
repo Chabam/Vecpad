@@ -19,4 +19,13 @@ export default class CameraWrapper {
 		this.THREECamera.aspect = ratio;
 		this.THREECamera.updateProjectionMatrix();
 	}
+
+	reset = () => this.focusOnCoords(new THREE.Vector3(0, 0, 0));
+
+	focusOnCoords = (coords) => {
+		this.THREECamera.position.copy(coords);
+		this.THREECamera.position.z -= 3;
+		this.THREEControls.target.copy(coords);
+		this.THREEControls.update();
+	}
 }

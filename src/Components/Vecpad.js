@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import THREEHelper from '../THREE/THREEHelper';
 import Visualizer from './Visualizer';
 import Toolbar from './Toolbar';
 import Modal from './Modal';
-import SelectionEditor from './SelectionEditor';
-import ObjectInfo from './ObjectInfo';
 import ObjectCreator from './ObjectCreator';
-import THREEHelper from '../THREE/THREEHelper';
+import SelectionEditor from './SelectionEditor';
+import Sidebar from './Sidebar';
+import ObjectList from './ObjectList';
 
 /*
 	This is the instance of the application, it is the only component that will
@@ -49,19 +50,21 @@ export default class Vecpad extends Component {
 						updateDisplayMode={THREEHelper.setDisplayMode}
 						groundSize={THREEHelper.groundSize}
 						updateGround={THREEHelper.updateGround}
-						addObject={this.openObjectModal}>
-					</Toolbar>
-					<Visualizer initializeTHREE={THREEHelper.init}></Visualizer>
+						addObject={this.openObjectModal}
+						resetCamera={THREEHelper.resetCamera}
+					/>
+					<Visualizer initializeTHREE={THREEHelper.init}/>
 				</div>
-				<nav id="sidebar">
-					<div id="object-list">
-						{this.renderObjectList()}
-					</div>
-					{THREEHelper.selectedObject &&
-						<SelectionEditor object={THREEHelper.selectedObject}></SelectionEditor>
-					}
-				</nav>
-				<Modal title={modalTitle} content={modalContent} closeModal={this.closeModal}></Modal>
+				<Sidebar>
+					<ObjectList
+						objectList={THREEHelper.objectList}
+						selectObject={THREEHelper.applySelectionOnID}
+						removeObject={THREEHelper.removeObjectById}
+						focusObject={THREEHelper.focusOnObjectID}/>
+						{THREEHelper.selectedObject &&
+						<SelectionEditor object={THREEHelper.selectedObject}/>}
+				</Sidebar>
+				<Modal title={modalTitle} closeModal={this.closeModal}>{modalContent}</Modal>
 			</div>
 		);
 	}
@@ -82,18 +85,4 @@ export default class Vecpad extends Component {
 		modalTitle: null,
 		modalContent: null
 	}));
-
-	renderObjectList = () => {
-		let { THREEHelper } = this.state;
-		return THREEHelper.objectList.map((object) =>
-			<ObjectInfo
-				key={object.id}
-				id={object.id}
-				name={object.name}
-				type={object.type}
-				selectObject={THREEHelper.applySelectionOnID}
-				removeObject={THREEHelper.removeObjectById}>
-			</ObjectInfo>
-		);
-	}
 }
