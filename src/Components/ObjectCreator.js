@@ -18,6 +18,8 @@ export default class ObjectCreator extends Component {
 		this.state = {
 			ObjectType: null
 		}
+		this.sceneHelper = props.sceneHelper;
+		this.closeModal = props.closeModal;
 	}
 
 	render() {
@@ -59,7 +61,7 @@ export default class ObjectCreator extends Component {
 		switch(objectType) {
 			case ObjectCreator.ObjectType.Vector:
 				return (
-					<form onSubmit={this.callAddVector}>
+					<form onSubmit={this.createVector}>
 						{name}
 						<CoordinatesPicker name="Origin"></CoordinatesPicker>
 						<CoordinatesPicker name="Direction" defaultX={1} defaultY={1} defaultZ={1}></CoordinatesPicker>
@@ -73,7 +75,7 @@ export default class ObjectCreator extends Component {
 				);
 			case ObjectCreator.ObjectType.Triangle:
 			return (
-				<form onSubmit={this.callAddTriangle}>
+				<form onSubmit={this.createTriangle}>
 					{name}
 					<CoordinatesPicker name="Origin"></CoordinatesPicker>
 					<InputGroup name="Width" id="width">
@@ -86,7 +88,7 @@ export default class ObjectCreator extends Component {
 			);
 			case ObjectCreator.ObjectType.Quad:
 			return (
-				<form onSubmit={this.callAddQuad}>
+				<form onSubmit={this.createQuad}>
 					{name}
 					<CoordinatesPicker name="Origin"></CoordinatesPicker>
 					<InputGroup name="Width" id="width">
@@ -102,7 +104,7 @@ export default class ObjectCreator extends Component {
 			);
 			case ObjectCreator.ObjectType.Cube:
 			return (
-				<form onSubmit={this.callAddCube}>
+				<form onSubmit={this.createCube}>
 					{name}
 					<CoordinatesPicker name="Origin"></CoordinatesPicker>
 					<InputGroup name="Width" id="width">
@@ -124,7 +126,7 @@ export default class ObjectCreator extends Component {
 		}
 	}
 
-	callAddVector = (event) => {
+	createVector = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		let name = data.get('name');
@@ -140,11 +142,11 @@ export default class ObjectCreator extends Component {
 		).normalize();
 		let magnitude = parseFloat(data.get('magnitude'));
 		let color = parseInt(data.get('color'));
-		this.props.addVector(origin, direction, magnitude, color, name);
-		this.props.closeModal();
+		this.sceneHelper.addVector(origin, direction, magnitude, color, name);
+		this.closeModal();
 	}
 
-	callAddTriangle = (event) => {
+	createTriangle = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		let name = data.get('name');
@@ -156,11 +158,11 @@ export default class ObjectCreator extends Component {
 		let width = parseFloat(data.get('width'));
 		let outlineColor = parseInt(data.get('outline-color'));
 		let fillColor = parseInt(data.get('fill-color'));
-		this.props.addTriangle(origin, width, fillColor, outlineColor, name);
-		this.props.closeModal();
+		this.sceneHelper.addTriangle(origin, width, fillColor, outlineColor, name);
+		this.closeModal();
 	}
 
-	callAddQuad = (event) => {
+	createQuad = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		let name = data.get('name');
@@ -173,11 +175,11 @@ export default class ObjectCreator extends Component {
 		let height = parseFloat(data.get('height'));
 		let outlineColor = parseInt(data.get('outline-color'));
 		let fillColor = parseInt(data.get('fill-color'));
-		this.props.addQuad(origin, width, height, fillColor, outlineColor, name);
-		this.props.closeModal();
+		this.sceneHelper.addQuad(origin, width, height, fillColor, outlineColor, name);
+		this.closeModal();
 	}
 
-	callAddCube = (event) => {
+	createCube = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		let name = data.get('name');
@@ -191,8 +193,8 @@ export default class ObjectCreator extends Component {
 		let depth = parseFloat(data.get('depth'));
 		let outlineColor = parseInt(data.get('outline-color'));
 		let fillColor = parseInt(data.get('fill-color'));
-		this.props.addCube(origin, width, height, depth, fillColor, outlineColor, name);
-		this.props.closeModal();
+		this.sceneHelper.addCube(origin, width, height, depth, fillColor, outlineColor, name);
+		this.closeModal();
 	}
 
 }

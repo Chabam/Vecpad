@@ -1,9 +1,7 @@
 import RendererHelper from './RendererHelper';
 import CameraHelper from './CameraHelper';
 import SceneHelper from './SceneHelper';
-import ObjectHelper from './ObjectHelper';
 import * as THREE from 'three';
-import Translation from '../Transformations/Translation';
 
 /*
 	This is probably the most important object within Vecpad. It is a sort of
@@ -11,26 +9,15 @@ import Translation from '../Transformations/Translation';
 */
 export default class THREEHelper {
 
-	/*
-		These represent the different display mode :
-			- FILL will show the objects with a lambertian material without outline.
-			- OUTLINE will show only the outline of the objects, meaning we can see through it.
-			- BOTH is the combination of the two previous ones.
-	*/
-	static DisplayMode = {
-		FILL: 0,
-		OUTLINE: 1,
-		BOTH: 2
-	}
-
 	constructor(reactUpdateFunc) {
-		this.rendererHelper = new RendererHelper();
-		this.cameraHelper = new CameraHelper();
-		this.sceneHelper = new SceneHelper();
-
 		// IMPORTANT!
-		// This function is used to tell React to update its state, be sure to use it everytime THREEHelper changes!
+		// This function is used to tell React to update its state, be sure to use it everytime THREEHelper
+		// (or another helpers) changes!
 		this.updateReact = () => reactUpdateFunc(this);
+
+		this.rendererHelper = new RendererHelper(this.updateReact);
+		this.cameraHelper = new CameraHelper(this.updateReact);
+		this.sceneHelper = new SceneHelper(this.updateReact);
 
 		// The raycaster is used to select objects using rays.
 		this.rayCaster = new THREE.Raycaster();
@@ -41,17 +28,6 @@ export default class THREEHelper {
 		this.sidebarElement = null;
 		this.height = 0;
 		this.width = 0;
-
-		// Information on the grid at Y=0 that act as a reference for our scene.
-		this.groundSize = 2;
-		this.ground = ObjectHelper.createGround(this.groundSize);
-		this.sceneHelper.THREEScene.ground = this.ground;
-		this.sceneHelper.addObject(this.ground);
-
-		// The information on the state of our application.
-		this.currentDisplayMode = THREEHelper.DisplayMode.BOTH;
-		this.objectList = this.sceneHelper.getObjectList();
-		this.selectedObject = null;
 	}
 
 	// The function used to create our THREE.js context with all the required elements.
@@ -94,12 +70,6 @@ export default class THREEHelper {
 		}
 	}
 
-	resetCamera = () => this.cameraHelper.reset();
-
-	focusOnObjectID = (id) => this.focusOnObject(this.getObjectById(id));
-
-	focusOnObject = (object) => this.cameraHelper.focusOnCoords(object.position);
-
 	// Our draw function.
 	renderLoop = () => {
 		requestAnimationFrame(this.renderLoop);
@@ -118,226 +88,30 @@ export default class THREEHelper {
 		this.rayCaster.setFromCamera(mouseNormalizedCoords, this.cameraHelper.THREECamera);
 		let intersects = this.rayCaster.intersectObjects(
 			// We exclude the ground since there is no use to select it.
-			this.sceneHelper.THREEScene.children.filter((object) => object !== this.ground)
+			this.sceneHelper.getVecpadObjectList()
 		);
 
+		let { selectedObject } = this.sceneHelper;
 		// If we have a collision.
 		if (intersects.length > 0) {
 			let [closestIntersection] = intersects;
 			let object = closestIntersection.object;
 
 			// If the collision is not the same object we already selected.
-			if (this.selectedObject !== object) {
+			if (selectedObject !== object) {
 
 				// If we previously selected an object we deselect it.
-				if (this.selectedObject) {
-					this.deselectObject();
+				if (selectedObject) {
+					selectedObject.deselect();
 				}
 
 				// Then we select the object.
-				this.applySelectionOnObject(object);
+				object.select();
+				this.sceneHelper.selectObject(object);
 			}
-		} else if (this.selectedObject) {
+		} else if (selectedObject) {
 			// If we have no collision and a previously selected object we deselect it.
-			this.deselectObject();
-			this.selectedObject = null;
-			this.updateReact();
+			this.sceneHelper.deselectObject();
 		}
 	}
-
-	applySelectionOnID = (id) => {
-		if (this.selectedObject) {
-			this.deselectObject();
-			this.selectedObject = null;
-		}
-
-		this.applySelectionOnObject(this.getObjectById(id));
-	};
-
-	// This function stores the object we collided with and displays it accordingly.
-	applySelectionOnObject = (object) => {
-		this.selectedObject = object;
-		this.selectedObject.label.element.classList.add('selected');
-		const selectedColor = 0xffa500;
-		const selectedWidth = 2;
-
-		if (object.type === 'Vector') {
-			let {arrow, material} = this.selectedObject;
-			this.selectedObject.previousColor = material.color.getHex();
-			material.color.setHex(selectedColor);
-			material.linewidth = selectedWidth;
-			arrow.material.color.setHex(selectedColor);
-			material.depthTest = false;
-			arrow.material.depthTest = false;
-		} else {
-			let selection = new THREE.LineSegments(this.selectedObject.outline.geometry, new THREE.LineBasicMaterial({
-				depthTest: false,
-				color: selectedColor,
-				linewidth: selectedWidth
-			}));
-			this.selectedObject.selection = selection;
-			this.selectedObject.add(selection);
-		}
-		this.updateReact();
-	}
-
-	// This function is the inverse of applySelectionOnObject
-	deselectObject = () => {
-		this.selectedObject.label.element.classList.remove('selected');
-		const unselectedWidth = 1;
-
-		if (this.selectedObject.type === 'Vector') {
-			let {arrow, material, previousColor} = this.selectedObject;
-			material.color.setHex(previousColor);
-			material.linewidth = unselectedWidth;
-			arrow.material.color.setHex(previousColor);
-			material.depthTest = true;
-			arrow.material.depthTest = true;
-		} else {
-			this.selectedObject.remove(this.selectedObject.selection);
-			this.selectedObject.selection = null;
-		}
-	}
-
-	// Function used to add object to the scene and to the object list.
-	addObject = (origin, object) => {
-		object.position.copy(origin);
-		object.originalMatrix = object.matrix.clone();
-		object.transformations = [];
-		object.removeTransformation = (uuid) => {
-			object.transformations = object.transformations.filter((trans) => trans.uuid !== uuid);
-			this.updateReact();
-		}
-		this.sceneHelper.addObject(object);
-		this.updateObjectList();
-		this.updateReact();
-	}
-
-
-	addTranslationByID = (id, x, y, z) => this.addTransformationToObject(
-		this.getObjectById(id),
-		new Translation(x, y, z)
-	);
-
-	addTransformationToObject = (object, transformation) => {
-		object.transformations.push(transformation);
-		this.updateReact();
-	}
-
-	applyTransformationStepOnObjectByID = (id, transformationUUID, step) => {
-		let object = this.getObjectById(id);
-		let transformation = this.getTransformationByUUID(object, transformationUUID);
-		transformation.currentStep = step;
-		this.applyTransformationOnObject(object);
-	}
-
-	applyTransformationOnObject = (object) => {
-		object.matrix.copy(object.originalMatrix);
-		let transformations = object.transformations.reduce((matrix, trans) =>
-			matrix.multiply(trans.getMatrix()), new THREE.Matrix4()
-		);
-		object.applyMatrix(transformations);
-		this.updateReact();
-	}
-
-	removeTransformationFromObjectByID = (id, transformationUUID) => this.removeTransformationFromObject(
-		this.getObjectById(id),
-		transformationUUID
-	);
-
-	removeTransformationFromObject = (object, transformationUUID) => {
-		object.transformations = object.transformation.filter((trans) => trans.uuid !== transformationUUID);
-		this.applyTransformationOnObject(object);
-	}
-
-	removeObjectById = (id) => this.removeObject(this.getObjectById(id));
-
-	// Inverse function of addObject.
-	removeObject = (object) => {
-		// We have to check if we deleted our selection!
-		if (this.selectedObject && object.id === this.selectedObject.id) {
-			this.selectedObject = null;
-		}
-
-		this.sceneHelper.removeObject(object);
-		this.updateObjectList();
-		this.updateReact();
-	}
-
-	// These functions are used to add certain type of objects to the scene.
-
-	addVector = (origin, direction, magnitude, color, label) => {
-		let vector = ObjectHelper.createVector(
-			direction,
-			magnitude,
-			color,
-			label
-		);
-		this.addObject(origin, vector);
-	}
-
-	addTriangle = (origin, sideWidth, color, outlineColor, label) => {
-		let triangle = ObjectHelper.createTriangle(
-			sideWidth,
-			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label);
-		this.addObject(origin, triangle);
-	}
-
-	addQuad = (origin, width, height, color, outlineColor, label) => {
-		let quad = ObjectHelper.createQuad(
-			width,
-			height,
-			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label);
-		this.addObject(origin, quad);
-	}
-
-	addCube = (origin, width, height, depth, color, outlineColor, label) => {
-		let cube = ObjectHelper.createCube(
-			width,
-			height,
-			depth,
-			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label);
-		this.addObject(origin, cube);
-	}
-
-	updateObjectList = () => this.objectList = this.sceneHelper.getObjectList();
-
-	// A function used to change the size of the grid at Y=0
-	updateGround = (size) => {
-		if (size === this.groundSize) {
-			return;
-		}
-
-		this.sceneHelper.removeObject(this.ground);
-		this.groundSize = size;
-		this.ground = ObjectHelper.createGround(this.groundSize);
-		this.sceneHelper.addObject(this.ground);
-		this.updateReact();
-	};
-
-	// This function update the way the object are rendred according the display mode.
-	setDisplayMode = (mode) => {
-		if (mode === this.currentDisplayMode) {
-			return;
-		}
-
-		this.currentDisplayMode = mode;
-
-		// We then need to update the objects.
-		this.sceneHelper.applyDisplayMode(this.currentDisplayMode, this.ground);
-		this.updateReact();
-	}
-
-	getObjectById = (id) => this.sceneHelper.getObjectById(id);
-
-	getTransformationByUUID = (object, UUID) => object.transformations.find((trans) => trans.uuid === UUID);
 }

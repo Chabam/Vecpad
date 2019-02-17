@@ -1,14 +1,13 @@
 import React from 'react';
 import ObjectInfo from './ObjectInfo';
 
-const ObjectList = ({objectList, selectObject, focusObject, removeObject}) => {
+const ObjectList = ({objectList, THREEHelper, sceneHelper}) => {
 	let objects = objectList.map((object, i) => (
 		<ObjectInfo
 			key={i}
 			object={object}
-			focusObject={focusObject}
-			selectObject={selectObject}
-			removeObject={removeObject}
+			selectObject={THREEHelper.selectObject}
+			removeObject={sceneHelper.removeObject}
 		/>
 	));
 

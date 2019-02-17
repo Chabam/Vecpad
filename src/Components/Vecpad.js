@@ -43,30 +43,27 @@ export default class Vecpad extends Component {
 
 	render() {
 		const { THREEHelper, modalTitle, modalContent } = this.state;
+		const { sceneHelper, cameraHelper } = THREEHelper;
 		return (
 			<div id="vecpad-container">
 				<div id="visualizer-container">
 					<Toolbar
-						displayMode={THREEHelper.currentDisplayMode}
-						updateDisplayMode={THREEHelper.setDisplayMode}
-						groundSize={THREEHelper.groundSize}
-						updateGround={THREEHelper.updateGround}
-						addObject={this.openObjectModal}
-						resetCamera={THREEHelper.resetCamera}
+						sceneHelper={sceneHelper}
+						cameraHelper={cameraHelper}
+						openModal={this.openObjectModal}
 					/>
-					<Visualizer initializeTHREE={THREEHelper.init}/>
+					<Visualizer/>
 				</div>
 				<Sidebar>
 					<ObjectList
-						objectList={THREEHelper.objectList}
-						selectObject={THREEHelper.applySelectionOnID}
-						removeObject={THREEHelper.removeObjectById}
-						focusObject={THREEHelper.focusOnObjectID}/>
-						{THREEHelper.selectedObject &&
+						objectList={sceneHelper.getVecpadObjectList()}
+						sceneHelper={sceneHelper}
+						THREEHelper={THREEHelper}/>
+						{sceneHelper.selectedObject &&
 						<SelectionEditor
-							object={THREEHelper.selectedObject}
+							object={sceneHelper.selectedObject}
+							cameraHelper={cameraHelper}
 							openTransformationModal={this.openTransformationModal}
-							applyTransformation={THREEHelper.applyTransformationStepOnObjectByID}
 						/>}
 				</Sidebar>
 				<Modal title={modalTitle} closeModal={this.closeModal}>{modalContent}</Modal>
@@ -74,24 +71,23 @@ export default class Vecpad extends Component {
 		);
 	}
 
-	openObjectModal = () => this.setState((state) => ({
-		...state,
-		modalTitle: 'Create an object',
-		modalContent: <ObjectCreator
-			addVector={state.THREEHelper.addVector}
-			addTriangle={state.THREEHelper.addTriangle}
-			addQuad={state.THREEHelper.addQuad}
-			addCube={state.THREEHelper.addCube}
-			closeModal={this.closeModal}
-		/>
-	}));
+	openObjectModal = () => this.setState((state) => {
+		let { sceneHelper } = state.THREEHelper;
+		return {
+			...state,
+			modalTitle: 'Create an object',
+			modalContent: <ObjectCreator
+				sceneHelper={sceneHelper}
+				closeModal={this.closeModal}
+			/>
+		};
+	});
 
-	openTransformationModal = (id) => this.setState((state) => ({
+	openTransformationModal = (object) => this.setState((state) => ({
 		...state,
-		modalTitle: 'Create an object',
+		modalTitle: 'Create a transformation',
 		modalContent: <TransformationCreator
-			id={id}
-			addTranslation={state.THREEHelper.addTranslationByID}
+			object={object}
 			closeModal={this.closeModal}
 		/>
 	}));

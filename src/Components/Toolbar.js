@@ -1,5 +1,5 @@
 import React from 'react';
-import THREEHelper from '../THREE/THREEHelper'
+import SceneHelper from '../THREE/SceneHelper'
 import logo from '../Images/logo.svg'
 import InputGroup from './InputGroup';
 
@@ -7,9 +7,10 @@ import InputGroup from './InputGroup';
 	This component will be used to control common settings of the application.
 	For exemple: the display mode, adding an object, undo and redo, etc.
 */
-const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize, addObject, resetCamera}) => {
-	const callUpdateDisplayMode = (event) => updateDisplayMode(parseInt(event.target.value));
-
+const Toolbar = ({sceneHelper, cameraHelper, openModal}) => {
+	let { reset } = cameraHelper;
+	let { applyDisplayMode, updateGround } = sceneHelper;
+	const callApplyDisplayMode = (event) => applyDisplayMode(parseInt(event.target.value));
 	const callUpdateGround = (event) => updateGround(parseInt(event.target.value));
 
 	return (
@@ -19,28 +20,28 @@ const Toolbar = ({updateDisplayMode, updateGround, displayMode, groundSize, addO
 			</div>
 			<div>
 				<InputGroup name='Display Mode' id='display-mode'>
-					<select name='display-mode' onChange={callUpdateDisplayMode} defaultValue={displayMode}>
-						<option value={THREEHelper.DisplayMode.OUTLINE}>
+					<select name='display-mode' onChange={callApplyDisplayMode} defaultValue={sceneHelper.currentDisplayMode}>
+						<option value={SceneHelper.DisplayMode.OUTLINE}>
 							Outline
 						</option>
-						<option value={THREEHelper.DisplayMode.FILL}>
+						<option value={SceneHelper.DisplayMode.FILL}>
 							Fill
 						</option>
-						<option value={THREEHelper.DisplayMode.BOTH}>
+						<option value={SceneHelper.DisplayMode.BOTH}>
 							Both
 						</option>
 					</select>
 				</InputGroup>
 			</div>
 			<div>
-				<button onClick={addObject}>Add an object</button>
+				<button onClick={openModal}>Add an object</button>
 			</div>
 			<div>
-				<button onClick={resetCamera}>Reset camera</button>
+				<button onClick={reset}>Reset camera</button>
 			</div>
 			<div>
-				<InputGroup name={`Ground size (${groundSize})`} id='ground-size'>
-					<input name='ground-size' type="range" min="2" max="100" step="2" onChange={callUpdateGround} value={groundSize}/>
+				<InputGroup name={`Ground size (${sceneHelper.THREEScene.ground.size})`} id='ground-size'>
+					<input name='ground-size' type="range" min="2" max="100" step="2" onChange={callUpdateGround} value={sceneHelper.THREEScene.ground.size}/>
 				</InputGroup>
 			</div>
 		</nav>

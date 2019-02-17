@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import CoordinatesPicker from './CoordinatesPicker';
 import InputGroup from './InputGroup';
-import * as THREE from 'three';
 
 export default class TransformationCreator extends Component {
 
@@ -15,6 +14,8 @@ export default class TransformationCreator extends Component {
 		this.state = {
 			transformationType: null
 		}
+		this.object = props.object;
+		this.closeModal = props.closeModal;
 	}
 
 	render() {
@@ -65,13 +66,12 @@ export default class TransformationCreator extends Component {
 		event.preventDefault();
 		const data = new FormData(event.target);
 
-		this.props.addTranslation(
-			this.props.id,
+		this.object.addTranslation(
 			parseFloat(data.get('direction-x')),
 			parseFloat(data.get('direction-y')),
 			parseFloat(data.get('direction-z'))
 		);
-		this.props.closeModal();
+		this.closeModal();
 	}
 
 }

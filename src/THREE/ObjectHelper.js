@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CSS2DObject } from './Extras/CSS2DRenderer';
 import THREEHelper from './THREEHelper';
+import Translation from '../Transformations/Translation'
 
 /*
 	This object is used to create different type of objects. All the functions are static
@@ -17,8 +18,10 @@ export default class ObjectHelper {
 			console.warn(`The ground has to be divisible by two, you provided ${subdivision}. It will be changed to ${subdivision + 1}.`)
 			subdivision = subdivision + 1;
 		}
+		let ground = new THREE.GridHelper(subdivision, subdivision)
+		ground.size = subdivision;
 
-		return new THREE.GridHelper(subdivision, subdivision);
+		return ground;
 	}
 
 	// Our vector is composed of a line and a cone.
@@ -143,6 +146,87 @@ export default class ObjectHelper {
 		object.add(objectOutlines);
 
 		ObjectHelper.applyLabelOnObject(object, label);
+
+		return object;
+	}
+
+	static addVecpadUtilities = (object, reactUpdateFunc) => {
+		object.originalMatrix = object.matrix.clone();
+		object.transformations = [];
+
+		object.callback = () => {};
+
+		object.registerCallback = (func) => object.callback = (changedObject) => func(changedObject)
+
+		object.unregisterCallback = () => object.callback = () => {};
+
+		object.applyTransformations = () => {
+			object.matrix.copy(object.originalMatrix);
+			let transMatrix = object.transformations.reduce((matrix, trans) =>
+				matrix.multiply(trans.getMatrix()), new THREE.Matrix4()
+			);
+			object.applyMatrix(transMatrix);
+			object.callback(object);
+			reactUpdateFunc();
+		}
+
+		object.addTransformation = (transformation) => {
+			transformation.update = (step) => {
+				transformation.currentStep = step;
+				object.applyTransformations();
+			}
+			object.transformations.push(transformation);
+		}
+
+		object.addTranslation = (x, y, z) => object.addTransformation(new Translation(x, y, z));
+
+		object.removeTransformation = (transformation) => {
+			object.transformations = object.transformations.filter((trans) => trans !== transformation);
+			object.applyTransformations();
+			reactUpdateFunc();
+		}
+
+		object.select = () => {
+			object.label.element.classList.add('selected');
+			const selectedColor = 0xffa500;
+			const selectedWidth = 2;
+
+			if (object.type === 'Vector') {
+				let {arrow, material} = object;
+				object.originalColor = material.color.getHex();
+				material.color.setHex(selectedColor);
+				material.linewidth = selectedWidth;
+				arrow.material.color.setHex(selectedColor);
+				material.depthTest = false;
+				arrow.material.depthTest = false;
+			} else {
+				let selection = new THREE.LineSegments(object.outline.geometry, new THREE.LineBasicMaterial({
+					depthTest: false,
+					color: selectedColor,
+					linewidth: selectedWidth
+				}));
+				object.selection = selection;
+				object.add(selection);
+			}
+		}
+
+		object.deselect = () => {
+			object.label.element.classList.remove('selected');
+			const unselectedWidth = 1;
+
+			if (object.type === 'Vector') {
+				let { arrow, material, originalColor} = object;
+				material.color.setHex(originalColor);
+				material.linewidth = unselectedWidth;
+				arrow.material.color.setHex(originalColor);
+				material.depthTest = true;
+				arrow.material.depthTest = true;
+				delete object.originalColor;
+			} else {
+				object.remove(object.selection);
+				delete object.selection;
+			}
+		}
 
 		return object;
 	}

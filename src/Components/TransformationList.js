@@ -1,12 +1,11 @@
 import React from 'react';
 import TransformationInfo from './TransformationInfo';
 
-const TransformationList = ({transformationList, applyTransformation, removeTransformation}) => {
+const TransformationList = ({transformationList, removeTransformation}) => {
 	let transformations = transformationList.map((transformation, i) => (
 		<TransformationInfo
 			key={i}
 			transformation={transformation}
-			applyTransformation={applyTransformation}
 			removeTransformation={removeTransformation}
 		/>
 	));
