@@ -175,6 +175,7 @@ export default class ObjectHelper {
 				matrix.multiply(trans.getMatrix()), new THREE.Matrix4()
 			);
 			object.applyMatrix(transMatrix);
+			ObjectHelper.computeLabelPosition(object);
 			object.callback(object);
 			reactUpdateFunc();
 		}
@@ -281,19 +282,31 @@ export default class ObjectHelper {
 		// The default name when the text is empty is "Object" post-fixed with it's ID.
 		object.name = text || `Object #${object.id}`;
 		let labelObject = ObjectHelper.createLabel(object.name);
+		labelObject.matrixAutoUpdate = false;
 
+		object.label = labelObject;
+		object.add(labelObject);
+
+		ObjectHelper.computeLabelPosition(object);
+	}
+
+	static computeLabelPosition = (object) => {
 		/*
 			To set the positions of the label, we set it at the highest point in the Y axis
 			and the average of the X and Z axis.
 		*/
-		let vertices = object.geometry.vertices;
-		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length
-		let x = average(vertices.map((elem) => elem.x));
-		let z = average(vertices.map((elem) => elem.z));
-		let y = Math.max(...vertices.map((elem) => elem.y)) + 0.25;
-		labelObject.position.set(x, y, z);
+		let worldPositions = object.geometry.vertices.map((vertex) => {
+			return vertex.clone().applyMatrix4(object.matrix);
+		});
 
-		object.label = labelObject;
-		object.add(labelObject);
+		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length;
+
+		let x = average(worldPositions.map((elem) => elem.x));
+		let y = Math.max(...worldPositions.map((elem) => elem.y)) + 0.25;
+		let z = average(worldPositions.map((elem) => elem.z));
+
+		let translationToPos = new THREE.Matrix4().makeTranslation(x, y, z);
+		object.label.matrix.copy(new THREE.Matrix4());
+		object.label.applyMatrix(new THREE.Matrix4().getInverse(object.matrix, false).multiply(translationToPos));
 	}
 }
