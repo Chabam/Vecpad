@@ -1,4 +1,5 @@
 import React from 'react';
+import InputGroup from './InputGroup';
 
 /*
 	This component will show the specific details of a transformation.
@@ -19,6 +20,8 @@ const TransformationInfo = ({transformation, removeTransformation}) => {
 					value={transformation.currentStep}/>
 				<p>100</p>
 			</div>
+			<button onClick={transformation.prioritize}>&uarr;</button>
+			<button onClick={transformation.deprioritize}>&darr;</button>
 			<button onClick={() => removeTransformation(transformation)}>Remove</button>
 		</div>
 	);

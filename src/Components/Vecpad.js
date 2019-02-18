@@ -57,8 +57,7 @@ export default class Vecpad extends Component {
 				<Sidebar>
 					<ObjectList
 						objectList={sceneHelper.getVecpadObjectList()}
-						sceneHelper={sceneHelper}
-						THREEHelper={THREEHelper}/>
+						sceneHelper={sceneHelper}/>
 						{sceneHelper.selectedObject &&
 						<SelectionEditor
 							object={sceneHelper.selectedObject}

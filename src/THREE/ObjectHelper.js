@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import { CSS2DObject } from './Extras/CSS2DRenderer';
 import THREEHelper from './THREEHelper';
-import Translation from '../Transformations/Translation'
+import Translation from '../Transformations/Translation';
+import Scale from '../Transformations/Scale';
+import Rotation from '../Transformations/Rotation';
+import Shear from '../Transformations/Shear';
 
 /*
 	This object is used to create different type of objects. All the functions are static
@@ -48,11 +51,14 @@ export default class ObjectHelper {
 		}));
 		arrow.position.copy(destination);
 
+		let rotationAxis;
+		let rotationAngle;
 		// This code section aligns the vector object to the direction.
 		// If the vector we are trying to align to is exactly the opposite of our up vector
 		if (direction.equals(new THREE.Vector3(0, -1, 0))) {
 			// We just flip the vector upside down
-			vectorObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI)
+			rotationAxis = new THREE.Vector3(1, 0, 0);
+			rotationAngle = Math.PI;
 		} else {
 			/*
 				Otherwise we do the following:
@@ -60,10 +66,12 @@ export default class ObjectHelper {
 					Rotation angle = arccos(V1 * V2)
 					Rotate the vector with the previous values.
 			*/
-			let rotationAxis = up.clone().cross(direction).normalize();
-			let rotationAngle = Math.acos(up.dot(direction));
-			vectorObject.rotateOnAxis(rotationAxis, rotationAngle);
+			rotationAxis = up.clone().cross(direction).normalize();
+			rotationAngle = Math.acos(up.dot(direction));
 		}
+
+		let rotationMatrix = new THREE.Matrix4().makeRotationAxis(rotationAxis, rotationAngle);
+		vectorObject.applyMatrix(rotationMatrix);
 
 		vectorObject.arrow = arrow;
 		vectorObject.add(arrow);
@@ -175,15 +183,42 @@ export default class ObjectHelper {
 				transformation.currentStep = step;
 				object.applyTransformations();
 			}
+
+			transformation.prioritize = () => {
+				let currentIndex = object.transformations.indexOf(transformation);
+				if (currentIndex !== 0) {
+					object.swapTransformations(currentIndex, currentIndex - 1);
+				}
+			}
+
+			transformation.deprioritize = () => {
+				let currentIndex = object.transformations.indexOf(transformation);
+				if (currentIndex !== object.transformations.length - 1) {
+					object.swapTransformations(currentIndex, currentIndex + 1);
+				}
+			}
+
 			object.transformations.push(transformation);
+			object.applyTransformations();
 		}
 
 		object.addTranslation = (x, y, z) => object.addTransformation(new Translation(x, y, z));
+
+		object.addScale = (x, y, z) => object.addTransformation(new Scale(x, y, z));
+
+		object.addShear = (x, y, z) => object.addTransformation(new Shear(x, y, z));
+
+		object.addRotation = (axis, angle) => object.addTransformation(new Rotation(axis, angle));
 
 		object.removeTransformation = (transformation) => {
 			object.transformations = object.transformations.filter((trans) => trans !== transformation);
 			object.applyTransformations();
 			reactUpdateFunc();
+		}
+
+		object.swapTransformations = (i, j) => {
+			[object.transformations[i], object.transformations[j]] = [object.transformations[j], object.transformations[i]];
+			object.applyTransformations();
 		}
 
 		object.select = () => {

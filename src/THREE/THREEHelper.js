@@ -102,11 +102,10 @@ export default class THREEHelper {
 
 				// If we previously selected an object we deselect it.
 				if (selectedObject) {
-					selectedObject.deselect();
+					this.sceneHelper.deselectObject();
 				}
 
 				// Then we select the object.
-				object.select();
 				this.sceneHelper.selectObject(object);
 			}
 		} else if (selectedObject) {
