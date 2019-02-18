@@ -12,9 +12,9 @@ export default class Scale extends Transformation {
 
 	getMatrix = () => {
 		return new THREE.Matrix4().makeScale(
-			this.x * this.currentStep,
-			this.y * this.currentStep,
-			this.z * this.currentStep
+			1 + (this.x - 1) * this.currentStep,
+			1 + (this.y - 1) * this.currentStep,
+			1 + (this.z - 1) * this.currentStep
 		);
 	}
 }

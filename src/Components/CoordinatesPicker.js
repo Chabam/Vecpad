@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CoordinatesPicker = ({name, defaultX=0, defaultY=0, defaultZ=0}) => {
-	const id = name.toLowerCase();
+	const id = name.toLowerCase().replace(' ', '-');
 	const names = {
 		x: `${id}-x`,
 		y: `${id}-y`,

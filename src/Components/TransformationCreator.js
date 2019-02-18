@@ -64,7 +64,24 @@ export default class TransformationCreator extends Component {
 			case TransformationCreator.TransformationType.Shear:
 				return (
 					<form onSubmit={this.createShear}>
-						<CoordinatesPicker name="Amount" defaultX={0} defaultY={0} defaultZ={0}/>
+						<InputGroup name="Amount of X moved by Y" id="amount-xy">
+							<input name="amount-xy" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
+						<InputGroup name="Amount of X moved by Z" id="amount-xz">
+							<input name="amount-xz" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
+						<InputGroup name="Amount of Y moved by X" id="amount-yx">
+							<input name="amount-yx" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
+						<InputGroup name="Amount of Y moved by Z" id="amount-yz">
+							<input name="amount-yz" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
+						<InputGroup name="Amount of Z moved by X" id="amount-zx">
+							<input name="amount-zx" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
+						<InputGroup name="Amount of Z moved by Y" id="amount-zy">
+							<input name="amount-zy" type="number" step={0.01} defaultValue={0} required/>
+						</InputGroup>
 						<button type="submit">Add</button>
 					</form>
 				);
@@ -81,7 +98,7 @@ export default class TransformationCreator extends Component {
 						<CoordinatesPicker name="Axis" defaultX={0} defaultY={0} defaultZ={0}/>
 						<small>* Note that the axis will be normalized</small>
 						<InputGroup name="Angle" id="angle">
-							<input name="angle" type="number" step={0.01} required/>
+							<input name="angle" type="number" step={0.01} defaultValue={0} required/>
 						</InputGroup>
 						<small>* Note that the angle is in radian</small>
 						<button type="submit">Add</button>
@@ -122,9 +139,12 @@ export default class TransformationCreator extends Component {
 		const data = new FormData(event.target);
 
 		this.object.addShear(
-			parseFloat(data.get('amount-x')),
-			parseFloat(data.get('amount-y')),
-			parseFloat(data.get('amount-z'))
+			parseFloat(data.get('amount-xy')),
+			parseFloat(data.get('amount-xz')),
+			parseFloat(data.get('amount-yx')),
+			parseFloat(data.get('amount-yz')),
+			parseFloat(data.get('amount-zx')),
+			parseFloat(data.get('amount-zy'))
 		);
 		this.closeModal();
 	}

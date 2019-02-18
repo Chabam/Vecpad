@@ -26,6 +26,7 @@ export default class THREEHelper {
 		// These will help us to keep information about the DOM, especially to maintain correctly our canvas.
 		this.toolbarElement = null;
 		this.sidebarElement = null;
+		this.root = null;
 		this.height = 0;
 		this.width = 0;
 	}
@@ -34,6 +35,7 @@ export default class THREEHelper {
 	init = () => {
 		this.toolbarElement = document.getElementById('toolbar');
 		this.sidebarElement = document.getElementById('sidebar');
+		this.root = document.getElementById('root');
 		this.setDimensions();
 
 		let {THREE3DRendererDom, THREE2DRendererDom} = this.rendererHelper.init(this.width, this.height);
@@ -45,26 +47,20 @@ export default class THREEHelper {
 		// The events we are registered to.
 		window.addEventListener('resize', this.setDimensions);
 		THREE2DRendererDom.addEventListener('click', this.setSelectionFromMouse, false);
+
 		this.renderLoop();
-		this.sceneHelper.addCube(new THREE.Vector3(0,0,0), 1, 1, 1, 0xffffff, 0x000000, 'Calisse');
-		let [object] = this.sceneHelper.getVecpadObjectList();
-		object.addTranslation(1,2,3);
-		object.addShear(1,2,3);
-		object.addScale(1,2,3);
-		object.addRotation(new THREE.Vector3(1,0,0), 3);
-		this.sceneHelper.selectObject(object);
 	}
 
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
 	setDimensions = (event) => {
 		let sidebarWidth = this.sidebarElement.offsetWidth;
 		let toolbarHeight = this.toolbarElement.offsetHeight;
-		let windowWidth = window.innerWidth;
-		let windowHeight = window.innerHeight;
+		let totalWidth = this.root.offsetWidth;
+		let totalHeight = this.root.offsetHeight;
 
 		// Our sizes are defined by these calculations.
-		let width = windowWidth - sidebarWidth;
-		let height = windowHeight - toolbarHeight;
+		let width = totalWidth - sidebarWidth;
+		let height = totalHeight - toolbarHeight;
 		if (this.width !== width || this.height !== height) {
 			this.height = height;
 			this.width = width;
@@ -121,5 +117,5 @@ export default class THREEHelper {
 		}
 	}
 
-	static displayFloat = (number) => number % 1 == 0 ? number : number.toFixed(2);
+	static displayFloat = (number) => number % 1 === 0 ? number : number.toFixed(2);
 }

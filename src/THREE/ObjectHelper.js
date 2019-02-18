@@ -148,6 +148,7 @@ export default class ObjectHelper {
 	static createObject = (type, geometry, displayMode, color=0xffffff, outlineColor=0x000000, label) => {
 		let object = ObjectHelper.createMesh(geometry, displayMode, color);
 		object.type = type;
+		object.matrixAutoUpdate = false;
 
 		let objectOutlines = ObjectHelper.createOutlines(geometry, displayMode, outlineColor);
 		object.outline = objectOutlines;
@@ -206,7 +207,7 @@ export default class ObjectHelper {
 
 		object.addScale = (x, y, z) => object.addTransformation(new Scale(x, y, z));
 
-		object.addShear = (x, y, z) => object.addTransformation(new Shear(x, y, z));
+		object.addShear = (xy, xz, yx, yz, zx, zy) => object.addTransformation(new Shear(xy, xz, yx, yz, zx, zy));
 
 		object.addRotation = (axis, angle) => object.addTransformation(new Rotation(axis, angle));
 

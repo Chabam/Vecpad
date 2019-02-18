@@ -27,12 +27,16 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal, openMat
 			<InputGroup name="Follow" id="follow">
 				<input onChange={followObject} type="checkbox" id="follow"/>
 			</InputGroup>
-			<button onClick={() => openTransformationModal(object)}>Add a transformation</button>
-			<TransformationList
+			<div>
+				<button onClick={() => openTransformationModal(object)}>Add a transformation</button>
+			</div>
+			{object.transformations.length > 0 &&
+				<TransformationList
 				transformationList={object.transformations}
 				removeTransformation={object.removeTransformation}
 				openMatrixViewModal={openMatrixViewModal}
-			/>
+				/>
+			}
 		</div>
 	);
 }
