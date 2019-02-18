@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import THREEHelper from '../THREE/THREEHelper';
 
 export default class Transformation {
 	constructor() {
@@ -8,4 +9,16 @@ export default class Transformation {
 	}
 
 	getMatrix = () => new THREE.Matrix4();
+
+	viewMatrix = () => {
+		let splittedMatrix = this.getMatrix().transpose().elements
+		.map(THREEHelper.displayFloat)
+		.reduce((result, value, index, array) => {
+			if (index % 4 === 0)
+				result.push(array.slice(index, index + 4));
+			return result;
+		}, []);
+		let formarttedMatrix = splittedMatrix.map((row) => `[${row.join(',')}]`).join(',')
+		return `[${formarttedMatrix}]`;
+	}
 }

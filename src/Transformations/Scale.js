@@ -1,7 +1,7 @@
 import Transformation from "./Transformation";
 import * as THREE from 'three';
 
-export default class Translation extends Transformation {
+export default class Scale extends Transformation {
 	constructor(x, y, z) {
 		super();
 		this.name = `Scale of (${x}, ${y}, ${z})`
@@ -10,9 +10,11 @@ export default class Translation extends Transformation {
 		this.z = z;
 	}
 
-	getMatrix = () => new THREE.Matrix4().makeScale(
-		this.x * this.currentStep,
-		this.y * this.currentStep,
-		this.z * this.currentStep,
-	);
+	getMatrix = () => {
+		return new THREE.Matrix4().makeScale(
+			this.x * this.currentStep,
+			this.y * this.currentStep,
+			this.z * this.currentStep
+		);
+	}
 }

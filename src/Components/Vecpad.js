@@ -8,6 +8,7 @@ import SelectionEditor from './SelectionEditor';
 import Sidebar from './Sidebar';
 import ObjectList from './ObjectList';
 import TransformationCreator from './TransformationCreator';
+import MatrixViewer from './MatrixViewer';
 
 /*
 	This is the instance of the application, it is the only component that will
@@ -31,13 +32,15 @@ export default class Vecpad extends Component {
 	}));
 
 	componentDidMount() {
-		this.state.THREEHelper.init();
+		window.addEventListener('load', () => {
+			this.state.THREEHelper.init()
 
-		const modal = document.getElementById('modal-container');
-		window.addEventListener('click', (event) => {
-			if (event.target === modal) {
-				this.closeModal();
-			}
+			const modal = document.getElementById('modal-container');
+			window.addEventListener('click', (event) => {
+				if (event.target === modal) {
+					this.closeModal();
+				}
+			});
 		});
 	}
 
@@ -63,6 +66,7 @@ export default class Vecpad extends Component {
 							object={sceneHelper.selectedObject}
 							cameraHelper={cameraHelper}
 							openTransformationModal={this.openTransformationModal}
+							openMatrixViewModal={this.openMatrixViewModal}
 						/>}
 				</Sidebar>
 				<Modal title={modalTitle} closeModal={this.closeModal}>{modalContent}</Modal>
@@ -88,6 +92,14 @@ export default class Vecpad extends Component {
 		modalContent: <TransformationCreator
 			object={object}
 			closeModal={this.closeModal}
+		/>
+	}));
+
+	openMatrixViewModal = (transformation) => this.setState((state) => ({
+		...state,
+		modalTitle: `Details of ${transformation.name}`,
+		modalContent: <MatrixViewer
+			transformation={transformation}
 		/>
 	}));
 

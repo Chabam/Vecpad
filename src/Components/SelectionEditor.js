@@ -3,7 +3,7 @@ import TransformationList from './TransformationList';
 import InputGroup from './InputGroup';
 
 // This component will show the specific details of the currently selected object
-const SelectionEditor = ({object, cameraHelper, openTransformationModal}) => {
+const SelectionEditor = ({object, cameraHelper, openTransformationModal, openMatrixViewModal}) => {
 	let worldPositions = object.geometry.vertices.map((vertex, i) => {
 		let position = vertex.clone().applyMatrix4(object.matrixWorld);
 		let {x, y, z} = position;
@@ -31,6 +31,7 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal}) => {
 			<TransformationList
 				transformationList={object.transformations}
 				removeTransformation={object.removeTransformation}
+				openMatrixViewModal={openMatrixViewModal}
 			/>
 		</div>
 	);

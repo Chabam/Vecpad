@@ -1,7 +1,7 @@
 import Transformation from "./Transformation";
 import * as THREE from 'three';
 
-export default class Translation extends Transformation {
+export default class Rotation extends Transformation {
 	constructor(axis, angle) {
 		super();
 		let { x, y, z } = axis;

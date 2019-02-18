@@ -1,7 +1,7 @@
 import Transformation from "./Transformation";
 import * as THREE from 'three';
 
-export default class Translation extends Transformation {
+export default class Shear extends Transformation {
 	constructor(x, y, z) {
 		super();
 		this.name = `Shear of (${x}, ${y}, ${z})`

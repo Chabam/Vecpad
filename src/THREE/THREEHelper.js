@@ -46,6 +46,13 @@ export default class THREEHelper {
 		window.addEventListener('resize', this.setDimensions);
 		THREE2DRendererDom.addEventListener('click', this.setSelectionFromMouse, false);
 		this.renderLoop();
+		this.sceneHelper.addCube(new THREE.Vector3(0,0,0), 1, 1, 1, 0xffffff, 0x000000, 'Calisse');
+		let [object] = this.sceneHelper.getVecpadObjectList();
+		object.addTranslation(1,2,3);
+		object.addShear(1,2,3);
+		object.addScale(1,2,3);
+		object.addRotation(new THREE.Vector3(1,0,0), 3);
+		this.sceneHelper.selectObject(object);
 	}
 
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
@@ -113,4 +120,6 @@ export default class THREEHelper {
 			this.sceneHelper.deselectObject();
 		}
 	}
+
+	static displayFloat = (number) => number % 1 == 0 ? number : number.toFixed(2);
 }
