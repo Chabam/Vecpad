@@ -9,6 +9,7 @@ import Sidebar from './Sidebar';
 import ObjectList from './ObjectList';
 import TransformationCreator from './TransformationCreator';
 import MatrixViewer from './MatrixViewer';
+import OperationCreator from './OperationCreator';
 
 /*
 	This is the instance of the application, it is the only component that will
@@ -66,6 +67,7 @@ export default class Vecpad extends Component {
 							object={sceneHelper.selectedObject}
 							cameraHelper={cameraHelper}
 							openTransformationModal={this.openTransformationModal}
+							openOperationModal={this.openOperationModal}
 							openMatrixViewModal={this.openMatrixViewModal}
 						/>}
 				</Sidebar>
@@ -102,6 +104,19 @@ export default class Vecpad extends Component {
 			transformation={transformation}
 		/>
 	}));
+
+	openOperationModal = (vector) => this.setState((state) => {
+		let { sceneHelper } = state.THREEHelper;
+			return {
+			...state,
+			modalTitle: `Add on operation on ${vector.name}`,
+			modalContent: <OperationCreator
+				vector={vector}
+				sceneHelper={sceneHelper}
+				closeModal={this.closeModal}
+			/>
+		}
+	});
 
 	closeModal = () => this.setState((state) => ({
 		...state,

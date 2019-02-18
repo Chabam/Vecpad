@@ -63,13 +63,13 @@ export default class ObjectCreator extends Component {
 				return (
 					<form onSubmit={this.createVector}>
 						{name}
-						<CoordinatesPicker name="Origin"></CoordinatesPicker>
-						<CoordinatesPicker name="Direction" defaultX={1} defaultY={1} defaultZ={1}></CoordinatesPicker>
+						<CoordinatesPicker name="Origin"/>
+						<CoordinatesPicker name="Direction" defaultX={1} defaultY={1} defaultZ={1}/>
 						<small>* Note that the direction will be normalized</small>
 						<InputGroup name="Magnitude" id="magnitude">
 							<input required name="magnitude" type="number" defaultValue={1} step={0.01}></input>
 						</InputGroup>
-						<ColorPicker name="Color"></ColorPicker>
+						<ColorPicker name="Color"/>
 						<button type="submit">Add</button>
 					</form>
 				);
@@ -77,12 +77,12 @@ export default class ObjectCreator extends Component {
 			return (
 				<form onSubmit={this.createTriangle}>
 					{name}
-					<CoordinatesPicker name="Origin"></CoordinatesPicker>
+					<CoordinatesPicker name="Origin"/>
 					<InputGroup name="Width" id="width">
 						<input required name="width" type="number" defaultValue={1} step={0.01}></input>
 					</InputGroup>
-					<ColorPicker name="Fill Color" defaultColor={0xffffff}></ColorPicker>
-					<ColorPicker name="Outline Color"></ColorPicker>
+					<ColorPicker name="Fill Color" defaultColor={0xffffff}/>
+					<ColorPicker name="Outline Color"/>
 					<button type="submit">Add</button>
 				</form>
 			);
@@ -90,15 +90,15 @@ export default class ObjectCreator extends Component {
 			return (
 				<form onSubmit={this.createQuad}>
 					{name}
-					<CoordinatesPicker name="Origin"></CoordinatesPicker>
+					<CoordinatesPicker name="Origin"/>
 					<InputGroup name="Width" id="width">
 						<input required name="width" type="number" defaultValue={1} step={0.01}></input>
 					</InputGroup>
 					<InputGroup name="Height" id="height">
 						<input required name="height" type="number" defaultValue={1} step={0.01}></input>
 					</InputGroup>
-					<ColorPicker name="Fill Color" defaultColor={0xffffff}></ColorPicker>
-					<ColorPicker name="Outline Color"></ColorPicker>
+					<ColorPicker name="Fill Color" defaultColor={0xffffff}/>
+					<ColorPicker name="Outline Color"/>
 					<button type="submit">Add</button>
 				</form>
 			);
@@ -106,7 +106,7 @@ export default class ObjectCreator extends Component {
 			return (
 				<form onSubmit={this.createCube}>
 					{name}
-					<CoordinatesPicker name="Origin"></CoordinatesPicker>
+					<CoordinatesPicker name="Origin"/>
 					<InputGroup name="Width" id="width">
 						<input required name="width" type="number" defaultValue={1} step={0.01}></input>
 					</InputGroup>
@@ -116,8 +116,8 @@ export default class ObjectCreator extends Component {
 					<InputGroup name="Depth" id="depth">
 						<input required name="depth" type="number" defaultValue={1} step={0.01}></input>
 					</InputGroup>
-					<ColorPicker name="Fill Color" defaultColor={0xffffff}></ColorPicker>
-					<ColorPicker name="Outline Color"></ColorPicker>
+					<ColorPicker name="Fill Color" defaultColor={0xffffff}/>
+					<ColorPicker name="Outline Color"/>
 					<button type="submit">Add</button>
 				</form>
 			);

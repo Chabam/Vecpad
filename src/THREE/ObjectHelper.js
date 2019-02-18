@@ -78,6 +78,8 @@ export default class ObjectHelper {
 
 		ObjectHelper.applyLabelOnObject(vectorObject, label);
 
+		vectorObject.vector = new THREE.Vector3().addScaledVector(direction, magnitude);
+
 		return vectorObject;
 	}
 

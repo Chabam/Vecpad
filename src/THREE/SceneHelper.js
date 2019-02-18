@@ -61,6 +61,8 @@ export default class SceneHelper {
 		)
 	);
 
+	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
+
 	// A function used to change the size of the grid at Y=0
 	updateGround = (size) => {
 		if (size === this.THREEScene.ground.size) {
@@ -150,6 +152,42 @@ export default class SceneHelper {
 			outlineColor,
 			label);
 		this.addVecpadObject(origin, cube);
+	}
+
+	addCrossProduct = (v1, v2, color, label=null) => {
+		let newDirection = new THREE.Vector3().crossVectors(v1.vector, v2.vector);
+		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
+		this.addVector(
+			origin,
+			newDirection.clone().normalize(),
+			newDirection.length(),
+			color,
+			label || `${v1.name} X ${v2.name}`
+		)
+	}
+
+	addVectorAddition = (v1, v2, color, label=null) => {
+		let newVector = new THREE.Vector3().addVectors(v1.vector, v2.vector);
+		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
+		this.addVector(
+			origin,
+			newVector.clone().normalize(),
+			newVector.length(),
+			color,
+			label || `${v1.name} + ${v2.name}`
+		)
+	}
+
+	addVectorSubtraction = (v1, v2, color, label=null) => {
+		let newVector = new THREE.Vector3().subVectors(v1.vector, v2.vector);
+		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
+		this.addVector(
+			origin,
+			newVector.clone().normalize(),
+			newVector.length(),
+			color,
+			label || `${v1.name} - ${v2.name}`
+		)
 	}
 
 	selectObject = (object) => {
