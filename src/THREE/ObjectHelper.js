@@ -174,7 +174,8 @@ export default class ObjectHelper {
 		object.applyTransformations = () => {
 			object.matrix.copy(object.originalMatrix);
 			let transMatrix = object.transformations.reduce((matrix, trans) =>
-				matrix.multiply(trans.getMatrix()), new THREE.Matrix4()
+			trans.getMatrix().multiply(matrix),
+			new THREE.Matrix4()
 			);
 			object.applyMatrix(transMatrix);
 			ObjectHelper.computeLabelPosition(object);
@@ -304,7 +305,7 @@ export default class ObjectHelper {
 		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length;
 
 		let x = average(worldPositions.map((elem) => elem.x));
-		let y = Math.max(...worldPositions.map((elem) => elem.y)) + 0.25;
+		let y = Math.max(...worldPositions.map((elem) => elem.y)) + 0.05;
 		let z = average(worldPositions.map((elem) => elem.z));
 
 		let translationToPos = new THREE.Matrix4().makeTranslation(x, y, z);
