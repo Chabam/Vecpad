@@ -95,25 +95,34 @@ html, body {
 		padding: 15px;
         overflow: auto;
 
-		#transformation-list {
-			border: 1px solid black;
-			margin-top: 15px;
-			flex: 1;
-			min-height: 100px;
-			display: flex;
-			flex-flow: column;
-			overflow: auto;
 
-			.transformation-info {
-				padding: 15px;
-				border-bottom: 1px solid black;
+		#transformation-editor {
 
-				.transformation-slider * {
-					display: inline;
-				}
+			#transformation-slider * {
+				display: inline;
+			}
 
-				.transformation-slider input {
-					margin: 0 15px;
+			#transformation-slider input{
+				margin: 10px 15px;
+			}
+
+			#transformation-list {
+				border: 1px solid black;
+				margin-top: 15px;
+				flex: 1;
+				min-height: 100px;
+				display: flex;
+				flex-flow: column;
+				overflow: auto;
+
+				.transformation-info {
+					padding: 15px;
+					border-bottom: 1px solid black;
+
+					&.active {
+						background: red;
+					}
+
 				}
 			}
 		}

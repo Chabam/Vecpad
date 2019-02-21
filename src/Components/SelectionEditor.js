@@ -1,6 +1,6 @@
 import React from 'react';
-import TransformationList from './TransformationList';
 import InputGroup from './InputGroup';
+import TransformationEditor from './TransformationEditor';
 
 // This component will show the specific details of the currently selected object
 const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOperationModal, openMatrixViewModal}) => {
@@ -36,10 +36,9 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOpe
 				</div>
 			}
 			{object.transformations.length > 0 &&
-				<TransformationList
-				transformationList={object.transformations}
-				removeTransformation={object.removeTransformation}
-				openMatrixViewModal={openMatrixViewModal}
+				<TransformationEditor
+					object={object}
+					openMatrixViewModal={openMatrixViewModal}
 				/>
 			}
 		</div>

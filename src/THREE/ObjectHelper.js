@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { CSS2DObject } from './Extras/CSS2DRenderer';
-import THREEHelper from './THREEHelper';
 import Translation from '../Transformations/Translation';
 import Scale from '../Transformations/Scale';
 import Rotation from '../Transformations/Rotation';
 import Shear from '../Transformations/Shear';
+import SceneHelper from './SceneHelper';
 
 /*
 	This object is used to create different type of objects. All the functions are static
@@ -129,7 +129,7 @@ export default class ObjectHelper {
 			color: color,
 			side: THREE.DoubleSide,
 			opacity: 0,
-			transparent: (displayMode === THREEHelper.OUTLINE)
+			transparent: (displayMode === SceneHelper.DisplayMode.OUTLINE)
 		}));
 	}
 
@@ -139,7 +139,7 @@ export default class ObjectHelper {
 		return new THREE.LineSegments(egdes, new THREE.LineBasicMaterial({
 			color: color,
 			opacity: 0,
-			transparent: (displayMode === THREEHelper.FILL)
+			transparent: (displayMode === SceneHelper.DisplayMode.FILL)
 		}));
 	}
 
@@ -164,6 +164,7 @@ export default class ObjectHelper {
 	static addVecpadUtilities = (object, reactUpdateFunc) => {
 		object.originalMatrix = object.matrix.clone();
 		object.transformations = [];
+		object.currentStep = 1;
 
 		object.callback = () => {};
 
@@ -171,12 +172,25 @@ export default class ObjectHelper {
 
 		object.unregisterCallback = () => object.callback = () => {};
 
-		object.applyTransformations = () => {
+		object.applyTransformations = (step) => {
+			object.currentStep = step;
+
+			let stepPerTrans = 1 / (object.transformations.length);
+			let currentTrans = Math.floor(step / stepPerTrans);
+			let stepInCurrentTrans = (step * object.transformations.length) - currentTrans;
+
+			console.log(`Current transformation : ${currentTrans} Step in current transformation`)
 			object.matrix.copy(object.originalMatrix);
-			let transMatrix = object.transformations.reduce((matrix, trans) =>
-			trans.getMatrix().multiply(matrix),
-			new THREE.Matrix4()
+
+			let transMatrix = object.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
+				trans.getMatrix(1).multiply(matrix),
+				new THREE.Matrix4()
 			);
+			if (currentTrans < object.transformations.length) {
+				transMatrix = object.transformations[currentTrans]
+					.getMatrix(stepInCurrentTrans).multiply(transMatrix);
+			}
+
 			object.applyMatrix(transMatrix);
 			ObjectHelper.computeLabelPosition(object);
 			object.callback(object);
@@ -184,11 +198,6 @@ export default class ObjectHelper {
 		}
 
 		object.addTransformation = (transformation) => {
-			transformation.update = (step) => {
-				transformation.currentStep = step;
-				object.applyTransformations();
-			}
-
 			transformation.prioritize = () => {
 				let currentIndex = object.transformations.indexOf(transformation);
 				if (currentIndex !== 0) {
@@ -204,7 +213,7 @@ export default class ObjectHelper {
 			}
 
 			object.transformations.push(transformation);
-			object.applyTransformations();
+			object.applyTransformations(1);
 		}
 
 		object.addTranslation = (x, y, z) => object.addTransformation(new Translation(x, y, z));
@@ -217,13 +226,13 @@ export default class ObjectHelper {
 
 		object.removeTransformation = (transformation) => {
 			object.transformations = object.transformations.filter((trans) => trans !== transformation);
-			object.applyTransformations();
+			object.applyTransformations(1);
 			reactUpdateFunc();
 		}
 
 		object.swapTransformations = (i, j) => {
 			[object.transformations[i], object.transformations[j]] = [object.transformations[j], object.transformations[i]];
-			object.applyTransformations();
+			object.applyTransformations(1);
 		}
 
 		object.select = () => {

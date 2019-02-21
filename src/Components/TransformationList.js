@@ -1,10 +1,11 @@
 import React from 'react';
 import TransformationInfo from './TransformationInfo';
 
-const TransformationList = ({transformationList, removeTransformation, openMatrixViewModal}) => {
+const TransformationList = ({transformationList, activeTransformation, removeTransformation, openMatrixViewModal}) => {
 	let transformations = transformationList.map((transformation, i) => (
 		<TransformationInfo
 			key={i}
+			activeTransformation={i === activeTransformation}
 			transformation={transformation}
 			removeTransformation={removeTransformation}
 			openMatrixViewModal={openMatrixViewModal}

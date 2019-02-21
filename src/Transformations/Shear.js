@@ -13,14 +13,14 @@ export default class Shear extends Transformation {
 		this.zY = zY;
 	}
 
-	getMatrix = () => {
+	getMatrix = (step) => {
 		let { xY, xZ, yX, yZ, zX, zY } = this;
-		let amountXY = xY * this.currentStep;
-		let amountXZ = xZ * this.currentStep;
-		let amountYX = yX * this.currentStep;
-		let amountYZ = yZ * this.currentStep;
-		let amountZX = zX * this.currentStep;
-		let amountZY = zY * this.currentStep;
+		let amountXY = xY * step;
+		let amountXZ = xZ * step;
+		let amountYX = yX * step;
+		let amountYZ = yZ * step;
+		let amountZX = zX * step;
+		let amountZY = zY * step;
 		return new THREE.Matrix4().set(
 			1, amountXY, amountXZ, 0,
 			amountYX, 1, amountYZ, 0,
