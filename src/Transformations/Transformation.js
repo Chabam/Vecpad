@@ -10,7 +10,7 @@ export default class Transformation {
 	getMatrix = () => new THREE.Matrix4();
 
 	viewMatrix = () => {
-		let splittedMatrix = this.getMatrix().transpose().elements
+		let splittedMatrix = this.getMatrix(1).transpose().elements
 		.map(THREEHelper.displayFloat)
 		.reduce((result, value, index, array) => {
 			if (index % 4 === 0)
