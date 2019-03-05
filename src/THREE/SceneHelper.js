@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import ObjectHelper from './ObjectHelper';
+import VecpadVector from './VecpadVector';
+import VecpadMesh from './VecpadMesh';
 
 // A wrapper around the scene in THREE.js
 export default class SceneHelper {
@@ -15,6 +17,10 @@ export default class SceneHelper {
 		OUTLINE: 1,
 		BOTH: 2
 	}
+
+	static SELECTED_COLOR = 0xffa500;
+	static SELECTED_LINEWIDTH = 2;
+	static UNSELECTED_LINEWIDTH = 1;
 
 	constructor(updateReact) {
 		this.updateReact = updateReact;
@@ -103,54 +109,55 @@ export default class SceneHelper {
 	addVecpadObject = (origin, object) => {
 		let translationToOrigin = new THREE.Matrix4().makeTranslation(origin.x, origin.y, origin.z);
 		object.applyMatrix(translationToOrigin);
-		let vecpadObject = ObjectHelper.addVecpadUtilities(object, this.updateReact);
 
-		this.addObjects(vecpadObject);
+		this.addObjects(object);
 		this.updateReact();
 	}
 
 	// These functions are used to add certain type of objects to the scene.
 
-	addVector = (origin, direction, magnitude, color, label) => {
-		let vector = ObjectHelper.createVector(
-			direction,
-			magnitude,
-			color,
-			label
-		);
-		this.addVecpadObject(origin, vector);
+	addVector = (direction, color, label) => {
+		let vector = new VecpadVector(direction, color, label, this.updateReact);
+		this.addObjects(vector);
+		this.updateReact();
 	}
 
 	addTriangle = (origin, sideWidth, color, outlineColor, label) => {
-		let triangle = ObjectHelper.createTriangle(
-			sideWidth,
+		let triangle = new VecpadMesh(
+			ObjectHelper.createTriangleGeometry(sideWidth),
+			'Triangle',
 			this.currentDisplayMode,
 			color,
 			outlineColor,
-			label);
+			label,
+			this.updateReact
+		);
 		this.addVecpadObject(origin, triangle);
 	}
 
 	addQuad = (origin, width, height, color, outlineColor, label) => {
-		let quad = ObjectHelper.createQuad(
-			width,
-			height,
+		let quad = new VecpadMesh(
+			new THREE.PlaneGeometry(width, height),
+			'Quad',
 			this.currentDisplayMode,
 			color,
 			outlineColor,
-			label);
+			label,
+			this.updateReact
+		);
 		this.addVecpadObject(origin, quad);
 	}
 
 	addCube = (origin, width, height, depth, color, outlineColor, label) => {
-		let cube = ObjectHelper.createCube(
-			width,
-			height,
-			depth,
+		let cube = new VecpadMesh(
+			new THREE.BoxGeometry(width, height, depth),
+			'Quad',
 			this.currentDisplayMode,
 			color,
 			outlineColor,
-			label);
+			label,
+			this.updateReact
+		);
 		this.addVecpadObject(origin, cube);
 	}
 

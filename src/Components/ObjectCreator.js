@@ -63,11 +63,9 @@ export default class ObjectCreator extends Component {
 				return (
 					<form onSubmit={this.createVector}>
 						{name}
-						<CoordinatesPicker name="Origin"/>
 						<CoordinatesPicker name="Direction" defaultX={1} defaultY={1} defaultZ={1}/>
-						<small>* Note that the direction will be normalized</small>
-						<InputGroup name="Magnitude" id="magnitude">
-							<input required name="magnitude" type="number" defaultValue={1} step={0.01}></input>
+						<InputGroup name="Normalize" id="normalize">
+							<input name="normalize" type="checkbox"/>
 						</InputGroup>
 						<ColorPicker name="Color"/>
 						<button type="submit">Add</button>
@@ -130,19 +128,16 @@ export default class ObjectCreator extends Component {
 		event.preventDefault();
 		const data = new FormData(event.target);
 		let name = data.get('name');
-		let origin = new THREE.Vector3(
-			parseFloat(data.get('origin-x')),
-			parseFloat(data.get('origin-y')),
-			parseFloat(data.get('origin-z'))
-		);
 		let direction = new THREE.Vector3(
 			parseFloat(data.get('direction-x')),
 			parseFloat(data.get('direction-y')),
 			parseFloat(data.get('direction-z'))
-		).normalize();
-		let magnitude = parseFloat(data.get('magnitude'));
+		);
+		if (data.get('normalize') === 'on') {
+			direction = direction.normalize();
+		}
 		let color = parseInt(data.get('color'));
-		this.sceneHelper.addVector(origin, direction, magnitude, color, name);
+		this.sceneHelper.addVector(direction, color, name);
 		this.closeModal();
 	}
 
