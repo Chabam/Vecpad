@@ -1,5 +1,5 @@
 import React from 'react';
-import TransformationInfo from './TransformationInfo';
+import TransformationInfo from '../Sidebar/TransformationInfo';
 
 const TransformationList = ({transformationList, activeTransformation, removeTransformation, openMatrixViewModal}) => {
 	let transformations = transformationList.map((transformation, i) => (

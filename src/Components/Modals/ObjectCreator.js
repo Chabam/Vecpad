@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import CoordinatesPicker from './CoordinatesPicker';
-import ColorPicker from './ColorPicker';
-import InputGroup from './InputGroup';
+import CoordinatesPicker from '../Inputs/CoordinatesPicker';
+import ColorPicker from '../Inputs/ColorPicker';
+import InputGroup from '../Inputs/InputGroup';
 import * as THREE from 'three';
 
 export default class ObjectCreator extends Component {

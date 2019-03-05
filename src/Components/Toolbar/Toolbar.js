@@ -1,7 +1,7 @@
 import React from 'react';
-import SceneHelper from '../THREE/SceneHelper'
-import logo from '../Images/logo.svg'
-import InputGroup from './InputGroup';
+import SceneHelper from '../../Object-Model/THREE/SceneHelper'
+import logo from '../../Images/logo.svg'
+import InputGroup from '../Inputs/InputGroup';
 
 /*
 	This component will be used to control common settings of the application.

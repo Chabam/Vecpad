@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import SceneHelper from './SceneHelper';
+import SceneHelper from './THREE/SceneHelper';
 import VecpadObjectMixin from './VecpadObjectMixin';
 
 export default class VecpadMesh extends THREE.Mesh {

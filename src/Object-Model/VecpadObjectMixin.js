@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import ObjectHelper from '../THREE/ObjectHelper';
-import Translation from '../Transformations/Translation';
-import Scale from '../Transformations/Scale';
-import Rotation from '../Transformations/Rotation';
-import Shear from '../Transformations/Shear';
+import ObjectHelper from './THREE/ObjectHelper';
+import Translation from './Transformations/Translation';
+import Scale from './Transformations/Scale';
+import Rotation from './Transformations/Rotation';
+import Shear from './Transformations/Shear';
 
 
 export default function(label, reactUpdateFunc) {

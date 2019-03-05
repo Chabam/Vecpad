@@ -1,5 +1,5 @@
 import React from 'react';
-import InputGroup from './InputGroup';
+import InputGroup from '../Inputs/InputGroup';
 import TransformationEditor from './TransformationEditor';
 
 // This component will show the specific details of the currently selected object

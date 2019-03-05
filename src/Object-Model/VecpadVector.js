@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import VecpadObjectMixin from './VecpadObjectMixin';
-import SceneHelper from './SceneHelper';
+import SceneHelper from './THREE/SceneHelper';
 
 export default class VecpadVector extends THREE.Line {
     constructor(direction, color=0x000000, label, reactUpdateFunc) {

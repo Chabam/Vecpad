@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import THREEHelper from '../THREE/THREEHelper';
+import THREEHelper from '../Object-Model/THREE/THREEHelper';
 import Visualizer from './Visualizer';
-import Toolbar from './Toolbar';
-import Modal from './Modal';
-import ObjectCreator from './ObjectCreator';
-import SelectionEditor from './SelectionEditor';
-import Sidebar from './Sidebar';
-import ObjectList from './ObjectList';
-import TransformationCreator from './TransformationCreator';
-import MatrixViewer from './MatrixViewer';
-import OperationCreator from './OperationCreator';
+import Toolbar from './Toolbar/Toolbar';
+import SelectionEditor from './Sidebar/SelectionEditor';
+import Sidebar from './Sidebar/Sidebar';
+import ObjectList from './Sidebar/ObjectList';
+import Modal from './Modals/Modal';
+import TransformationCreator from './Modals/TransformationCreator';
+import ObjectCreator from './Modals/ObjectCreator';
+import MatrixViewer from './Modals/MatrixViewer';
+import OperationCreator from './Modals/OperationCreator';
 
 /*
 	This is the instance of the application, it is the only component that will

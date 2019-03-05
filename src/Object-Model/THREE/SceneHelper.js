@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import ObjectHelper from './ObjectHelper';
-import VecpadVector from './VecpadVector';
-import VecpadMesh from './VecpadMesh';
+import VecpadVector from '../VecpadVector';
+import VecpadMesh from '../VecpadMesh';
 
 // A wrapper around the scene in THREE.js
 export default class SceneHelper {

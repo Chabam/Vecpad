@@ -1,10 +1,10 @@
 import React from 'react';
 import { Node, Context } from 'react-mathjax2';
-import Translation from '../Transformations/Translation';
-import Scale from '../Transformations/Scale';
-import Shear from '../Transformations/Shear';
-import Rotation from '../Transformations/Rotation';
-import THREEHelper from '../THREE/THREEHelper';
+import Translation from '../../Object-Model/Transformations/Translation';
+import Scale from '../../Object-Model/Transformations/Scale';
+import Shear from '../../Object-Model/Transformations/Shear';
+import Rotation from '../../Object-Model/Transformations/Rotation';
+import THREEHelper from '../../Object-Model/THREE/THREEHelper';
 
 const MatrixViewer = ({transformation}) => {
 	let explanation = 'Something went wrong (the transformation is not recongnized)!';

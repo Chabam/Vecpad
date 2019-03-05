@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import InputGroup from './InputGroup';
-import ColorPicker from './ColorPicker';
+import InputGroup from '../Inputs/InputGroup';
+import ColorPicker from '../Inputs/ColorPicker';
 
 export default class OperationCreator extends Component {
 

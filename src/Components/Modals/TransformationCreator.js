@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CoordinatesPicker from './CoordinatesPicker';
-import InputGroup from './InputGroup';
+import CoordinatesPicker from '../Inputs/CoordinatesPicker';
+import InputGroup from '../Inputs/InputGroup';
 import * as THREE from 'three';
 
 export default class TransformationCreator extends Component {
