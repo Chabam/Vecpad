@@ -16,9 +16,40 @@ export default class ObjectHelper {
 			console.warn(`The ground has to be divisible by two, you provided ${subdivision}. It will be changed to ${subdivision + 1}.`)
 			subdivision = subdivision + 1;
 		}
-		let ground = new THREE.GridHelper(subdivision, subdivision)
-		ground.size = subdivision;
 
+		let halfSubdivision = (subdivision / 2);
+		let labelDistance = (subdivision / 2) + ((subdivision / 2) * 0.05);
+		let ground = new THREE.GridHelper(subdivision, subdivision);
+		ground.xLabel = ObjectHelper.createLabel('X');
+		ground.xMinusLabel = ObjectHelper.createLabel('-X');
+		ground.yLabel = ObjectHelper.createLabel('Y');
+		ground.yMinusLabel = ObjectHelper.createLabel('-Y');
+		ground.zLabel = ObjectHelper.createLabel('Z');
+		ground.zMinusLabel = ObjectHelper.createLabel('-Z');
+		let yAxisGeo = new THREE.Geometry();
+		yAxisGeo.vertices.push(
+			new THREE.Vector3(0, halfSubdivision, 0),
+			new THREE.Vector3(0, -halfSubdivision, 0)
+		);
+		ground.yAxis = new THREE.Line(yAxisGeo, new THREE.LineBasicMaterial({
+			color: 0x000000
+		}))
+		ground.size = subdivision;
+		ground.xLabel.position.set(labelDistance, 0, 0);
+		ground.xMinusLabel.position.set(-labelDistance, 0, 0);
+		ground.yLabel.position.set(0, labelDistance, 0);
+		ground.yMinusLabel.position.set(0, -labelDistance, 0);
+		ground.zLabel.position.set(0, 0, labelDistance);
+		ground.zMinusLabel.position.set(0, 0, -labelDistance);
+		ground.add(
+			ground.yAxis,
+			ground.xLabel,
+			ground.xMinusLabel,
+			ground.yLabel,
+			ground.yMinusLabel,
+			ground.zLabel,
+			ground.zMinusLabel,
+			ground.yAxisGeo)
 		return ground;
 	}
 

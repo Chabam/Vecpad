@@ -75,6 +75,14 @@ export default class SceneHelper {
 		if (size === this.THREEScene.ground.size) {
 			return;
 		}
+		this.THREEScene.ground.remove(
+			this.THREEScene.ground.xLabel,
+			this.THREEScene.ground.xMinusLabel,
+			this.THREEScene.ground.yLabel,
+			this.THREEScene.ground.yMinusLabel,
+			this.THREEScene.ground.zLabel,
+			this.THREEScene.ground.zMinusLabel
+		)
 		this.THREEScene.remove(this.THREEScene.ground);
 		let ground = ObjectHelper.createGround(size);
 		ground.size = size;
