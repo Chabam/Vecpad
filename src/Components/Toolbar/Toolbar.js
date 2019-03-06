@@ -9,9 +9,9 @@ import InputGroup from '../Inputs/InputGroup';
 */
 const Toolbar = ({sceneHelper, cameraHelper, openModal}) => {
 	let { reset } = cameraHelper;
-	let { applyDisplayMode, updateGround } = sceneHelper;
+	let { applyDisplayMode, updateGraph } = sceneHelper;
 	const callApplyDisplayMode = (event) => applyDisplayMode(parseInt(event.target.value));
-	const callUpdateGround = (event) => updateGround(parseInt(event.target.value));
+	const callUpdateGraph = (event) => updateGraph(parseInt(event.target.value));
 
 	return (
 		<nav id="toolbar">
@@ -40,8 +40,8 @@ const Toolbar = ({sceneHelper, cameraHelper, openModal}) => {
 				<button onClick={reset}>Reset camera</button>
 			</div>
 			<div>
-				<InputGroup name={`Ground size (${sceneHelper.THREEScene.ground.size})`} id='ground-size'>
-					<input name='ground-size' type="range" min="2" max="100" step="2" onChange={callUpdateGround} value={sceneHelper.THREEScene.ground.size}/>
+				<InputGroup name={`Graph size (${sceneHelper.THREEScene.graph.size})`} id='graph-size'>
+					<input name='graph-size' type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
 				</InputGroup>
 			</div>
 		</nav>

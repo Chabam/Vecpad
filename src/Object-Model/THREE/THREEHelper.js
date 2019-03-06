@@ -91,7 +91,7 @@ export default class THREEHelper {
 		// Then we trace a ray to check wether or not we have a collision.
 		this.rayCaster.setFromCamera(mouseNormalizedCoords, this.cameraHelper.THREECamera);
 		let intersects = this.rayCaster.intersectObjects(
-			// We exclude the ground since there is no use to select it.
+			// We exclude the graph since there is no use to select it.
 			this.sceneHelper.getVecpadObjectList()
 		);
 

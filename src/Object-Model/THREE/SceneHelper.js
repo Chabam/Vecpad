@@ -38,9 +38,9 @@ export default class SceneHelper {
 		this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.5);
 
 		// Information on the grid at Y=0 that act as a reference for our scene.
-		let ground = ObjectHelper.createGround(2);
-		this.THREEScene.ground = ground;
-		this.addObjects(this.directionalLight, this.ambientLight, this.hemisphereLight, ground);
+		let graph = ObjectHelper.createGraph(2);
+		this.THREEScene.graph = graph;
+		this.addObjects(this.directionalLight, this.ambientLight, this.hemisphereLight, graph);
 	}
 
 	// This function add one or multiple objects to the scene.
@@ -63,7 +63,7 @@ export default class SceneHelper {
 
 	getVecpadObjectList = () => this.THREEScene.children.filter((object) =>
 		!(
-			object === this.THREEScene.ground ||
+			object === this.THREEScene.graph ||
 			object instanceof THREE.Light
 		)
 	);
@@ -71,23 +71,23 @@ export default class SceneHelper {
 	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
 
 	// A function used to change the size of the grid at Y=0
-	updateGround = (size) => {
-		if (size === this.THREEScene.ground.size) {
+	updateGraph = (size) => {
+		if (size === this.THREEScene.graph.size) {
 			return;
 		}
-		this.THREEScene.ground.remove(
-			this.THREEScene.ground.xLabel,
-			this.THREEScene.ground.xMinusLabel,
-			this.THREEScene.ground.yLabel,
-			this.THREEScene.ground.yMinusLabel,
-			this.THREEScene.ground.zLabel,
-			this.THREEScene.ground.zMinusLabel
+		this.THREEScene.graph.remove(
+			this.THREEScene.graph.xLabel,
+			this.THREEScene.graph.xMinusLabel,
+			this.THREEScene.graph.yLabel,
+			this.THREEScene.graph.yMinusLabel,
+			this.THREEScene.graph.zLabel,
+			this.THREEScene.graph.zMinusLabel
 		)
-		this.THREEScene.remove(this.THREEScene.ground);
-		let ground = ObjectHelper.createGround(size);
-		ground.size = size;
-		this.THREEScene.ground = ground;
-		this.addObjects(ground);
+		this.THREEScene.remove(this.THREEScene.graph);
+		let graph = ObjectHelper.createGraph(size);
+		graph.size = size;
+		this.THREEScene.graph = graph;
+		this.addObjects(graph);
 		this.updateReact();
 	};
 
@@ -99,9 +99,9 @@ export default class SceneHelper {
 
 		this.currentDisplayMode = mode;
 		this.THREEScene.children.filter((object) =>
-			// We don't change the ground, lights and vector objects.
+			// We don't change the graph, lights and vector objects.
 			!(
-				object === this.THREEScene.ground ||
+				object === this.THREEScene.graph ||
 				object instanceof THREE.Light ||
 				object.type === 'Vector'
 			)
