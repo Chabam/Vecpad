@@ -71,8 +71,11 @@ export default class VecpadVector extends THREE.Line {
         let {arrow, material} = this;
         this.originalColor = material.color.getHex();
         material.color.setHex(SceneHelper.SELECTED_COLOR);
-        material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
         arrow.material.color.setHex(SceneHelper.SELECTED_COLOR);
+        material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
+
+        this.renderOrder = 1;
+        arrow.renderOrder = 1;
         material.depthTest = false;
         arrow.material.depthTest = false;
     }
@@ -84,9 +87,12 @@ export default class VecpadVector extends THREE.Line {
         material.color.setHex(originalColor);
         material.linewidth = SceneHelper.UNSELECTED_LINEWIDTH;
         arrow.material.color.setHex(originalColor);
+        delete this.originalColor;
+
+        this.renderOrder = 0;
+        arrow.renderOrder = 0;
         material.depthTest = true;
         arrow.material.depthTest = true;
-        delete this.originalColor;
     }
 
     updateOperations = () => {

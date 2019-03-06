@@ -100,8 +100,8 @@ export default class SceneHelper {
 		).forEach((object) => {
 
 			// See SceneHelper's display mode for details.
-			object.material.transparent = (this.currentDisplayMode === SceneHelper.DisplayMode.OUTLINE);
-			object.outline.material.transparent = (this.currentDisplayMode === SceneHelper.DisplayMode.FILL);
+			object.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.OUTLINE);
+			object.outline.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.FILL);
 		});
 		this.updateReact();
 	}

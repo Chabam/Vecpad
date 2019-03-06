@@ -7,15 +7,13 @@ export default class VecpadMesh extends THREE.Mesh {
         super(geometry, new THREE.MeshLambertMaterial({
 			color: color,
 			side: THREE.DoubleSide,
-			opacity: 0,
-			transparent: (displayMode === SceneHelper.DisplayMode.OUTLINE)
+			visible: displayMode !== SceneHelper.DisplayMode.OUTLINE
         }));
         this.type = type;
         let edgesGeometry = new THREE.EdgesGeometry(geometry);
         this.outline = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({
 			color: outlineColor,
-			opacity: 0,
-			transparent: (displayMode === SceneHelper.DisplayMode.FILL)
+            visible: displayMode !== SceneHelper.DisplayMode.FILL
         }));
         this.add(this.outline);
 
@@ -23,14 +21,13 @@ export default class VecpadMesh extends THREE.Mesh {
     }
 
     select = () => {
-        const selectedColor = 0xffa500;
-        const selectedWidth = 2;
         this.label.element.classList.add('selected');
         let selection = new THREE.LineSegments(this.outline.geometry, new THREE.LineBasicMaterial({
             depthTest: false,
-            color: selectedColor,
-            linewidth: selectedWidth
+            color: SceneHelper.SELECTED_COLOR,
+            linewidth: SceneHelper.SELECTED_LINEWIDTH,
         }));
+        selection.renderOrder = 1;
         this.selection = selection;
         this.add(selection);
     }
