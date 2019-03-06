@@ -12,6 +12,7 @@ export default function(label, reactUpdateFunc) {
     objectLabel.matrixAutoUpdate = false;
     this.label = objectLabel;
     this.add(this.label);
+    this.updateReact = reactUpdateFunc;
 
     this.computeLabelPosition = () => {
         /*
@@ -25,10 +26,12 @@ export default function(label, reactUpdateFunc) {
 		let average = vertices => vertices.reduce((sum, elem) => elem + sum, 0) / vertices.length;
 
 		let x = average(worldPositions.map((elem) => elem.x));
-		let y = Math.max(...worldPositions.map((elem) => elem.y)) + 0.05;
+        let y = this.type !== 'Vector' ?
+            Math.max(...worldPositions.map((elem) => elem.y)) :
+            average(worldPositions.map((elem) => elem.y));
 		let z = average(worldPositions.map((elem) => elem.z));
 
-		let translationToPos = new THREE.Matrix4().makeTranslation(x, y, z);
+		let translationToPos = new THREE.Matrix4().makeTranslation(x, y + 0.05, z);
 		this.label.matrix.copy(new THREE.Matrix4());
 		this.label.applyMatrix(new THREE.Matrix4().getInverse(this.matrix, false).multiply(translationToPos));
     }
@@ -39,15 +42,20 @@ export default function(label, reactUpdateFunc) {
     this.originalMatrix = this.matrix.clone();
     this.transformations = [];
     this.currentStep = 1;
-
-    this.callback = () => {}
+    this.currentCallbackId = 0;
+    this.callbacks = []
 
     this.registerCallback = (func) => {
-        this.callback = (changedObject) => func(changedObject);
+        let id = this.currentCallbackId++;
+        this.callbacks.push({
+            id,
+            func: (changedObject) => func(changedObject)
+        });
+        return id;
     }
 
-    this.unregisterCallback = () => {
-        this.callback = () => {}
+    this.unregisterCallback = (id) => {
+        this.callbacks = this.callbacks.filter((callback) => callback.id !== id);
     }
 
 	this.applyTransformations = (step) => {
@@ -70,8 +78,10 @@ export default function(label, reactUpdateFunc) {
 
         this.applyMatrix(transMatrix);
         this.computeLabelPosition();
-        this.callback(this);
-        reactUpdateFunc();
+        this.callbacks.forEach((callback) => {
+            callback.func(this);
+        })
+        this.updateReact();
     }
 
     this.addTransformation = (transformation) => {
@@ -112,7 +122,7 @@ export default function(label, reactUpdateFunc) {
     this.removeTransformation = (transformation) => {
         this.transformations = this.transformations.filter((trans) => trans !== transformation);
         this.applyTransformations(1);
-        reactUpdateFunc();
+        this.updateReact();
     }
 
     this.swapTransformations = (i, j) => {

@@ -29,9 +29,12 @@ export default class TransformationCreator extends Component {
 				<InputGroup name="Transformation type" id="Transformation-type">
 					<select onChange={this.changeTransformationType}>
 						<option></option>
-						<option value={TransformationCreator.TransformationType.Translation}>
-							Translation
-						</option>
+						{
+							this.object.type !== 'Vector' &&
+							<option value={TransformationCreator.TransformationType.Translation}>
+								Translation
+							</option>
+						}
 						<option value={TransformationCreator.TransformationType.Scale}>
 							Scale
 						</option>

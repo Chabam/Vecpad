@@ -1,22 +1,25 @@
 import React from 'react';
 import InputGroup from '../Inputs/InputGroup';
 import TransformationEditor from './TransformationEditor';
+import THREEHelper from '../../Object-Model/THREE/THREEHelper';
+import OperationList from './OperationList';
 
 // This component will show the specific details of the currently selected object
 const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOperationModal, openMatrixViewModal}) => {
 	let worldPositions = object.geometry.vertices.map((vertex, i) => {
 		let position = vertex.clone().applyMatrix4(object.matrixWorld);
 		let {x, y, z} = position;
-		return <li key={i}>X: {x.toFixed(2)} Y: {y.toFixed(2)} Z: {z.toFixed(2)}</li>;
+		return <li key={i}>X: {THREEHelper.displayFloat(x)} Y: {THREEHelper.displayFloat(y)} Z: {THREEHelper.displayFloat(z)}</li>;
 	});
 	const followObject = (e) => {
 		if (e.target.checked) {
-			cameraHelper.focusOnObject(object);
+			cameraHelper.focusObject(object);
 		} else {
 			cameraHelper.reset();
-			object.unregisterCallback();
+			cameraHelper.unfocusObject();
 		}
 	}
+	let objectIsFocused = cameraHelper.focusedObject !== null && cameraHelper.focusedObject.object === object;
 	return (
 		<div id="selection-editor">
 			<h1>{object.name}</h1>
@@ -25,15 +28,17 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOpe
 				{worldPositions}
 			</ul>
 			<InputGroup name="Follow" id="follow">
-				<input onChange={followObject} type="checkbox" id="follow"/>
+				<input onChange={followObject} type="checkbox" id="follow" checked={objectIsFocused}/>
 			</InputGroup>
 			<div>
 				<button onClick={() => openTransformationModal(object)}>Add a transformation</button>
 			</div>
 			{object.type === 'Vector' &&
-				<div>
-					<button onClick={() => openOperationModal(object)}>Add Operation</button>
-				</div>
+				<OperationList
+					openOperationModal={() => openTransformationModal(object)}
+					operationList={object.operations}
+					removeOperation={object.removeOperation}
+				/>
 			}
 			{object.transformations.length > 0 &&
 				<TransformationEditor

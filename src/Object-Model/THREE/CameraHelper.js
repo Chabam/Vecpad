@@ -6,6 +6,7 @@ export default class CameraWrapper {
 	constructor() {
 		this.THREECamera = null;
 		this.THREEControls = null;
+		this.focusedObject = null;
 	}
 
 	init = (ratio, rendererDomElement) => {
@@ -25,7 +26,22 @@ export default class CameraWrapper {
 		this.THREEControls.update();
 	}
 
-	focusOnObject = (object) => object.registerCallback((changedObject) => this.focusOnCoords(changedObject.position));
+	focusObject = (object) => {
+		let cbId = object.registerCallback((changedObject) => this.focusOnCoords(changedObject.position));
+		this.focusedObject = {
+			cbId,
+			object
+		}
+		object.updateReact();
+	}
+
+	unfocusObject = () => {
+		let { cbId, object } = this.focusedObject;
+		object.unregisterCallback(cbId);
+		object.updateReact();
+		this.focusedObject = null;
+		this.reset();
+	}
 
 	reset = () => this.focusOnCoords(new THREE.Vector3(0, 0, 0));
 }

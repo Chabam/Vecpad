@@ -15,13 +15,14 @@ export default class THREEHelper {
 		// (or another helpers) changes!
 		this.updateReact = () => reactUpdateFunc(this);
 
-		this.rendererHelper = new RendererHelper(this.updateReact);
-		this.cameraHelper = new CameraHelper(this.updateReact);
+		this.rendererHelper = new RendererHelper();
+		this.cameraHelper = new CameraHelper();
 		this.sceneHelper = new SceneHelper(this.updateReact);
 
 		// The raycaster is used to select objects using rays.
 		this.rayCaster = new THREE.Raycaster();
 		this.rayCaster.linePrecision = 0.05;
+		this.rayCaster.near = 0.1;
 
 		// These will help us to keep information about the DOM, especially to maintain correctly our canvas.
 		this.toolbarElement = null;

@@ -23,11 +23,13 @@ export default class VecpadMesh extends THREE.Mesh {
     }
 
     select = () => {
+        const selectedColor = 0xffa500;
+        const selectedWidth = 2;
         this.label.element.classList.add('selected');
         let selection = new THREE.LineSegments(this.outline.geometry, new THREE.LineBasicMaterial({
             depthTest: false,
-            color: SceneHelper.SELECTED_COLOR,
-            linewidth: SceneHelper.SELECTED_LINEWIDTH
+            color: selectedColor,
+            linewidth: selectedWidth
         }));
         this.selection = selection;
         this.add(selection);
@@ -38,4 +40,6 @@ export default class VecpadMesh extends THREE.Mesh {
         this.remove(this.selection);
         delete this.selection;
     }
+
+    clean = () => this.remove(this.label);
 }

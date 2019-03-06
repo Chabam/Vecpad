@@ -95,7 +95,7 @@ export default class OperationCreator extends Component {
 		let name = data.get('name');
 		let color = parseInt(data.get('color'));
 
-		this.sceneHelper.addCrossProduct(this.vector, this.state.selectedVector, color, name);
+		this.vector.addCrossProduct(this.state.selectedVector, color, name);
 		this.closeModal();
 	}
 
@@ -106,7 +106,7 @@ export default class OperationCreator extends Component {
 		let name = data.get('name');
 		let color = parseInt(data.get('color'));
 
-		this.sceneHelper.addVectorAddition(this.vector, this.state.selectedVector, color, name);
+		this.vector.addVectorAddition(this.state.selectedVector, color, name);
 		this.closeModal();
 	}
 
@@ -117,7 +117,7 @@ export default class OperationCreator extends Component {
 		let name = data.get('name');
 		let color = parseInt(data.get('color'));
 
-		this.sceneHelper.addVectorSubtraction(this.vector, this.state.selectedVector, color, name);
+		this.vector.addVectorSubtraction(this.state.selectedVector, color, name);
 		this.closeModal();
 	}
 }

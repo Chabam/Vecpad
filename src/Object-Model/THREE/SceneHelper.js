@@ -55,7 +55,8 @@ export default class SceneHelper {
 			this.selectedObject = null;
 		}
 
-		object.remove(object.label);
+		object.clean();
+
 		this.THREEScene.remove(object);
 		this.updateReact();
 	}
@@ -159,42 +160,6 @@ export default class SceneHelper {
 			this.updateReact
 		);
 		this.addVecpadObject(origin, cube);
-	}
-
-	addCrossProduct = (v1, v2, color, label=null) => {
-		let newDirection = new THREE.Vector3().crossVectors(v1.vector, v2.vector);
-		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
-		this.addVector(
-			origin,
-			newDirection.clone().normalize(),
-			newDirection.length(),
-			color,
-			label || `${v1.name} X ${v2.name}`
-		)
-	}
-
-	addVectorAddition = (v1, v2, color, label=null) => {
-		let newVector = new THREE.Vector3().addVectors(v1.vector, v2.vector);
-		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
-		this.addVector(
-			origin,
-			newVector.clone().normalize(),
-			newVector.length(),
-			color,
-			label || `${v1.name} + ${v2.name}`
-		)
-	}
-
-	addVectorSubtraction = (v1, v2, color, label=null) => {
-		let newVector = new THREE.Vector3().subVectors(v1.vector, v2.vector);
-		let origin = v1.geometry.vertices[0].clone().applyMatrix4(v1.matrixWorld);
-		this.addVector(
-			origin,
-			newVector.clone().normalize(),
-			newVector.length(),
-			color,
-			label || `${v1.name} - ${v2.name}`
-		)
 	}
 
 	selectObject = (object) => {

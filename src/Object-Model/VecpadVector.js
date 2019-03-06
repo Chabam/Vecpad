@@ -8,10 +8,9 @@ export default class VecpadVector extends THREE.Line {
         let origin = new THREE.Vector3(0, 0, 0);
         let up = new THREE.Vector3(0, 1, 0);
 
-        let destination = origin.clone().addScaledVector(up, direction.length());
         vectorGeometry.vertices.push(
 			origin,
-			destination
+			direction
         );
         vectorGeometry.computeBoundingBox();
 
@@ -25,11 +24,10 @@ export default class VecpadVector extends THREE.Line {
 		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
 			color: color
 		}));
-		arrow.position.copy(destination);
 
 		let rotationAxis;
         let rotationAngle;
-        let normalizedDirection = direction.normalize();
+        let normalizedDirection = direction.clone().normalize();
 		// This code section aligns the vector object to the direction.
 		// If the vector we are trying to align to is exactly the opposite of our up vector
 		if (normalizedDirection.equals(new THREE.Vector3(0, -1, 0))) {
@@ -43,19 +41,27 @@ export default class VecpadVector extends THREE.Line {
 					Rotation angle = arccos(V1 * V2)
 					Rotate the vector with the previous values.
 			*/
-			rotationAxis = up.clone().cross(normalizedDirection).normalize();
+			rotationAxis = new THREE.Vector3().crossVectors(arrow.up, normalizedDirection).normalize();
 			rotationAngle = Math.acos(up.dot(normalizedDirection));
 		}
 
 		let rotationMatrix = new THREE.Matrix4().makeRotationAxis(rotationAxis, rotationAngle);
-		this.applyMatrix(rotationMatrix);
+        arrow.applyMatrix(rotationMatrix);
+		arrow.position.copy(direction);
 
 		this.arrow = arrow;
 		this.add(arrow);
 
+        this.operations = [];
+        this.vectorsFromOperations = [];
 		this.vector = direction;
 
         VecpadObjectMixin.call(this, label, reactUpdateFunc);
+        let oldApplyTransformations = this.applyTransformations;
+        this.applyTransformations = (step) => {
+            oldApplyTransformations(step);
+            this.updateOperations();
+        }
         delete this.addTranslation;
     }
 
@@ -81,5 +87,88 @@ export default class VecpadVector extends THREE.Line {
         material.depthTest = true;
         arrow.material.depthTest = true;
         delete this.originalColor;
+    }
+
+    updateOperations = () => {
+        this.vectorsFromOperations.forEach((vector) => {
+            vector.remove(vector.label);
+            this.remove(vector);
+        });
+        this.vectorsFromOperations = [];
+        let modifiedVector = this.vector.clone().applyMatrix4(this.matrix);
+        this.operations.forEach((operation) => {
+            let {operationFunc, label, color} = operation;
+            let newVector = new VecpadVector(operationFunc(modifiedVector), color, label, this.reactUpdateFunc);
+            newVector.applyMatrix(new THREE.Matrix4().getInverse(this.matrix, false));
+            this.vectorsFromOperations.push(newVector);
+            this.add(newVector);
+        })
+    };
+
+    addCrossProduct = (vecpadVector, color, label=null) => {
+        this.addOperation(
+            (newVector) => new THREE.Vector3().crossVectors(
+                newVector,
+                vecpadVector.vector.clone().applyMatrix4(vecpadVector.matrix)
+            ),
+            vecpadVector,
+            color,
+            label || `${this.name} X ${vecpadVector.name}`
+        );
+    }
+
+    addVectorAddition = (vecpadVector, color, label=null) => {
+        this.addOperation(
+            (newVector) => new THREE.Vector3().addVectors(
+                newVector,
+                vecpadVector.vector.clone().applyMatrix4(vecpadVector.matrix)
+            ),
+            vecpadVector,
+            color,
+            label || `${this.name} + ${vecpadVector.name}`
+        );
+    }
+
+    addVectorSubtraction = (vecpadVector, color, label=null) => {
+        this.addOperation(
+            (newVector) => new THREE.Vector3().subVectors(
+                newVector,
+                vecpadVector.vector.clone().applyMatrix4(vecpadVector.matrix)
+            ),
+            vecpadVector,
+            color,
+            label || `${this.name} - ${vecpadVector.name}`
+        );
+    }
+
+    addOperation = (operationFunc, vecpadVector, color=0x000000, label) => {
+        let cbId = vecpadVector.registerCallback(this.updateOperations);
+        this.operations.push({
+            operationFunc,
+            vecpadVector,
+            label,
+            color,
+            cbId
+        });
+
+        this.updateOperations();
+    }
+
+    removeOperation = (operation) => {
+        let { cbId, vecpadVector } = operation;
+        vecpadVector.unregisterCallback(cbId);
+        this.operations = this.operations.filter((op) => op !== operation);
+        this.updateOperations();
+    }
+
+    clean = () => {
+        this.remove(this.label);
+        this.operations.forEach((operation) => {
+            let { cbId, vecpadVector } = operation;
+            vecpadVector.unregisterCallback(cbId);
+        });
+        this.vectorsFromOperations.forEach((vector) => {
+            vector.remove(vector.label);
+        })
     }
 }
