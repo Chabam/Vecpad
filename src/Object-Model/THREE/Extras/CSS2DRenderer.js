@@ -37,7 +37,6 @@ THREE.CSS2DRenderer = function () {
 	var vector = new THREE.Vector3();
 	var viewMatrix = new THREE.Matrix4();
 	var viewProjectionMatrix = new THREE.Matrix4();
-	var frustum = new THREE.Frustum();
 
 	var cache = {
 		objects: new WeakMap()
@@ -84,7 +83,7 @@ THREE.CSS2DRenderer = function () {
 			element.style.MozTransform = style;
 			element.style.oTransform = style;
 			element.style.transform = style;
-			element.style.display = frustum.containsPoint( object.position ) ? '' : 'none';
+			element.style.display = ( vector.z < -1 || vector.z > 1 ) ? 'none' : '';
 
 			var objectData = {
 				distanceToCameraSquared: getDistanceToSquared( camera, object )
@@ -167,7 +166,6 @@ THREE.CSS2DRenderer = function () {
 
 		viewMatrix.copy( camera.matrixWorldInverse );
 		viewProjectionMatrix.multiplyMatrices( camera.projectionMatrix, viewMatrix );
-		frustum.setFromMatrix( viewProjectionMatrix );
 
 		renderObject( scene, camera );
 		zOrder( scene );
