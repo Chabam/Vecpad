@@ -84,7 +84,7 @@ THREE.CSS2DRenderer = function () {
 			element.style.MozTransform = style;
 			element.style.oTransform = style;
 			element.style.transform = style;
-			//element.style.display = frustum.containsPoint( object.position ) ? '' : 'none';
+			element.style.display = frustum.containsPoint( object.position ) ? '' : 'none';
 
 			var objectData = {
 				distanceToCameraSquared: getDistanceToSquared( camera, object )
