@@ -48,8 +48,8 @@ export default class ObjectHelper {
 			graph.yLabel,
 			graph.yMinusLabel,
 			graph.zLabel,
-			graph.zMinusLabel,
-			graph.yAxisGeo)
+			graph.zMinusLabel
+		);
 		return graph;
 	}
 
