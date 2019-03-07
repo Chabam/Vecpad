@@ -9,7 +9,10 @@ export default class VecpadMesh extends THREE.Mesh {
 			side: THREE.DoubleSide,
 			visible: displayMode !== SceneHelper.DisplayMode.OUTLINE
         }));
+
         this.type = type;
+        this.color = color;
+        this.outlineColor = outlineColor;
         let edgesGeometry = new THREE.EdgesGeometry(geometry);
         this.outline = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({
 			color: outlineColor,

@@ -18,6 +18,7 @@ export default class VecpadVector extends THREE.Line {
 			color: color
         }));
 
+        this.color = color;
         this.type = 'Vector';
 
         let arrowGeometry = new THREE.ConeGeometry(0.05, 0.05, 10);

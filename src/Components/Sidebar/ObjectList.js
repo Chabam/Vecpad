@@ -6,15 +6,19 @@ const ObjectList = ({objectList, sceneHelper}) => {
 		<ObjectInfo
 			key={i}
 			object={object}
+			selected={
+				sceneHelper.selectedObject !== null &&
+				sceneHelper.selectedObject === object
+			}
 			selectObject={sceneHelper.selectObject}
 			removeObject={sceneHelper.removeObject}
 		/>
 	));
 
 	return (
-	<div id="object-list">
-		{objects}
-	</div>
+		<div id="object-list">
+			{objects}
+		</div>
 	);
 }
 

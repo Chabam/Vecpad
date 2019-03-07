@@ -4,13 +4,11 @@ import React from 'react';
 	This component will show the specific details of an object. It will also be
 	used to apply actions on an object (deleting, apply transformations, etc.)
 */
-const ObjectInfo = ({object, selectObject, removeObject}) => {
+const ObjectInfo = ({object, selected, selectObject, removeObject}) => {
 	return (
-		<div className="object-info">
-			<h1>{object.name}</h1>
-			<h2>{`Type: ${object.type}`}</h2>
-			<button onClick={() => removeObject(object)}>Delete</button>
-			<button onClick={() => selectObject(object)}>Select</button>
+		<div className={`object-info ${selected ? 'selected' : ''}`} >
+			<p onClick={() => selectObject(object)}>{`${object.type}: ${object.name}`}</p>
+			<button className="delete text-only" onClick={() => removeObject(object)}>−</button>
 		</div>
 	);
 }

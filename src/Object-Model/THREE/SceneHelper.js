@@ -115,59 +115,55 @@ export default class SceneHelper {
 	}
 
 	// Function used to add object to the scene and to the object list.
-	addVecpadObject = (origin, object) => {
-		let translationToOrigin = new THREE.Matrix4().makeTranslation(origin.x, origin.y, origin.z);
-		object.applyMatrix(translationToOrigin);
-
+	addVecpadObject = (object) => {
 		this.addObjects(object);
 		this.updateReact();
 	}
 
 	// These functions are used to add certain type of objects to the scene.
 
-	addVector = (direction, color, label) => {
-		let vector = new VecpadVector(direction, color, label, this.updateReact);
-		this.addObjects(vector);
-		this.updateReact();
+	addVector = () => {
+		let vector = new VecpadVector(new THREE.Vector3(1, 1, 1), 0x000000, null, this.updateReact);
+		this.addVecpadObject(vector);
 	}
 
-	addTriangle = (origin, sideWidth, color, outlineColor, label) => {
+	addTriangle = () => {
 		let triangle = new VecpadMesh(
-			ObjectHelper.createTriangleGeometry(sideWidth),
+			ObjectHelper.createTriangleGeometry(1),
 			'Triangle',
 			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label,
+			0xffffff,
+			0x000000,
+			null,
 			this.updateReact
 		);
-		this.addVecpadObject(origin, triangle);
+		this.addVecpadObject(triangle);
 	}
 
-	addQuad = (origin, width, height, color, outlineColor, label) => {
+	addQuad = () => {
 		let quad = new VecpadMesh(
-			new THREE.PlaneGeometry(width, height),
+			new THREE.PlaneGeometry(1, 1),
 			'Quad',
 			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label,
+			0xffffff,
+			0x000000,
+			null,
 			this.updateReact
 		);
-		this.addVecpadObject(origin, quad);
+		this.addVecpadObject(quad);
 	}
 
-	addCube = (origin, width, height, depth, color, outlineColor, label) => {
+	addCube = () => {
 		let cube = new VecpadMesh(
-			new THREE.BoxGeometry(width, height, depth),
-			'Quad',
+			new THREE.BoxGeometry(1, 1, 1),
+			'Cube',
 			this.currentDisplayMode,
-			color,
-			outlineColor,
-			label,
+			0xffffff,
+			0x000000,
+			null,
 			this.updateReact
 		);
-		this.addVecpadObject(origin, cube);
+		this.addVecpadObject(cube);
 	}
 
 	selectObject = (object) => {

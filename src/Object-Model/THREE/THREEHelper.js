@@ -25,7 +25,6 @@ export default class THREEHelper {
 		this.rayCaster.near = 0.1;
 
 		// These will help us to keep information about the DOM, especially to maintain correctly our canvas.
-		this.toolbarElement = null;
 		this.sidebarElement = null;
 		this.root = null;
 		this.height = 0;
@@ -34,7 +33,6 @@ export default class THREEHelper {
 
 	// The function used to create our THREE.js context with all the required elements.
 	init = () => {
-		this.toolbarElement = document.getElementById('toolbar');
 		this.sidebarElement = document.getElementById('sidebar');
 		this.root = document.getElementById('root');
 		this.setDimensions();
@@ -55,13 +53,12 @@ export default class THREEHelper {
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
 	setDimensions = (event) => {
 		let sidebarWidth = this.sidebarElement.offsetWidth;
-		let toolbarHeight = this.toolbarElement.offsetHeight;
 		let totalWidth = this.root.offsetWidth;
 		let totalHeight = this.root.offsetHeight;
 
 		// Our sizes are defined by these calculations.
 		let width = totalWidth - sidebarWidth;
-		let height = totalHeight - toolbarHeight;
+		let height = totalHeight;
 		if (this.width !== width || this.height !== height) {
 			this.height = height;
 			this.width = width;
@@ -86,7 +83,7 @@ export default class THREEHelper {
 		// First we need to find out where our mouse is in the coordinates of the camera.
 		let mouseNormalizedCoords = new THREE.Vector2();
 		mouseNormalizedCoords.x = (event.clientX / this.width) * 2 - 1;
-		mouseNormalizedCoords.y = -((event.clientY - this.toolbarElement.offsetHeight) / this.height) * 2 + 1;
+		mouseNormalizedCoords.y = -((event.clientY) / this.height) * 2 + 1;
 
 		// Then we trace a ray to check wether or not we have a collision.
 		this.rayCaster.setFromCamera(mouseNormalizedCoords, this.cameraHelper.THREECamera);
