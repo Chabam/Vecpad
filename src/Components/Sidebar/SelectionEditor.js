@@ -4,7 +4,7 @@ import CoordinatesPicker from '../Inputs/CoordinatesPicker';
 import ColorPicker from '../Inputs/ColorPicker';
 
 // This component will show the specific details of the currently selected object
-const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOperationModal, openMatrixViewModal}) => {
+const SelectionEditor = ({object, cameraHelper}) => {
 	// let worldPositions = object.geometry.vertices.map((vertex, i) => {
 	// 	let position = vertex.clone().applyMatrix4(object.matrixWorld);
 	// 	let {x, y, z} = position;
@@ -19,7 +19,20 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOpe
 		}
 	}
 	let objectIsFocused = cameraHelper.focusedObject !== null && cameraHelper.focusedObject.object === object;
-	let {x, y, z} = object.position;
+	let coordinateEditor = object.type !== 'Vector' ?
+	(
+		<CoordinatesPicker
+					name="Position"
+					coordinates={object.position}
+					updateCoordinates={object.updatePosition}
+		/>
+	):(
+		<CoordinatesPicker
+					name="Position"
+					coordinates={object.vector}
+					updateCoordinates={object.updateDirection}
+		/>
+	)
 	return (
 		<div id="selection-editor">
 			<h1>{`${object.type}: ${object.name}`}</h1>
@@ -27,17 +40,27 @@ const SelectionEditor = ({object, cameraHelper, openTransformationModal, openOpe
 				<input onChange={followObject} type="checkbox" id="follow" checked={objectIsFocused}/>
 			</InputGroup>
 			<InputGroup name="Label" id="label">
-				<input type="text" id="label" value={object.name} readOnly/>
+				<input
+					type="text"
+					id="label"
+					value={object.name}
+					onChange={(event) => object.updateLabel(event.target.value)}
+				/>
 			</InputGroup>
+			<ColorPicker
+				name="Color"
+				updateColor={object.updateColor}
+				defaultColor={object.color}
+			/>
 			{
 				object.type !== 'Vector' &&
-				<CoordinatesPicker name="Position" defaultX={x} defaultY={y} defaultZ={z}/>
+				<ColorPicker
+					name="Outline color"
+					updateColor={object.updateOutlineColor}
+					defaultColor={object.outlineColor}
+				/>
 			}
-			<ColorPicker name="Color" defaultColor={object.color}></ColorPicker>
-			{
-				object.type !== 'Vector' &&
-				<ColorPicker name="Outline color" defaultColor={object.outlineColor}></ColorPicker>
-			}
+			{coordinateEditor}
 		</div>
 	);
 }

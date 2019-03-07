@@ -3,7 +3,6 @@ import THREEHelper from '../Object-Model/THREE/THREEHelper';
 import Visualizer from './Visualizer';
 import SelectionEditor from './Sidebar/SelectionEditor';
 import Sidebar from './Sidebar/Sidebar';
-import Modal from './Modals/Modal';
 import logo from '../Images/logo.svg'
 import SceneEditor from './Sidebar/SceneEditor';
 

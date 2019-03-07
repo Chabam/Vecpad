@@ -59,7 +59,7 @@ html, body {
 		font-size: 14px;
 
 		&.selected {
-			color: #FFA500;
+			color: #312783;
 			font-weight: bold;
 		}
 	}
@@ -262,6 +262,6 @@ input[type=range]::-webkit-slider-thumb {
 	height: 20px;
 	width: 7px;
 	margin-top: -9px;
-	background: #ffffff;
+	background: white;
 	cursor: pointer;
 }

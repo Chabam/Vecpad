@@ -41,5 +41,25 @@ export default class VecpadMesh extends THREE.Mesh {
         delete this.selection;
     }
 
+    updateColor = (color) => {
+        this.material.color.setHex(color);
+        this.updateReact();
+    }
+
+    updateOutlineColor = (color) => {
+        this.outline.material.color.setHex(color);
+        this.updateReact();
+    }
+
+    updatePosition = (position) => {
+        let { x, y, z } = position;
+
+        let translationMatrix = new THREE.Matrix4().makeTranslation(x, y, z);
+        this.matrix = new THREE.Matrix4();
+        this.originalMatrix = translationMatrix;
+        this.applyMatrix(translationMatrix);
+        this.updateReact();
+    }
+
     clean = () => this.remove(this.label);
 }

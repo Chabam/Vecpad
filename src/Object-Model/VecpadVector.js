@@ -6,13 +6,13 @@ export default class VecpadVector extends THREE.Line {
     constructor(direction, color=0x000000, label, reactUpdateFunc) {
         let vectorGeometry = new THREE.Geometry();
         let origin = new THREE.Vector3(0, 0, 0);
-        let up = new THREE.Vector3(0, 1, 0);
 
         vectorGeometry.vertices.push(
 			origin,
 			direction
         );
         vectorGeometry.computeBoundingBox();
+        vectorGeometry.dynamic = true;
 
         super(vectorGeometry, new THREE.LineBasicMaterial({
 			color: color
@@ -26,36 +26,14 @@ export default class VecpadVector extends THREE.Line {
 			color: color
 		}));
 
-		let rotationAxis;
-        let rotationAngle;
-        let normalizedDirection = direction.clone().normalize();
-		// This code section aligns the vector object to the direction.
-		// If the vector we are trying to align to is exactly the opposite of our up vector
-		if (normalizedDirection.equals(new THREE.Vector3(0, -1, 0))) {
-			// We just flip the vector upside down
-			rotationAxis = new THREE.Vector3(1, 0, 0);
-			rotationAngle = Math.PI;
-		} else {
-			/*
-				Otherwise we do the following:
-					Rotation axis = V1 x V2
-					Rotation angle = arccos(V1 * V2)
-					Rotate the vector with the previous values.
-			*/
-			rotationAxis = new THREE.Vector3().crossVectors(arrow.up, normalizedDirection).normalize();
-			rotationAngle = Math.acos(up.dot(normalizedDirection));
-		}
-
-		let rotationMatrix = new THREE.Matrix4().makeRotationAxis(rotationAxis, rotationAngle);
-        arrow.applyMatrix(rotationMatrix);
-		arrow.position.copy(direction);
-
 		this.arrow = arrow;
-		this.add(arrow);
+        this.add(arrow);
 
         this.operations = [];
         this.vectorsFromOperations = [];
 		this.vector = direction;
+
+        this.alignArrowOnVector(direction);
 
         VecpadObjectMixin.call(this, label, reactUpdateFunc);
         let oldApplyTransformations = this.applyTransformations;
@@ -65,6 +43,8 @@ export default class VecpadVector extends THREE.Line {
         }
         delete this.addTranslation;
     }
+
+    updateColor = (color) => this.originalColor = color;
 
     select = () => {
         this.label.element.classList.add('selected');
@@ -166,6 +146,50 @@ export default class VecpadVector extends THREE.Line {
         vecpadVector.unregisterCallback(cbId);
         this.operations = this.operations.filter((op) => op !== operation);
         this.updateOperations();
+    }
+
+
+    updateDirection = (direction) => {
+        let origin = new THREE.Vector3(0, 0, 0);
+
+        this.vector = direction;
+
+        this.arrow.position.copy(origin);
+        this.arrow.matrix = new THREE.Matrix4();
+        this.alignArrowOnVector();
+        this.geometry.vertices[1]= this.vector;
+        this.geometry.verticesNeedUpdate = true;
+        this.computeLabelPosition();
+
+        this.updateReact();
+    }
+
+    alignArrowOnVector = () => {
+        let up = new THREE.Vector3(0, 1, 0);
+
+        let rotationAxis;
+        let rotationAngle;
+        let normalizedDirection = this.vector.clone().normalize();
+        // This code section aligns the vector object to the direction.
+		// If the vector we are trying to align to is exactly the opposite of our up vector
+		if (normalizedDirection.equals(new THREE.Vector3(0, -1, 0))) {
+			// We just flip the vector upside down
+			rotationAxis = new THREE.Vector3(1, 0, 0);
+			rotationAngle = Math.PI;
+		} else {
+            /*
+				Otherwise we do the following:
+					Rotation axis = V1 x V2
+					Rotation angle = arccos(V1 * V2)
+					Rotate the vector with the previous values.
+			*/
+			rotationAxis = new THREE.Vector3().crossVectors(up, normalizedDirection).normalize();
+			rotationAngle = Math.acos(up.dot(normalizedDirection));
+        }
+        let rotationMatrix = new THREE.Matrix4().makeRotationAxis(rotationAxis, rotationAngle);
+
+        this.arrow.applyMatrix(rotationMatrix);
+        this.arrow.position.copy(this.vector);
     }
 
     clean = () => {

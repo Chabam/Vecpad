@@ -19,7 +19,7 @@ export default class RendereHelper {
 		});
 		this.THREE2DRenderer = new CSS2DRenderer();
 
-		this.THREE3DRenderer.setClearColor(0xffffff);
+		this.THREE3DRenderer.setClearColor(0xbdbdbd);
 		this.THREE2DRenderer.domElement.style.position = 'absolute';
 		this.THREE2DRenderer.domElement.id = 'label-renderer';
 		this.THREE3DRenderer.setPixelRatio(window.devicePixelRatio);

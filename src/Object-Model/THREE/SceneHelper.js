@@ -18,7 +18,7 @@ export default class SceneHelper {
 		BOTH: 2
 	}
 
-	static SELECTED_COLOR = 0xffa500;
+	static SELECTED_COLOR = 0x009fe3;
 	static SELECTED_LINEWIDTH = 2;
 	static UNSELECTED_LINEWIDTH = 1;
 

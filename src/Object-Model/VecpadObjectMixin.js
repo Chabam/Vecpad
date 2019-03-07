@@ -129,4 +129,15 @@ export default function(label, reactUpdateFunc) {
         [this.transformations[i], this.transformations[j]] = [this.transformations[j], this.transformations[i]];
         this.applyTransformations(1);
     }
+
+    this.updateLabel = (text) => {
+        this.remove(this.label);
+        this.name = text;
+        let objectLabel = ObjectHelper.createLabel(this.name);
+        objectLabel.matrixAutoUpdate = false;
+        this.label = objectLabel;
+        this.add(this.label);
+        this.computeLabelPosition();
+        this.updateReact();
+    }
 };
