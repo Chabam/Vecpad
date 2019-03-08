@@ -1,9 +1,9 @@
 import React from 'react';
 
-const InputGroup = ({name, id, children}) => {
+const InputGroup = ({name, children}) => {
 	return (
 		<div className="input-group">
-			<label htmlFor={id}>{name} :</label>
+			<label>{name} :</label>
 			{children}
 		</div>
 	);

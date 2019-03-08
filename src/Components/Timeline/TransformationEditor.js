@@ -33,11 +33,11 @@ const TransformationEditor = ({object}) => {
     }
 
 	return (
-        <div id="transformation-editor">
-            <div id="transformation-controls">
+        <div id="transformations-editor">
+            <div id="transformations-controls">
                 <h1>Timeline</h1>
                 <input
-                    id="transformation-slider"
+                    id="transformations-slider"
                     type="range"
                     min="0"
                     max="1"
@@ -50,6 +50,7 @@ const TransformationEditor = ({object}) => {
                 <TransformationList
                     transformationList={object.transformations}
                     activeTransformation={Math.min(currentTrans, object.transformations.length - 1)}
+                    updateTransformation={object.updateTransformation}
                     removeTransformation={object.removeTransformation}
                 />
                 <div id="add-transformation">

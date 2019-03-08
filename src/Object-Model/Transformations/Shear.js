@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export default class Shear extends Transformation {
 	constructor(xY, xZ, yX, yZ, zX, zY) {
 		super();
-		this.name = `Shear of (${xY}, ${xZ}, ${yX}, ${yZ}, ${zX}, ${zY})`;
+		this.name = 'Shear';
 		this.xY = xY;
 		this.xZ = xZ;
 		this.yX = yX;

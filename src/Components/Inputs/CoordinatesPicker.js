@@ -10,9 +10,11 @@ const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
 	return (
 		<div className="coordinates-picker">
 			<label>{name} :</label>
-			<input type="number" step={0.01} value={x} onChange={updateX}/>
-			<input type="number" step={0.01} value={y} onChange={updateY}/>
-			<input type="number" step={0.01} value={z} onChange={updateZ}/>
+			<div className="coordinates">
+				<input type="number" step={0.01} value={x} onChange={updateX}/>
+				<input type="number" step={0.01} value={y} onChange={updateY}/>
+				<input type="number" step={0.01} value={z} onChange={updateZ}/>
+			</div>
 		</div>
 	);
 }

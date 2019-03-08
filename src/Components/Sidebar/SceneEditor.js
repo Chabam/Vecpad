@@ -50,8 +50,8 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
                     <option value={objectType.CUBE}>Cube</option>
                 </select>
             </div>
-            <InputGroup name='Display Mode' id='display-mode'>
-                <select name='display-mode' onChange={callApplyDisplayMode} defaultValue={sceneHelper.currentDisplayMode}>
+            <InputGroup name='Display Mode'>
+                <select onChange={callApplyDisplayMode} defaultValue={sceneHelper.currentDisplayMode}>
                     <option value={SceneHelper.DisplayMode.OUTLINE}>
                         Outline
                     </option>
@@ -63,8 +63,8 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
                     </option>
                 </select>
             </InputGroup>
-            <InputGroup name={`Graph size`} id='graph-size'>
-                <input name='graph-size' type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
+            <InputGroup name={`Graph size`}>
+                <input type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
             </InputGroup>
             <div>
                 <button onClick={cameraHelper.reset}>Reset camera</button>

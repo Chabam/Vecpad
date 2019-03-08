@@ -32,6 +32,7 @@ export default class CameraWrapper {
 			cbId,
 			object
 		}
+		this.focusOnCoords(object.position);
 		object.updateReact();
 	}
 

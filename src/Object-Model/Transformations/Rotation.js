@@ -4,8 +4,7 @@ import * as THREE from 'three';
 export default class Rotation extends Transformation {
 	constructor(axis, angle) {
 		super();
-		let { x, y, z } = axis;
-		this.name = `Rotation of ${angle} radian on (${x}, ${y}, ${z})`
+		this.name = 'Rotation';
 		this.axis = axis;
 		this.angle = angle;
 	}

@@ -36,13 +36,12 @@ const SelectionEditor = ({object, cameraHelper}) => {
 	return (
 		<div id="selection-editor">
 			<h1>{`${object.type}: ${object.name}`}</h1>
-			<InputGroup name="Follow" id="follow">
-				<input onChange={followObject} type="checkbox" id="follow" checked={objectIsFocused}/>
+			<InputGroup name="Follow">
+				<input onChange={followObject} type="checkbox" checked={objectIsFocused}/>
 			</InputGroup>
-			<InputGroup name="Label" id="label">
+			<InputGroup name="Label">
 				<input
 					type="text"
-					id="label"
 					value={object.name}
 					onChange={(event) => object.updateLabel(event.target.value)}
 				/>

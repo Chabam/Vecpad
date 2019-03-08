@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export default class Scale extends Transformation {
 	constructor(x, y, z) {
 		super();
-		this.name = `Scale of (${x}, ${y}, ${z})`
+		this.name = 'Scale';
 		this.x = x;
 		this.y = y;
 		this.z = z;

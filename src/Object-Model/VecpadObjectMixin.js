@@ -76,6 +76,16 @@ export default function(label, reactUpdateFunc) {
         this.applyTransformations(1);
     }
 
+    this.updateTransformation = (transformationWithVal) => {
+        let { transformation, name, value } = transformationWithVal;
+
+        let indexOfTransformation = this.transformations.indexOf(transformation);
+        this.transformations[indexOfTransformation][name] = value;
+
+        this.applyTransformations(1);
+        this.updateReact();
+    }
+
     this.addScale = () => {
         this.addTransformation(new Scale(1, 1, 1));
     }
