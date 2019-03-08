@@ -75,17 +75,16 @@ html, body {
 
 			#transformation-controls {
 				height: 20%;
+				width: 100%;
+				padding-right: 35px;
+				box-sizing: border-box;
 
-				&>* {
-					display: inline-block;
+				h1 {
+					margin: 0;
 				}
 
-				#transformation-slider * {
-					display: inline-block;
-				}
-
-				#transformation-slider input{
-					margin: 10px 15px;
+				#transformation-slider {
+					width: 100%;
 				}
 			}
 

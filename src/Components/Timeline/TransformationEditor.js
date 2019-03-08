@@ -36,17 +36,15 @@ const TransformationEditor = ({object}) => {
         <div id="transformation-editor">
             <div id="transformation-controls">
                 <h1>Timeline</h1>
-                <div id="transformation-slider">
-                    <p>0</p>
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
-                        value={object.currentStep}/>
-                    <p>100</p>
-                </div>
+                <input
+                    id="transformation-slider"
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
+                    value={object.currentStep}
+                />
             </div>
             <div id="transformation-list-container">
                 <TransformationList
