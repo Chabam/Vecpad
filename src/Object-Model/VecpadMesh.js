@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import SceneHelper from './THREE/SceneHelper';
 import VecpadObjectMixin from './VecpadObjectMixin';
+import Translation from './Transformations/Translation';
 
 export default class VecpadMesh extends THREE.Mesh {
     constructor(geometry, type, displayMode, color=0xffffff, outlineColor=0x000000, label, reactUpdateFunc) {
@@ -23,6 +24,36 @@ export default class VecpadMesh extends THREE.Mesh {
         VecpadObjectMixin.call(this, label, reactUpdateFunc);
     }
 
+	applyTransformations = (step) => {
+        this.currentStep = step;
+
+        let stepPerTrans = 1 / (this.transformations.length);
+        let currentTrans = Math.floor(step / stepPerTrans);
+        let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
+
+        this.matrix.copy(this.originalMatrix);
+
+        let transMatrix = this.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
+            trans.getMatrix(1).multiply(matrix),
+            new THREE.Matrix4()
+        );
+        if (currentTrans < this.transformations.length) {
+            transMatrix = this.transformations[currentTrans]
+                .getMatrix(stepInCurrentTrans).multiply(transMatrix);
+        }
+
+        this.applyMatrix(transMatrix);
+        this.computeLabelPosition();
+        this.callbacks.forEach((callback) => {
+            callback.func(this);
+        })
+        this.updateReact();
+    }
+
+    addTranslation = () => {
+        this.addTransformation(new Translation(0, 0, 0));
+    }
+
     select = () => {
         this.label.element.classList.add('selected');
         let selection = new THREE.LineSegments(this.outline.geometry, new THREE.LineBasicMaterial({
@@ -42,12 +73,14 @@ export default class VecpadMesh extends THREE.Mesh {
     }
 
     updateColor = (color) => {
+        this.color = color;
         this.material.color.setHex(color);
         this.updateReact();
     }
 
-    updateOutlineColor = (color) => {
-        this.outline.material.color.setHex(color);
+    updateOutlineColor = (outlineColor) => {
+        this.outlineColor = outlineColor;
+        this.outline.material.color.setHex(outlineColor);
         this.updateReact();
     }
 
@@ -58,6 +91,7 @@ export default class VecpadMesh extends THREE.Mesh {
         this.matrix = new THREE.Matrix4();
         this.originalMatrix = translationMatrix;
         this.applyMatrix(translationMatrix);
+        this.callbacks.forEach(({func}) => func(this));
         this.updateReact();
     }
 

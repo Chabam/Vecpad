@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import ObjectHelper from './THREE/ObjectHelper';
-import Translation from './Transformations/Translation';
 import Scale from './Transformations/Scale';
 import Rotation from './Transformations/Rotation';
 import Shear from './Transformations/Shear';
@@ -58,32 +57,6 @@ export default function(label, reactUpdateFunc) {
         this.callbacks = this.callbacks.filter((callback) => callback.id !== id);
     }
 
-	this.applyTransformations = (step) => {
-        this.currentStep = step;
-
-        let stepPerTrans = 1 / (this.transformations.length);
-        let currentTrans = Math.floor(step / stepPerTrans);
-        let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
-
-        this.matrix.copy(this.originalMatrix);
-
-        let transMatrix = this.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
-            trans.getMatrix(1).multiply(matrix),
-            new THREE.Matrix4()
-        );
-        if (currentTrans < this.transformations.length) {
-            transMatrix = this.transformations[currentTrans]
-                .getMatrix(stepInCurrentTrans).multiply(transMatrix);
-        }
-
-        this.applyMatrix(transMatrix);
-        this.computeLabelPosition();
-        this.callbacks.forEach((callback) => {
-            callback.func(this);
-        })
-        this.updateReact();
-    }
-
     this.addTransformation = (transformation) => {
         transformation.prioritize = () => {
             let currentIndex = this.transformations.indexOf(transformation);
@@ -103,20 +76,16 @@ export default function(label, reactUpdateFunc) {
         this.applyTransformations(1);
     }
 
-    this.addTranslation = (x, y, z) => {
-        this.addTransformation(new Translation(x, y, z));
+    this.addScale = () => {
+        this.addTransformation(new Scale(1, 1, 1));
     }
 
-    this.addScale = (x, y, z) => {
-        this.addTransformation(new Scale(x, y, z));
+    this.addShear = () => {
+        this.addTransformation(new Shear(0, 0, 0, 0, 0, 0));
     }
 
-    this.addShear = (xy, xz, yx, yz, zx, zy) => {
-        this.addTransformation(new Shear(xy, xz, yx, yz, zx, zy));
-    }
-
-    this.addRotation = (axis, angle) => {
-        this.addTransformation(new Rotation(axis, angle));
+    this.addRotation = () => {
+        this.addTransformation(new Rotation(new THREE.Vector3(), 0));
     }
 
     this.removeTransformation = (transformation) => {
@@ -135,6 +104,7 @@ export default function(label, reactUpdateFunc) {
         this.name = text;
         let objectLabel = ObjectHelper.createLabel(this.name);
         objectLabel.matrixAutoUpdate = false;
+        objectLabel.element.classList.add('selected');
         this.label = objectLabel;
         this.add(this.label);
         this.computeLabelPosition();

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import THREEHelper from '../Object-Model/THREE/THREEHelper';
-import Visualizer from './Visualizer';
 import SelectionEditor from './Sidebar/SelectionEditor';
 import Sidebar from './Sidebar/Sidebar';
 import logo from '../Images/logo.svg'
 import SceneEditor from './Sidebar/SceneEditor';
+import Timeline from './Timeline/Timeline';
+import TransformationEditor from './Timeline/TransformationEditor';
 
 /*
 	This is the instance of the application, it is the only component that will
@@ -30,6 +31,10 @@ export default class Vecpad extends Component {
 		});
 	}
 
+	componentDidUpdate() {
+		this.state.THREEHelper.setDimensions(true);
+	}
+
 	render() {
 		const { THREEHelper } = this.state;
 		const { sceneHelper, cameraHelper } = THREEHelper;
@@ -39,7 +44,14 @@ export default class Vecpad extends Component {
 					<div id='logo'>
 						<img src={logo} alt={'Vecpad\'s logo'}></img>
 					</div>
-					<Visualizer/>
+					{
+						sceneHelper.selectedObject &&
+						<Timeline>
+							<TransformationEditor
+								object={sceneHelper.selectedObject}
+							/>
+						</Timeline>
+					}
 				</div>
 				<Sidebar>
 					<SceneEditor

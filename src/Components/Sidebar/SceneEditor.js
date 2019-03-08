@@ -40,14 +40,16 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
                 objectList={sceneHelper.getVecpadObjectList()}
                 sceneHelper={sceneHelper}
 			/>
-            <select id="add-object" value={''} onChange={createObject}>
-                <option id="add">＋</option>
-                <option value={objectType.VECTOR}>Vector</option>
-                <option>Operation</option>
-                <option value={objectType.TRIANGLE}>Triangle</option>
-                <option value={objectType.QUAD}>Quad</option>
-                <option value={objectType.CUBE}>Cube</option>
-            </select>
+            <div id="add-object">
+                <select className="add-select" value={''} onChange={createObject}>
+                    <option>＋</option>
+                    <option value={objectType.VECTOR}>Vector</option>
+                    <option>Operation</option>
+                    <option value={objectType.TRIANGLE}>Triangle</option>
+                    <option value={objectType.QUAD}>Quad</option>
+                    <option value={objectType.CUBE}>Cube</option>
+                </select>
+            </div>
             <InputGroup name='Display Mode' id='display-mode'>
                 <select name='display-mode' onChange={callApplyDisplayMode} defaultValue={sceneHelper.currentDisplayMode}>
                     <option value={SceneHelper.DisplayMode.OUTLINE}>

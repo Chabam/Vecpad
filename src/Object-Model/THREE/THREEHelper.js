@@ -25,23 +25,21 @@ export default class THREEHelper {
 		this.rayCaster.near = 0.1;
 
 		// These will help us to keep information about the DOM, especially to maintain correctly our canvas.
-		this.sidebarElement = null;
-		this.root = null;
+		this.container = null;
 		this.height = 0;
 		this.width = 0;
 	}
 
 	// The function used to create our THREE.js context with all the required elements.
 	init = () => {
-		this.sidebarElement = document.getElementById('sidebar');
-		this.root = document.getElementById('root');
+		this.container = document.getElementById('visualizer-container');
 		this.setDimensions();
 
-		let {THREE3DRendererDom, THREE2DRendererDom} = this.rendererHelper.init(this.width, this.height);
+		let { THREE3DRendererDom, THREE2DRendererDom } = this.rendererHelper.init(this.width, this.height);
 		this.cameraHelper.init(this.width / this.height, THREE2DRendererDom);
 
-		document.getElementById('visualizer').appendChild(THREE3DRendererDom);
-		document.getElementById('visualizer').appendChild(THREE2DRendererDom);
+		this.container.appendChild(THREE3DRendererDom);
+		this.container.appendChild(THREE2DRendererDom);
 
 		// The events we are registered to.
 		window.addEventListener('resize', this.setDimensions);
@@ -52,13 +50,11 @@ export default class THREEHelper {
 
 	// Since our window is dynamically sized, we need to update the size and aspect ratio of the canvas.
 	setDimensions = (event) => {
-		let sidebarWidth = this.sidebarElement.offsetWidth;
-		let totalWidth = this.root.offsetWidth;
-		let totalHeight = this.root.offsetHeight;
+		let timeline = document.getElementById('timeline');
+		let width = this.container.offsetWidth;
+		let height = this.container.offsetHeight - (timeline ? timeline.offsetHeight : 0);
 
 		// Our sizes are defined by these calculations.
-		let width = totalWidth - sidebarWidth;
-		let height = totalHeight;
 		if (this.width !== width || this.height !== height) {
 			this.height = height;
 			this.width = width;
@@ -79,11 +75,12 @@ export default class THREEHelper {
 
 	// Set selection is used to check if the area where the user clicked contains an object, if so we select it.
 	setSelectionFromMouse = (event) => {
+		let timeline = document.getElementById('timeline');
 
 		// First we need to find out where our mouse is in the coordinates of the camera.
 		let mouseNormalizedCoords = new THREE.Vector2();
 		mouseNormalizedCoords.x = (event.clientX / this.width) * 2 - 1;
-		mouseNormalizedCoords.y = -((event.clientY) / this.height) * 2 + 1;
+		mouseNormalizedCoords.y = -((event.clientY - (timeline ? timeline.offsetHeight : 0)) / this.height) * 2 + 1;
 
 		// Then we trace a ray to check wether or not we have a collision.
 		this.rayCaster.setFromCamera(mouseNormalizedCoords, this.cameraHelper.THREECamera);

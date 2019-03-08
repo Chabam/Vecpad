@@ -6,50 +6,44 @@ $dark-background-color: #BDBDBD;
 $border-color: #9E9E9E;
 $foreground-color: #424242;
 $delete-color: #B71C1C;
-$add-color: #4CAF50;
+$light-delete-color: #F44336;
+$add-color: #2E7D32;
+$light-add-color: #4CAF50;
+$sidebar-width: 300px;
 
 html, body {
 	padding: 0;
 	margin: 0;
 	height: 100%;
 	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
 	color: $foreground-color;
+	background-color: $dark-background-color;
 }
 
-#root {
-	display: flex;
-	flex: 1;
-}
-
-#vecpad-container {
-	flex: 1;
-	display: flex;
+#root, #vecpad-container {
+	height: 100%;
+	width: 100%;
 }
 
 #visualizer-container {
-	flex: 7;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
+	position: absolute;
+	right: 300px;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	height: 100%;
 
 	#logo img {
 		padding: 20px;
 		height: 50px;
 		position: fixed;
-	}
-
-	#visualizer {
-		display: flex;
-		flex: 1;
-	}
-
-	#label-renderer {
 		z-index: 1;
+	}
+
+	canvas {
+		position: absolute;
 	}
 
 	.object-label {
@@ -63,46 +57,109 @@ html, body {
 			font-weight: bold;
 		}
 	}
+
+	#timeline {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 400px;
+		padding: 15px;
+		border-top: 1px solid $border-color;
+		box-sizing: border-box;
+		background-color: $background-color;
+
+		#transformation-editor {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+
+			#transformation-controls {
+				height: 20%;
+
+				&>* {
+					display: inline-block;
+				}
+
+				#transformation-slider * {
+					display: inline-block;
+				}
+
+				#transformation-slider input{
+					margin: 10px 15px;
+				}
+			}
+
+			#transformation-list-container {
+				width: 100%;
+				height: 80%;
+				display: inline-flex;
+
+				#transformation-list {
+					height: 100%;
+					flex: 1;
+					display: inline-flex;
+					border: 1px solid $border-color;
+					box-sizing: border-box;
+					overflow-x: auto;
+					background-color: $light-background-color;
+
+					.transformation-info {
+						padding: 15px;
+						min-width: 350px;
+						box-sizing: border-box;
+						height: 100%;
+						overflow-y: auto;
+						background-color: $dark-background-color;
+
+						&:first-child {
+							border-left: none;
+						}
+
+						&.active {
+							background-color: $border-color;
+						}
+					}
+				}
+
+				#add-transformation {
+					float: right;
+					height: 100%;
+					margin-left: 15px;
+					display: flex;
+					align-items: center;
+				}
+			}
+		}
+	}
 }
 
 #sidebar {
-	width: 300px;
-	display: flex;
-	flex-flow: column;
-	align-content: stretch;
+	box-sizing: border-box;
+	width: $sidebar-width;
+	position: absolute;
+	right: 0;
+	height: 100%;
 	border: 1px solid $border-color;
 	background-color: $background-color;
 
 	#scene-editor {
-		flex: 1;
 		padding: 15px;
+		height: 50%;
+		box-sizing: border-box;
+		overflow-y: auto;
 
 		&>* {
 			margin-bottom: 10px;
 		}
 
 		#add-object {
-			appearance: none;
-			bottom: 5px;
-			right: 10px;
-			color: $add-color;
-			background: none;
-			padding: 0;
-			width: 14px;
-			text-transform: none;
-
-			#add {
-				display: none;
-			}
-
-			option {
-				color: $foreground-color;
-			}
+			display: flex;
+			justify-content: center;
 		}
 
 		#object-list {
 			border: 1px solid $border-color;
-			overflow: auto;
+			overflow-y: auto;
 			height: 300px;
 			background-color: $light-background-color;
 			position: relative;
@@ -112,7 +169,6 @@ html, body {
 				display: flex;
 
 				p {
-					flex: 1;
 					margin: 0;
 					cursor: pointer;
 				}
@@ -126,48 +182,14 @@ html, body {
 
 
 	#selection-editor {
-		flex: 1;
-		display: flex;
-		flex-flow: column;
 		border-top: 1px solid $border-color;
 		height: 50%;
+		box-sizing: border-box;
 		padding: 15px;
-        overflow: auto;
-		padding: 15px;
+        overflow-y: auto;
 
 		&>* {
 			margin-bottom: 10px;
-		}
-
-		#transformation-editor {
-
-			#transformation-slider * {
-				display: inline;
-			}
-
-			#transformation-slider input{
-				margin: 10px 15px;
-			}
-
-			#transformation-list {
-				border: 1px solid black;
-				margin-top: 15px;
-				flex: 1;
-				min-height: 100px;
-				display: flex;
-				flex-flow: column;
-				overflow: auto;
-
-				.transformation-info {
-					padding: 15px;
-					border-bottom: 1px solid black;
-
-					&.active {
-						background: red;
-					}
-
-				}
-			}
 		}
 	}
 }
@@ -182,6 +204,7 @@ html, body {
 }
 
 button {
+	appearance: none;
 	border: none;
 	cursor: pointer;
 	color: $foreground-color;
@@ -202,6 +225,12 @@ button {
 
 	&.delete {
 		color: $delete-color;
+		font-size: 16px;
+		font-weight: bolder;
+
+		&:hover {
+			color: $light-delete-color;
+		}
 	}
 
 	&.add {
@@ -213,6 +242,7 @@ button {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	align-items: baseline;
 
 	&>input {
 		width: 50px;
@@ -230,6 +260,33 @@ select {
 
 	&:hover {
 		background-color: $light-background-color;
+	}
+}
+
+.add-select {
+	appearance: none;
+	color: $add-color;
+	background: none;
+	font-size: 20px;
+	font-weight: bolder;
+	width: 20px;
+	padding: 0;
+	margin: 0;
+	text-transform: none;
+
+	&:hover {
+		background: none;
+		color: $light-add-color;
+	}
+
+	option {
+		color: $foreground-color;
+		font-size: 14px;
+		font-weight: normal;
+
+		&:first-child {
+			display: none;
+		}
 	}
 }
 

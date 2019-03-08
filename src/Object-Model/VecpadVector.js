@@ -31,17 +31,45 @@ export default class VecpadVector extends THREE.Line {
 
         this.operations = [];
         this.vectorsFromOperations = [];
-		this.vector = direction;
+        this.vector = direction;
+        this.originalVector = this.vector;
 
         this.alignArrowOnVector(direction);
 
         VecpadObjectMixin.call(this, label, reactUpdateFunc);
-        let oldApplyTransformations = this.applyTransformations;
-        this.applyTransformations = (step) => {
-            oldApplyTransformations(step);
-            this.updateOperations();
+    }
+
+	applyTransformations = (step) => {
+        this.currentStep = step;
+
+        let stepPerTrans = 1 / (this.transformations.length);
+        let currentTrans = Math.floor(step / stepPerTrans);
+        let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
+
+        this.matrix.copy(this.originalMatrix);
+
+        let transMatrix = this.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
+            trans.getMatrix(1).multiply(matrix),
+            new THREE.Matrix4()
+        );
+
+        if (currentTrans < this.transformations.length) {
+            transMatrix = this.transformations[currentTrans]
+                .getMatrix(stepInCurrentTrans).multiply(transMatrix);
         }
-        delete this.addTranslation;
+
+        this.vector = this.originalVector.clone().applyMatrix4(transMatrix);
+        this.arrow.position.copy(origin);
+        this.arrow.matrix = new THREE.Matrix4();
+        this.alignArrowOnVector();
+        this.geometry.vertices[1] = this.vector;
+        this.geometry.verticesNeedUpdate = true;
+
+        this.computeLabelPosition();
+        this.callbacks.forEach((callback) => {
+            callback.func(this);
+        })
+        this.updateReact();
     }
 
     updateColor = (color) => this.originalColor = color;
@@ -153,11 +181,12 @@ export default class VecpadVector extends THREE.Line {
         let origin = new THREE.Vector3(0, 0, 0);
 
         this.vector = direction;
+        this.originalVector = this.vector;
 
         this.arrow.position.copy(origin);
         this.arrow.matrix = new THREE.Matrix4();
         this.alignArrowOnVector();
-        this.geometry.vertices[1]= this.vector;
+        this.geometry.vertices[1] = this.vector;
         this.geometry.verticesNeedUpdate = true;
         this.computeLabelPosition();
 
