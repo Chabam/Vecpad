@@ -61,20 +61,26 @@ export default class VecpadMesh extends THREE.Mesh {
 
     select = () => {
         this.label.element.classList.add('selected');
-        let selection = new THREE.LineSegments(this.outline.geometry, new THREE.LineBasicMaterial({
-            depthTest: false,
-            color: SceneHelper.SELECTED_COLOR,
-            linewidth: SceneHelper.SELECTED_LINEWIDTH,
-        }));
-        selection.renderOrder = 1;
-        this.selection = selection;
-        this.add(selection);
+
+        let { outline } = this;
+        this.originalColor = outline.material.color.getHex();
+        outline.material.color.setHex(SceneHelper.SELECTED_COLOR);
+        outline.material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
+
+        outline.renderOrder = 1;
+        outline.material.depthTest = false;
     }
 
     deselect = () => {
         this.label.element.classList.remove('selected');
-        this.remove(this.selection);
-        delete this.selection;
+
+        let { outline, originalColor } = this;
+        outline.material.color.setHex(originalColor);
+        outline.material.linewidth = SceneHelper.UNSELECTED_LINEWIDTH;
+        delete this.originalColor;
+
+        outline.renderOrder = 0;
+        outline.material.depthTest = true;
     }
 
     updateColor = (color) => {
@@ -105,7 +111,11 @@ export default class VecpadMesh extends THREE.Mesh {
     }
 
     clean = () => {
-        this.remove(this.label);
         this.notifyRegistree();
+        this.remove(this.label);
+        this.geometry.dispose();
+        this.material.dispose();
+        this.outline.geometry.dispose();
+        this.outline.material.dispose();
     }
 }

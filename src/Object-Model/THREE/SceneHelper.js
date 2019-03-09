@@ -76,19 +76,23 @@ export default class SceneHelper {
 		if (size === this.THREEScene.graph.size) {
 			return;
 		}
-		this.THREEScene.graph.remove(
-			this.THREEScene.graph.xLabel,
-			this.THREEScene.graph.xMinusLabel,
-			this.THREEScene.graph.yLabel,
-			this.THREEScene.graph.yMinusLabel,
-			this.THREEScene.graph.zLabel,
-			this.THREEScene.graph.zMinusLabel
-		)
-		this.THREEScene.remove(this.THREEScene.graph);
-		let graph = ObjectHelper.createGraph(size);
-		graph.size = size;
-		this.THREEScene.graph = graph;
-		this.addObjects(graph);
+		let { graph } = this.THREEScene;
+		graph.remove(
+			graph.xLabel,
+			graph.xMinusLabel,
+			graph.yLabel,
+			graph.yMinusLabel,
+			graph.zLabel,
+			graph.zMinusLabel
+		);
+
+		graph.material.dispose();
+		graph.geometry.dispose();
+		this.THREEScene.remove(graph);
+		let newGraph = ObjectHelper.createGraph(size);
+		newGraph.size = size;
+		this.THREEScene.graph = newGraph;
+		this.addObjects(newGraph);
 		this.updateReact();
 	};
 

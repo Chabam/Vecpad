@@ -154,7 +154,11 @@ export default class VecpadVector extends THREE.Line {
     }
 
     clean = () => {
-        this.remove(this.label);
         this.notifyRegistree();
+        this.remove(this.label);
+        this.geometry.dispose();
+        this.material.dispose();
+        this.arrow.geometry.dispose();
+        this.arrow.material.dispose();
     }
 }
