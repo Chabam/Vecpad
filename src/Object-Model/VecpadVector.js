@@ -18,7 +18,6 @@ export default class VecpadVector extends THREE.Line {
 			color: color
 		}));
 
-		this.color = color;
 		this.type = 'Vector';
 
 		let arrowGeometry = new THREE.ConeGeometry(0.05, 0.05, 10);
@@ -31,6 +30,7 @@ export default class VecpadVector extends THREE.Line {
 
 		this.vector = direction;
 		this.originalVector = this.vector;
+		this.normalize = false;
 
 		this.alignArrowOnVector(direction);
 
@@ -56,12 +56,14 @@ export default class VecpadVector extends THREE.Line {
 				.getMatrix(stepInCurrentTrans).multiply(transMatrix);
 		}
 
-		this.vector = this.originalVector.clone().applyMatrix4(transMatrix);
+		this.vector = this.normalize ? this.originalVector.clone().normalize() : this.originalVector.clone();
+		this.vector.applyMatrix4(transMatrix);
 		this.arrow.position.copy(origin);
 		this.arrow.matrix = new THREE.Matrix4();
 		this.alignArrowOnVector();
 		this.geometry.vertices[1] = this.vector;
 		this.geometry.verticesNeedUpdate = true;
+		this.geometry.computeBoundingSphere();
 
 		this.computeLabelPosition();
 		this.callbacks.forEach(({func}) => {
@@ -73,18 +75,21 @@ export default class VecpadVector extends THREE.Line {
 		this.updateReact();
 	}
 
-	updateColor = (color) => this.originalColor = color;
+	updateColor = (color) => {
+		this.material.color.setHex(color);
+		this.arrow.material.color.setHex(color);
+		this.deselect();
+		this.select();
+	}
 
 	select = () => {
 		this.label.element.classList.add('selected');
 
-		let {arrow, material} = this;
-		this.originalColor = material.color.getHex();
-		material.color.setHex(SceneHelper.SELECTED_COLOR);
-		arrow.material.color.setHex(SceneHelper.SELECTED_COLOR);
+		this.renderOrder = 1;
+
+		let { arrow, material } = this;
 		material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
 
-		this.renderOrder = 1;
 		arrow.renderOrder = 1;
 		material.depthTest = false;
 		arrow.material.depthTest = false;
@@ -93,31 +98,20 @@ export default class VecpadVector extends THREE.Line {
 	deselect = () => {
 		this.label.element.classList.remove('selected');
 
-		let { arrow, material, originalColor} = this;
-		material.color.setHex(originalColor);
-		material.linewidth = SceneHelper.UNSELECTED_LINEWIDTH;
-		arrow.material.color.setHex(originalColor);
-		delete this.originalColor;
-
 		this.renderOrder = 0;
+
+		let { arrow, material } = this;
+		material.linewidth = SceneHelper.UNSELECTED_LINEWIDTH;
+
 		arrow.renderOrder = 0;
 		material.depthTest = true;
 		arrow.material.depthTest = true;
 	}
 
 	updateDirection = (direction) => {
-		let origin = new THREE.Vector3(0, 0, 0);
+		this.originalVector = direction.clone();
 
-		this.vector = direction;
-		this.originalVector = this.vector;
-
-		this.arrow.position.copy(origin);
-		this.arrow.matrix = new THREE.Matrix4();
-		this.alignArrowOnVector();
-		this.geometry.vertices[1] = this.vector;
-		this.geometry.verticesNeedUpdate = true;
-		this.computeLabelPosition();
-
+		this.applyTransformations(1);
 		this.updateReact();
 	}
 

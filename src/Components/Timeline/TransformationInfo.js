@@ -5,28 +5,24 @@ import CoordinatesPicker from '../Inputs/CoordinatesPicker'
 /*
 	This component will show the specific details of a transformation.
 */
-const TransformationInfo = ({transformation, activeTransformation, updateTransformation, removeTransformation}) => {
-	const updateTransformationValue = (event, valueName) => updateTransformation({
-		transformation,
-		name: valueName,
-		value: parseFloat(event.target.value)
-	});
+const TransformationInfo = ({transformation, activeTransformation, removeTransformation}) => {
+	const updateTransformationValue = (valueName, value) => {
+		transformation[valueName] = value;
 
-	const updateX = (event) => updateTransformationValue(event, 'x');
-	const updateY = (event) => updateTransformationValue(event, 'y');
-	const updateZ = (event) => updateTransformationValue(event, 'z');
-	const updateXY = (event) => updateTransformationValue(event, 'xY');
-	const updateXZ = (event) => updateTransformationValue(event, 'xZ');
-	const updateYX = (event) => updateTransformationValue(event, 'yX');
-	const updateYZ = (event) => updateTransformationValue(event, 'yZ');
-	const updateZX = (event) => updateTransformationValue(event, 'zX');
-	const updateZY = (event) => updateTransformationValue(event, 'zY');
-	const updateAxis = (axis) => updateTransformation({
-		transformation,
-		name: 'axis',
-		value: axis
-	});
-	const updateAngle = (event) => updateTransformationValue(event, 'angle');
+		transformation.applyTransformations(1);
+		transformation.updateReact();
+	};
+
+	const updateX = (event) => updateTransformationValue('x', parseFloat(event.target.value));
+	const updateY = (event) => updateTransformationValue('y', parseFloat(event.target.value));
+	const updateZ = (event) => updateTransformationValue('z', parseFloat(event.target.value));
+	const updateXY = (event) => updateTransformationValue('xY', parseFloat(event.target.value));
+	const updateXZ = (event) => updateTransformationValue('xZ', parseFloat(event.target.value));
+	const updateYX = (event) => updateTransformationValue('yX', parseFloat(event.target.value));
+	const updateYZ = (event) => updateTransformationValue('yZ', parseFloat(event.target.value));
+	const updateZX = (event) => updateTransformationValue('zX', parseFloat(event.target.value));
+	const updateZY = (event) => updateTransformationValue('zY', parseFloat(event.target.value));
+	const updateAngle = (event) => updateTransformationValue('angle', parseFloat(event.target.value));
 
 	let controls;
 	switch(transformation.name) {
@@ -54,7 +50,7 @@ const TransformationInfo = ({transformation, activeTransformation, updateTransfo
 				<div className="transformation-controls">
 					<CoordinatesPicker
 						name="Axis"
-						updateCoordinates={updateAxis}
+						updateCoordinates={(axis) => updateTransformationValue('axis', axis)}
 						coordinates={axis}
 					/>
 					<InputGroup name="Angle">

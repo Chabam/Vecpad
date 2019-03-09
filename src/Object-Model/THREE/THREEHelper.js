@@ -78,7 +78,7 @@ export default class THREEHelper {
 		// First we need to find out where our mouse is in the coordinates of the camera.
 		let mouseNormalizedCoords = new THREE.Vector2();
 		mouseNormalizedCoords.x = (event.clientX / this.width) * 2 - 1;
-		mouseNormalizedCoords.y = -((event.clientY) / this.height) * 2 + 1;
+		mouseNormalizedCoords.y = -(event.clientY / this.height) * 2 + 1;
 
 		// Then we trace a ray to check wether or not we have a collision.
 		this.rayCaster.setFromCamera(mouseNormalizedCoords, this.cameraHelper.THREECamera);

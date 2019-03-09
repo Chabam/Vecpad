@@ -7,7 +7,6 @@ const TransformationList = ({transformationList, activeTransformation, updateTra
 			key={i}
 			transformation={transformation}
 			activeTransformation={i === activeTransformation}
-			updateTransformation={updateTransformation}
 			removeTransformation={removeTransformation}
 		/>
 	));

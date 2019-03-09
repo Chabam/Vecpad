@@ -12,8 +12,6 @@ export default class VecpadMesh extends THREE.Mesh {
 		}));
 
 		this.type = type;
-		this.color = color;
-		this.outlineColor = outlineColor;
 		this.originalPosition = this.position;
 
 		let edgesGeometry = new THREE.EdgesGeometry(geometry);
@@ -61,37 +59,33 @@ export default class VecpadMesh extends THREE.Mesh {
 
 	select = () => {
 		this.label.element.classList.add('selected');
-
-		let { outline } = this;
-		this.originalColor = outline.material.color.getHex();
-		outline.material.color.setHex(SceneHelper.SELECTED_COLOR);
-		outline.material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
-
-		outline.renderOrder = 1;
-		outline.material.depthTest = false;
+		let selection = new THREE.LineSegments(this.outline.geometry.clone(), new THREE.LineBasicMaterial({
+			depthTest: false,
+			color: this.outline.material.color,
+			linewidth: SceneHelper.SELECTED_LINEWIDTH,
+		}));
+		selection.renderOrder = 1;
+		this.selection = selection;
+		this.add(selection);
 	}
 
 	deselect = () => {
 		this.label.element.classList.remove('selected');
-
-		let { outline, originalColor } = this;
-		outline.material.color.setHex(originalColor);
-		outline.material.linewidth = SceneHelper.UNSELECTED_LINEWIDTH;
-		delete this.originalColor;
-
-		outline.renderOrder = 0;
-		outline.material.depthTest = true;
+		this.remove(this.selection);
+		this.selection.material.dispose();
+		this.selection.geometry.dispose();
+		delete this.selection;
 	}
 
 	updateColor = (color) => {
-		this.color = color;
 		this.material.color.setHex(color);
 		this.updateReact();
 	}
 
 	updateOutlineColor = (outlineColor) => {
-		this.outlineColor = outlineColor;
 		this.outline.material.color.setHex(outlineColor);
+		this.deselect();
+		this.select();
 		this.updateReact();
 	}
 
@@ -99,14 +93,25 @@ export default class VecpadMesh extends THREE.Mesh {
 		let { x, y, z } = position;
 
 		let translationMatrix = new THREE.Matrix4().makeTranslation(x, y, z);
-		this.matrix = new THREE.Matrix4();
+		this.matrix = new THREE.Matrix4().makeTranslation(x, y, z);
 		this.originalMatrix = translationMatrix;
 		this.originalPosition = position;
 		this.applyMatrix(translationMatrix);
-		this.callbacks.forEach(({func}) => func({
-			changedObject: this,
-			deleted: true
-		}));
+
+		this.applyTransformations(1);
+		this.updateReact();
+	}
+
+	updateGeometry = (geometry) => {
+		this.geometry.dispose();
+		this.outline.geometry.dispose();
+
+		this.geometry = geometry;
+		this.outline.geometry = new THREE.EdgesGeometry(geometry);
+
+		this.deselect();
+		this.select();
+		this.applyTransformations(1);
 		this.updateReact();
 	}
 

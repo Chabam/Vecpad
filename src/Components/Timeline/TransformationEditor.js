@@ -50,7 +50,6 @@ const TransformationEditor = ({object}) => {
 				<TransformationList
 					transformationList={object.transformations}
 					activeTransformation={Math.min(currentTrans, object.transformations.length - 1)}
-					updateTransformation={object.updateTransformation}
 					removeTransformation={object.removeTransformation}
 				/>
 				<div id="add-transformation">

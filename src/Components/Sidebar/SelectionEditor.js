@@ -1,8 +1,10 @@
 import React from 'react';
+import * as THREE from 'three';
 import InputGroup from '../Inputs/InputGroup';
 import CoordinatesPicker from '../Inputs/CoordinatesPicker';
 import ColorPicker from '../Inputs/ColorPicker';
 import VecpadMesh from '../../Object-Model/VecpadMesh';
+import ObjectHelper from '../../Object-Model/THREE/ObjectHelper';
 
 // This component will show the specific details of the currently selected object
 const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
@@ -45,7 +47,13 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 
 	switch(object.type) {
 		case 'Operation':
-			let vectors = sceneHelper.getVectors().map((vector, i) => (
+			let availableVectors = sceneHelper.getVectors().filter((vector) =>
+				vector.type === 'Vector' || (vector.uuid !== object.uuid && vector.v1 && vector.v2)
+			);
+			let v1s = availableVectors.map((vector, i) => (
+				<option key={i} value={vector.id}>{vector.name}</option>
+			));
+			let v2s = availableVectors.map((vector, i) => (
 				<option key={i} value={vector.id}>{vector.name}</option>
 			));
 			const updateV1 = (event) => object.setV1(
@@ -55,22 +63,97 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 				sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
 			);
 			typeSpecificControls = (
-				<div className="typeSpecficControls">
+				<div className="type-specfic-controls">
 					<InputGroup name="Vector 1">
-						<select onChange={updateV1} defaultValue={object.v1 ? object.v1.id : -1}>
+						<select onChange={updateV1} value={object.v1 ? object.v1.id : -1}>
 							<option value={-1}></option>
-							{vectors}
+							{v1s}
 						</select>
 					</InputGroup>
 					<InputGroup name="Vector 2">
-						<select onChange={updateV2} defaultValue={object.v2 ? object.v2.id : -1}>
+						<select onChange={updateV2} value={object.v2 ? object.v2.id : -1}>
 							<option value={-1}></option>
-							{vectors}
+							{v2s}
 						</select>
 					</InputGroup>
 				</div>
 			);
 			break;
+		case 'Vector':
+			const updateNormalize = (event) => {
+				object.normalize = event.target.checked;
+				object.updateDirection(object.originalVector);
+				object.updateReact();
+			}
+			typeSpecificControls = (
+				<div className="type-specfic-controls">
+				<InputGroup name="Normalize">
+					<input type="checkbox" checked={object.normalize} onChange={updateNormalize}/>
+				</InputGroup>
+				</div>
+			);
+			break;
+		case 'Triangle': {
+			let { width } = object.geometry.parameters;
+			const updateTriangleGeometry = (event) => {
+				object.updateGeometry(ObjectHelper.createTriangleGeometry(parseFloat(event.target.value)));
+			}
+
+			typeSpecificControls = (
+				<div className="type-specfic-controls">
+					<InputGroup name="Width">
+						<input type="number" step={0.01} value={width} onChange={updateTriangleGeometry}/>
+					</InputGroup>
+				</div>
+			);
+			break;
+		}
+		case 'Quad': {
+			let { width, height } = object.geometry.parameters;
+			const updateQuadGeometry = (width, height) => {
+				object.updateGeometry(new THREE.PlaneGeometry(width, height));
+			}
+
+			const updateWidth = (event) => updateQuadGeometry(parseFloat(event.target.value), height);
+			const updateHeight = (event) => updateQuadGeometry(width, parseFloat(event.target.value));
+
+			typeSpecificControls = (
+				<div className="type-specfic-controls">
+					<InputGroup name="Width">
+						<input type="number" step={0.01} value={width} onChange={updateWidth}/>
+					</InputGroup>
+					<InputGroup name="Height">
+						<input type="number" step={0.01} value={height} onChange={updateHeight}/>
+					</InputGroup>
+				</div>
+			);
+			break;
+		}
+		case 'Cube': {
+			let { width, height, depth } = object.geometry.parameters;
+			const updateQuadGeometry = (width, height, depth) => {
+				object.updateGeometry(new THREE.BoxGeometry(width, height, depth));
+			}
+
+			const updateWidth = (event) => updateQuadGeometry(parseFloat(event.target.value), height, depth);
+			const updateHeight = (event) => updateQuadGeometry(width, parseFloat(event.target.value), depth);
+			const updateDepth = (event) => updateQuadGeometry(width, height, parseFloat(event.target.value));
+
+			typeSpecificControls = (
+				<div className="type-specfic-controls">
+					<InputGroup name="Width">
+						<input type="number" step={0.01} value={width} onChange={updateWidth}/>
+					</InputGroup>
+					<InputGroup name="Height">
+						<input type="number" step={0.01} value={height} onChange={updateHeight}/>
+					</InputGroup>
+					<InputGroup name="Depth">
+						<input type="number" step={0.01} value={depth} onChange={updateDepth}/>
+					</InputGroup>
+				</div>
+			);
+			break;
+		}
 		default:
 			typeSpecificControls = (<div>No type</div>);
 			break;
@@ -92,14 +175,14 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			<ColorPicker
 				name="Color"
 				updateColor={object.updateColor}
-				defaultColor={object.color}
+				defaultColor={object.material.color.getHex()}
 			/>
 			{
-				object.type instanceof VecpadMesh &&
+				object instanceof VecpadMesh &&
 				<ColorPicker
 					name="Outline color"
 					updateColor={object.updateOutlineColor}
-					defaultColor={object.outlineColor}
+					defaultColor={object.outline.material.color.getHex()}
 				/>
 			}
 			{coordinatesEditor}

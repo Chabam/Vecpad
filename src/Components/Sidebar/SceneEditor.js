@@ -70,7 +70,7 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 				</select>
 			</div>
 			<InputGroup name='Display Mode'>
-				<select onChange={callApplyDisplayMode} defaultValue={sceneHelper.currentDisplayMode}>
+				<select onChange={callApplyDisplayMode} value={sceneHelper.currentDisplayMode}>
 					<option value={SceneHelper.DisplayMode.OUTLINE}>
 						Outline
 					</option>

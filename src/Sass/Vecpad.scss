@@ -48,12 +48,12 @@ html, body {
 
 	.object-label {
 		color: $foreground-color;
-		pointer-events:none;
+		pointer-events: none;
 		font-family: 'Roboto Mono', monospace;
 		font-size: 14px;
+		padding: 5px;
 
 		&.selected {
-			color: #312783;
 			font-weight: bold;
 		}
 
@@ -167,7 +167,7 @@ html, body {
 		box-sizing: border-box;
 		overflow-y: auto;
 
-		&>* {
+		& > * {
 			margin-bottom: 10px;
 		}
 
@@ -207,9 +207,9 @@ html, body {
 		height: 50%;
 		box-sizing: border-box;
 		padding: 15px;
-        overflow-y: auto;
+		overflow-y: auto;
 
-		&>* {
+		& > *, .type-specfic-controls > * {
 			margin-bottom: 10px;
 		}
 	}

@@ -61,6 +61,10 @@ export default class ObjectHelper {
 		triangleGeometry.vertices.push(p1, p2, p3);
 		triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
 		triangleGeometry.computeFaceNormals();
+		triangleGeometry.type = 'TriangleGeometry';
+		triangleGeometry.parameters = {
+			width: width
+		};
 
 		// This line is to set the center of the triangle at (0,0,0)
 		triangleGeometry.translate(-(width/3), -(width/3), 0);

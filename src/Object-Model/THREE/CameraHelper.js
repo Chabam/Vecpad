@@ -43,6 +43,8 @@ export default class CameraWrapper {
 	}
 
 	unfocusObject = () => {
+		if (!this.focusedObject) return;
+
 		let { cbId, object } = this.focusedObject;
 		object.unregisterCallback(cbId);
 		object.updateReact();

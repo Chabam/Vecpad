@@ -19,7 +19,6 @@ export default class SceneHelper {
 		BOTH: 2
 	}
 
-	static SELECTED_COLOR = 0x009fe3;
 	static SELECTED_LINEWIDTH = 2;
 	static UNSELECTED_LINEWIDTH = 1;
 
@@ -69,7 +68,7 @@ export default class SceneHelper {
 		)
 	);
 
-	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
+	getVectors = () => this.getVecpadObjectList().filter((object) => object instanceof VecpadVector);
 
 	// A function used to change the size of the grid at Y=0
 	updateGraph = (size) => {
@@ -108,7 +107,7 @@ export default class SceneHelper {
 			!(
 				object === this.THREEScene.graph ||
 				object instanceof THREE.Light ||
-				object.type === 'Vector'
+				object.type instanceof VecpadVector
 			)
 		).forEach((object) => {
 

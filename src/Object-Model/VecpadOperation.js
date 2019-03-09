@@ -23,14 +23,14 @@ export default class VecpadOperation extends VecpadVector {
 		if (typeof vector !== 'undefined') {
 			this.v1 = vector;
 			this.v1CbId = this.v1.registerCallback(this.updateVectors);
+
+			if (this.v2) {
+				this.createOperation();
+			}
 		} else {
 			this.v1 = null;
 			this.v1CbId = null;
-		}
-
-
-		if (this.v2) {
-			this.createOperation();
+			this.removeOperation();
 		}
 
 		this.updateReact();
@@ -44,13 +44,14 @@ export default class VecpadOperation extends VecpadVector {
 		if (typeof vector !== 'undefined') {
 			this.v2 = vector;
 			this.v2CbId = this.v2.registerCallback(this.updateVectors);
+
+			if (this.v1) {
+				this.createOperation();
+			}
 		} else {
 			this.v2 = null;
 			this.v2CbId = null;
-		}
-
-		if (this.v1) {
-			this.createOperation();
+			this.removeOperation();
 		}
 
 		this.updateReact();
