@@ -107,7 +107,7 @@ export default class SceneHelper {
 			!(
 				object === this.THREEScene.graph ||
 				object instanceof THREE.Light ||
-				object.type instanceof VecpadVector
+				object instanceof VecpadVector
 			)
 		).forEach((object) => {
 
