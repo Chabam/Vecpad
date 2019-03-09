@@ -68,7 +68,7 @@ export default class SceneHelper {
 		)
 	);
 
-	getVectors = () => this.getVecpadObjectList().filter((object) => object instanceof VecpadVector);
+	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
 
 	// A function used to change the size of the grid at Y=0
 	updateGraph = (size) => {

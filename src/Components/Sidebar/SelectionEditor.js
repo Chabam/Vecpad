@@ -47,9 +47,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 
 	switch(object.type) {
 		case 'Operation':
-			let availableVectors = sceneHelper.getVectors().filter((vector) =>
-				vector.type === 'Vector' || (vector.uuid !== object.uuid && vector.v1 && vector.v2)
-			);
+			let availableVectors = sceneHelper.getVectors();
 			let v1s = availableVectors.map((vector, i) => (
 				<option key={i} value={vector.id}>{vector.name}</option>
 			));
