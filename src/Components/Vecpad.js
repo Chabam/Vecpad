@@ -62,6 +62,7 @@ export default class Vecpad extends Component {
 						sceneHelper.selectedObject &&
 						<SelectionEditor
 							object={sceneHelper.selectedObject}
+							sceneHelper={sceneHelper}
 							cameraHelper={cameraHelper}
 						/>
 					}

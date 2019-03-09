@@ -6,12 +6,13 @@ import Shear from './Transformations/Shear';
 
 
 export default function(label, reactUpdateFunc) {
-    this.name = label || `Object #${this.id}`;
-    let objectLabel = ObjectHelper.createLabel(this.name);
-    objectLabel.matrixAutoUpdate = false;
-    this.label = objectLabel;
-    this.add(this.label);
-    this.updateReact = reactUpdateFunc;
+    this.name = label;
+    this.matrixAutoUpdate = false;
+    this.originalMatrix = this.matrix.clone();
+    this.transformations = [];
+    this.currentStep = 1;
+    this.currentCallbackId = 0;
+    this.callbacks = []
 
     this.computeLabelPosition = () => {
         /*
@@ -35,14 +36,12 @@ export default function(label, reactUpdateFunc) {
 		this.label.applyMatrix(new THREE.Matrix4().getInverse(this.matrix, false).multiply(translationToPos));
     }
 
+    let objectLabel = ObjectHelper.createLabel(this.name);
+    objectLabel.matrixAutoUpdate = false;
+    this.label = objectLabel;
+    this.add(this.label);
+    this.updateReact = reactUpdateFunc;
     this.computeLabelPosition();
-
-    this.matrixAutoUpdate = false;
-    this.originalMatrix = this.matrix.clone();
-    this.transformations = [];
-    this.currentStep = 1;
-    this.currentCallbackId = 0;
-    this.callbacks = []
 
     this.registerCallback = (func) => {
         let id = this.currentCallbackId++;
@@ -55,6 +54,15 @@ export default function(label, reactUpdateFunc) {
 
     this.unregisterCallback = (id) => {
         this.callbacks = this.callbacks.filter((callback) => callback.id !== id);
+    }
+
+    this.notifyRegistree = () => {
+        this.callbacks.forEach(({func}) => {
+            func({
+                changedObject: this,
+                deleted: true
+            });
+        });
     }
 
     this.addTransformation = (transformation) => {

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import ObjectHelper from './ObjectHelper';
 import VecpadVector from '../VecpadVector';
+import VecpadOperation from '../VecpadOperation';
 import VecpadMesh from '../VecpadMesh';
 
 // A wrapper around the scene in THREE.js
@@ -123,8 +124,35 @@ export default class SceneHelper {
 	// These functions are used to add certain type of objects to the scene.
 
 	addVector = () => {
-		let vector = new VecpadVector(new THREE.Vector3(1, 1, 1), 0x000000, null, this.updateReact);
+		let vector = new VecpadVector(new THREE.Vector3(1, 1, 1), 0x000000, 'New vector', this.updateReact);
 		this.addVecpadObject(vector);
+	}
+
+	addVectorAddition = () => {
+		let addition = new VecpadOperation(
+			(v1, v2) => new THREE.Vector3().addVectors(v1, v2),
+			'New vector addtion',
+			this.updateReact
+		);
+		this.addVecpadObject(addition);
+	}
+
+	addVectorSubtraction = () => {
+		let addition = new VecpadOperation(
+			(v1, v2) => new THREE.Vector3().subVectors(v1, v2),
+			'New vector subtraction',
+			this.updateReact
+		);
+		this.addVecpadObject(addition);
+	}
+
+	addVectorCross = () => {
+		let addition = new VecpadOperation(
+			(v1, v2) => new THREE.Vector3().crossVectors(v1, v2),
+			'New cross product',
+			this.updateReact
+		);
+		this.addVecpadObject(addition);
 	}
 
 	addTriangle = () => {
@@ -134,7 +162,7 @@ export default class SceneHelper {
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			null,
+			'New triangle',
 			this.updateReact
 		);
 		this.addVecpadObject(triangle);
@@ -147,7 +175,7 @@ export default class SceneHelper {
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			null,
+			'New quad',
 			this.updateReact
 		);
 		this.addVecpadObject(quad);
@@ -160,7 +188,7 @@ export default class SceneHelper {
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			null,
+			'New cube',
 			this.updateReact
 		);
 		this.addVecpadObject(cube);

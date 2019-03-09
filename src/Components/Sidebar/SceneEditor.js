@@ -12,14 +12,17 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 		VECTOR: 0,
 		TRIANGLE: 1,
 		QUAD: 2,
-		CUBE: 3
+		CUBE: 3,
+		ADDITION: 4,
+		SUBTRACTION: 5,
+		CROSS: 6
 	}
 
 	const createObject = (event) => {
 		switch(parseInt(event.target.value)) {
 			case objectType.VECTOR:
 				sceneHelper.addVector();
-				break;
+                break;
 			case objectType.TRIANGLE:
 				sceneHelper.addTriangle();
 				break;
@@ -28,12 +31,22 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 				break;
 			case objectType.CUBE:
 				sceneHelper.addCube();
+                break;
+            case objectType.ADDITION:
+				sceneHelper.addVectorAddition();
+                break;
+            case objectType.SUBTRACTION:
+				sceneHelper.addVectorSubtraction();
+                break;
+            case objectType.CROSS:
+				sceneHelper.addVectorCross();
 				break;
 			default:
 				event.preventDefault();
 				break;
 		}
-	}
+    }
+
     return (
         <div id="scene-editor">
             <ObjectList
@@ -43,11 +56,17 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
             <div id="add-object">
                 <select className="add-select" value={''} onChange={createObject}>
                     <option>＋</option>
-                    <option value={objectType.VECTOR}>Vector</option>
-                    <option>Operation</option>
-                    <option value={objectType.TRIANGLE}>Triangle</option>
-                    <option value={objectType.QUAD}>Quad</option>
-                    <option value={objectType.CUBE}>Cube</option>
+                    <optgroup label="3D Object">
+                        <option value={objectType.VECTOR}>Vector</option>
+                        <option value={objectType.TRIANGLE}>Triangle</option>
+                        <option value={objectType.QUAD}>Quad</option>
+                        <option value={objectType.CUBE}>Cube</option>
+                    </optgroup>
+                    <optgroup label="Vector operation">
+                        <option value={objectType.ADDITION}>Addition</option>
+                        <option value={objectType.SUBTRACTION}>Subtraction</option>
+                        <option value={objectType.CROSS}>Cross product</option>
+                    </optgroup>
                 </select>
             </div>
             <InputGroup name='Display Mode'>
@@ -67,7 +86,7 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
                 <input type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
             </InputGroup>
             <div>
-                <button onClick={cameraHelper.reset}>Reset camera</button>
+                <button onClick={cameraHelper.unfocusObject}>Reset camera</button>
             </div>
         </div>
     );

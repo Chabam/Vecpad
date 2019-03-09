@@ -4,7 +4,7 @@ import VecpadObjectMixin from './VecpadObjectMixin';
 import Translation from './Transformations/Translation';
 
 export default class VecpadMesh extends THREE.Mesh {
-    constructor(geometry, type, displayMode, color=0xffffff, outlineColor=0x000000, label, reactUpdateFunc) {
+    constructor(geometry, type, displayMode, color, outlineColor, label, reactUpdateFunc) {
         super(geometry, new THREE.MeshLambertMaterial({
 			color: color,
 			side: THREE.DoubleSide,
@@ -14,6 +14,8 @@ export default class VecpadMesh extends THREE.Mesh {
         this.type = type;
         this.color = color;
         this.outlineColor = outlineColor;
+        this.originalPosition = this.position;
+
         let edgesGeometry = new THREE.EdgesGeometry(geometry);
         this.outline = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({
 			color: outlineColor,
@@ -44,8 +46,11 @@ export default class VecpadMesh extends THREE.Mesh {
 
         this.applyMatrix(transMatrix);
         this.computeLabelPosition();
-        this.callbacks.forEach((callback) => {
-            callback.func(this);
+        this.callbacks.forEach(({func}) => {
+            func({
+                changedObject: this,
+                delete: false
+            });
         })
         this.updateReact();
     }
@@ -90,10 +95,17 @@ export default class VecpadMesh extends THREE.Mesh {
         let translationMatrix = new THREE.Matrix4().makeTranslation(x, y, z);
         this.matrix = new THREE.Matrix4();
         this.originalMatrix = translationMatrix;
+        this.originalPosition = position;
         this.applyMatrix(translationMatrix);
-        this.callbacks.forEach(({func}) => func(this));
+        this.callbacks.forEach(({func}) => func({
+            changedObject: this,
+            deleted: true
+        }));
         this.updateReact();
     }
 
-    clean = () => this.remove(this.label);
+    clean = () => {
+        this.remove(this.label);
+        this.notifyRegistree();
+    }
 }
