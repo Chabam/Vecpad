@@ -100,7 +100,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			typeSpecificControls = (
 				<div className="type-specfic-controls">
 					<InputGroup name="Width">
-						<input type="number" step={0.01} value={width} onChange={updateTriangleGeometry}/>
+						<input type="number" step={0.01} defaultValue={width} onChange={updateTriangleGeometry}/>
 					</InputGroup>
 				</div>
 			);
@@ -118,10 +118,10 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			typeSpecificControls = (
 				<div className="type-specfic-controls">
 					<InputGroup name="Width">
-						<input type="number" step={0.01} value={width} onChange={updateWidth}/>
+						<input type="number" step={0.01} defaultValue={width} onChange={updateWidth}/>
 					</InputGroup>
 					<InputGroup name="Height">
-						<input type="number" step={0.01} value={height} onChange={updateHeight}/>
+						<input type="number" step={0.01} defaultValue={height} onChange={updateHeight}/>
 					</InputGroup>
 				</div>
 			);
@@ -140,13 +140,13 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			typeSpecificControls = (
 				<div className="type-specfic-controls">
 					<InputGroup name="Width">
-						<input type="number" step={0.01} value={width} onChange={updateWidth}/>
+						<input type="number" step={0.01} defaultValue={width} onChange={updateWidth}/>
 					</InputGroup>
 					<InputGroup name="Height">
-						<input type="number" step={0.01} value={height} onChange={updateHeight}/>
+						<input type="number" step={0.01} defaultValue={height} onChange={updateHeight}/>
 					</InputGroup>
 					<InputGroup name="Depth">
-						<input type="number" step={0.01} value={depth} onChange={updateDepth}/>
+						<input type="number" step={0.01} defaultValue={depth} onChange={updateDepth}/>
 					</InputGroup>
 				</div>
 			);

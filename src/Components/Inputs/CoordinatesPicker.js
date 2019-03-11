@@ -1,7 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 
-const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
+const CoordinatesPicker = ({name, updateCoordinates, coordinates, key}) => {
 	let {x, y, z} = coordinates;
 
 	const updateX = (event) => updateCoordinates(new THREE.Vector3(parseFloat(event.target.value), y, z));
@@ -11,9 +11,9 @@ const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
 		<div className="coordinates-picker">
 			<label>{name} :</label>
 			<div className="coordinates">
-				<input type="number" step={0.01} value={x} onChange={updateX}/>
-				<input type="number" step={0.01} value={y} onChange={updateY}/>
-				<input type="number" step={0.01} value={z} onChange={updateZ}/>
+				<input type="number" step={0.01} defaultValue={x} onChange={updateX}/>
+				<input type="number" step={0.01} defaultValue={y} onChange={updateY}/>
+				<input type="number" step={0.01} defaultValue={z} onChange={updateZ}/>
 			</div>
 		</div>
 	);

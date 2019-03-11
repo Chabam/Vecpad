@@ -33,13 +33,13 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			controls = (
 				<div className="transformation-controls">
 					<InputGroup name="Amount X">
-						<input type="number" step={0.01} value={x} onChange={updateX}/>
+						<input type="number" step={0.01} defaultValue={x} onChange={updateX}/>
 					</InputGroup>
 					<InputGroup name="Amount Y">
-						<input type="number" step={0.01} value={y} onChange={updateY}/>
+						<input type="number" step={0.01} defaultValue={y} onChange={updateY}/>
 					</InputGroup>
 					<InputGroup name="Amount Z">
-						<input type="number" step={0.01} value={z} onChange={updateZ}/>
+						<input type="number" step={0.01} defaultValue={z} onChange={updateZ}/>
 					</InputGroup>
 				</div>
 			);
@@ -54,7 +54,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 						coordinates={axis}
 					/>
 					<InputGroup name="Angle">
-						<input type="number" step={0.01} value={angle} onChange={updateAngle}/>
+						<input type="number" step={0.01} defaultValue={angle} onChange={updateAngle}/>
 					</InputGroup>
 				</div>
 			);
@@ -64,22 +64,22 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			controls = (
 				<div className="transformation-controls">
 					<InputGroup name="Amount XY">
-						<input type="number" step={0.01} value={xY} onChange={updateXY}/>
+						<input type="number" step={0.01} defaultValue={xY} onChange={updateXY}/>
 					</InputGroup>
 					<InputGroup name="Amount XZ">
-						<input type="number" step={0.01} value={xZ} onChange={updateXZ}/>
+						<input type="number" step={0.01} defaultValue={xZ} onChange={updateXZ}/>
 					</InputGroup>
 					<InputGroup name="Amount YX">
-						<input type="number" step={0.01} value={yX} onChange={updateYX}/>
+						<input type="number" step={0.01} defaultValue={yX} onChange={updateYX}/>
 					</InputGroup>
 					<InputGroup name="Amount YZ">
-						<input type="number" step={0.01} value={yZ} onChange={updateYZ}/>
+						<input type="number" step={0.01} defaultValue={yZ} onChange={updateYZ}/>
 					</InputGroup>
 					<InputGroup name="Amount ZX">
-						<input type="number" step={0.01} value={zX} onChange={updateZX}/>
+						<input type="number" step={0.01} defaultValue={zX} onChange={updateZX}/>
 					</InputGroup>
 					<InputGroup name="Amount ZY">
-						<input type="number" step={0.01} value={zY} onChange={updateZY}/>
+						<input type="number" step={0.01} defaultValue={zY} onChange={updateZY}/>
 					</InputGroup>
 				</div>
 			);
