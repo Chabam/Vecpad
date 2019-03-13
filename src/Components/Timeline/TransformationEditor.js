@@ -34,36 +34,36 @@ const TransformationEditor = ({object}) => {
 
 	return (
 		<div id="transformations-editor" key={object.uuid}>
-			<div id="transformations-controls">
-				<h1>Timeline</h1>
-				<input
-					id="transformations-slider"
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
-					value={object.currentStep}
-				/>
-			</div>
 			<div id="transformation-list-container">
+				<div id="transformations-controls">
+					<h1>Timeline</h1>
+					<input
+						id="transformations-slider"
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
+						value={object.currentStep}
+					/>
+				</div>
 				<TransformationList
 					transformationList={object.transformations}
 					activeTransformation={Math.min(currentTrans, object.transformations.length - 1)}
 					removeTransformation={object.removeTransformation}
 				/>
-				<div id="add-transformation">
-					<select className="add-select" value={''} onChange={createTransformation}>
-						<option>＋</option>
-						{
-							object.type !== 'Vector' &&
-							<option value={transformationType.TRANSLATION}>Translation</option>
-						}
-						<option value={transformationType.ROTATION}>Rotation</option>
-						<option value={transformationType.SHEAR}>Shear</option>
-						<option value={transformationType.SCALE}>Scale</option>
-					</select>
-				</div>
+			</div>
+			<div id="add-transformation">
+				<select className="add-select" value={''} onChange={createTransformation}>
+					<option>＋</option>
+					{
+						object.type !== 'Vector' &&
+						<option value={transformationType.TRANSLATION}>Translation</option>
+					}
+					<option value={transformationType.ROTATION}>Rotation</option>
+					<option value={transformationType.SHEAR}>Shear</option>
+					<option value={transformationType.SCALE}>Scale</option>
+				</select>
 			</div>
 		</div>
 	);

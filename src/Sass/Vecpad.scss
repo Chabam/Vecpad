@@ -76,31 +76,32 @@ html, body {
 			width: 100%;
 			height: 100%;
 			box-sizing: border-box;
-
-			#transformations-controls {
-				height: 20%;
-				width: 100%;
-				padding-right: 15px + 27px;
-				box-sizing: border-box;
-
-				h1 {
-					margin: 0;
-					margin-bottom: 10px;
-				}
-
-				#transformations-slider {
-					width: 100%;
-					box-sizing: border-box;
-				}
-			}
+			display: inline-flex;
 
 			#transformation-list-container {
 				width: 100%;
-				height: 80%;
-				display: inline-flex;
+				height: 100%;
+				display: flex;
+				flex-flow: column;
+
+				#transformations-controls {
+					width: 100%;
+					height: 20%;
+					box-sizing: border-box;
+
+					h1 {
+						margin: 0;
+						margin-bottom: 10px;
+					}
+
+					#transformations-slider {
+						width: 100%;
+						box-sizing: border-box;
+						padding: 0;
+					}
+				}
 
 				#transformation-list {
-					height: 100%;
 					flex: 1;
 					display: inline-flex;
 					border: 1px solid $border-color;
@@ -139,14 +140,16 @@ html, body {
 						}
 					}
 				}
+			}
 
-				#add-transformation {
-					float: right;
-					height: 100%;
-					margin-left: 15px;
-					display: flex;
-					align-items: center;
-				}
+			#add-transformation {
+				height: 80%;
+				top: 20%;
+				margin-left: 15px;
+				position: relative;
+				display: flex;
+				align-items: center;
+				box-sizing: border-box;
 			}
 		}
 	}
@@ -160,10 +163,12 @@ html, body {
 	height: 100%;
 	border: 1px solid $border-color;
 	background-color: $background-color;
+	display: flex;
+	flex-flow: column;
 
 	#scene-editor {
 		padding: 15px;
-		height: 50%;
+		flex: 1;
 		box-sizing: border-box;
 		overflow-y: auto;
 
@@ -204,7 +209,7 @@ html, body {
 
 	#selection-editor {
 		border-top: 1px solid $border-color;
-		height: 50%;
+		flex: 1;
 		box-sizing: border-box;
 		padding: 15px;
 		overflow-y: auto;
