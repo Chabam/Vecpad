@@ -27,7 +27,7 @@ export default class CameraWrapper {
 	}
 
 	focusObject = (object) => {
-		let cbId = object.registerCallback(({ changedObject, deleted }) => {
+		let cbId = object.registerCallback((changedObject, deleted) => {
 			if (!deleted) {
 				this.focusOnCoords(changedObject.position)
 			} else {

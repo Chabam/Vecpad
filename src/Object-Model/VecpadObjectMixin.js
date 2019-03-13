@@ -48,7 +48,7 @@ export default function(label, reactUpdateFunc) {
 		let id = this.currentCallbackId++;
 		this.callbacks.push({
 			id,
-			func: (changedObject) => func(changedObject)
+			func
 		});
 		return id;
 	}
@@ -59,10 +59,7 @@ export default function(label, reactUpdateFunc) {
 
 	this.notifyRegistree = () => {
 		this.callbacks.forEach(({func}) => {
-			func({
-				changedObject: this,
-				deleted: true
-			});
+			func(this, true);
 		});
 	}
 

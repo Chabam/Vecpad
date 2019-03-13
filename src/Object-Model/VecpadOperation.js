@@ -57,7 +57,7 @@ export default class VecpadOperation extends VecpadVector {
 		this.updateReact();
 	}
 
-	updateVectors = ({ changedObject, deleted }) => {
+	updateVectors = (changedObject, deleted) => {
 
 		if (deleted) {
 			if (!this.v1 || !this.v2) {

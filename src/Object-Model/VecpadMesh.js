@@ -45,10 +45,7 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.applyMatrix(transMatrix);
 		this.computeLabelPosition();
 		this.callbacks.forEach(({func}) => {
-			func({
-				changedObject: this,
-				delete: false
-			});
+			func(this, false);
 		})
 		this.updateReact();
 	}
