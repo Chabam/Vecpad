@@ -33,7 +33,7 @@ const TransformationEditor = ({object}) => {
 	}
 
 	return (
-		<div id="transformations-editor">
+		<div id="transformations-editor" key={object.uuid}>
 			<div id="transformations-controls">
 				<h1>Timeline</h1>
 				<input

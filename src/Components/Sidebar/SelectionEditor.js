@@ -158,7 +158,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 
 	}
 	return (
-		<div id="selection-editor">
+		<div id="selection-editor" key={object.uuid}>
 			<h1>{`${object.type}: ${object.name}`}</h1>
 			<InputGroup name="Follow">
 				<input onChange={followObject} type="checkbox" checked={objectIsFocused}/>

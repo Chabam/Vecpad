@@ -1,7 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 
-const CoordinatesPicker = ({name, updateCoordinates, coordinates, key}) => {
+const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
 	let {x, y, z} = coordinates;
 
 	const updateX = (event) => updateCoordinates(new THREE.Vector3(parseFloat(event.target.value), y, z));
