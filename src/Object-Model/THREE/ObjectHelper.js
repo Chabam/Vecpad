@@ -18,14 +18,7 @@ export default class ObjectHelper {
 		}
 
 		let halfSubdivision = (subdivision / 2);
-		let labelDistance = (subdivision / 2) + ((subdivision / 2) * 0.05);
 		let graph = new THREE.GridHelper(subdivision, subdivision);
-		graph.xLabel = ObjectHelper.createLabel('X');
-		graph.xMinusLabel = ObjectHelper.createLabel('-X');
-		graph.yLabel = ObjectHelper.createLabel('Y');
-		graph.yMinusLabel = ObjectHelper.createLabel('-Y');
-		graph.zLabel = ObjectHelper.createLabel('Z');
-		graph.zMinusLabel = ObjectHelper.createLabel('-Z');
 		let yAxisGeo = new THREE.Geometry();
 		yAxisGeo.vertices.push(
 			new THREE.Vector3(0, halfSubdivision, 0),
@@ -35,21 +28,7 @@ export default class ObjectHelper {
 			color: 0x000000
 		}))
 		graph.size = subdivision;
-		graph.xLabel.position.set(labelDistance, 0, 0);
-		graph.xMinusLabel.position.set(-labelDistance, 0, 0);
-		graph.yLabel.position.set(0, labelDistance, 0);
-		graph.yMinusLabel.position.set(0, -labelDistance, 0);
-		graph.zLabel.position.set(0, 0, labelDistance);
-		graph.zMinusLabel.position.set(0, 0, -labelDistance);
-		graph.add(
-			graph.yAxis,
-			graph.xLabel,
-			graph.xMinusLabel,
-			graph.yLabel,
-			graph.yMinusLabel,
-			graph.zLabel,
-			graph.zMinusLabel
-		);
+		graph.add(graph.yAxis);
 		return graph;
 	}
 

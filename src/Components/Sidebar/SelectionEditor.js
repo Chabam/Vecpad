@@ -166,7 +166,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			<InputGroup name="Label">
 				<input
 					type="text"
-					value={object.name}
+					defaultValue={object.name}
 					onChange={(event) => object.updateLabel(event.target.value)}
 				/>
 			</InputGroup>

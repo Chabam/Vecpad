@@ -37,10 +37,29 @@ export default class SceneHelper {
 		this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 		this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.5);
 
+		this.xLabel = ObjectHelper.createLabel('X');
+		this.xMinusLabel = ObjectHelper.createLabel('-X');
+		this.yLabel = ObjectHelper.createLabel('Y');
+		this.yMinusLabel = ObjectHelper.createLabel('-Y');
+		this.zLabel = ObjectHelper.createLabel('Z');
+		this.zMinusLabel = ObjectHelper.createLabel('-Z');
+
 		// Information on the grid at Y=0 that act as a reference for our scene.
 		let graph = ObjectHelper.createGraph(2);
+		this.setLabelPosition(2);
 		this.THREEScene.graph = graph;
-		this.addObjects(this.directionalLight, this.ambientLight, this.hemisphereLight, graph);
+		this.addObjects(
+			this.directionalLight,
+			this.ambientLight,
+			this.hemisphereLight,
+			graph,
+			this.xLabel,
+			this.xMinusLabel,
+			this.yLabel,
+			this.yMinusLabel,
+			this.zLabel,
+			this.zMinusLabel
+		);
 	}
 
 	// This function add one or multiple objects to the scene.
@@ -62,10 +81,8 @@ export default class SceneHelper {
 	}
 
 	getVecpadObjectList = () => this.THREEScene.children.filter((object) =>
-		!(
-			object === this.THREEScene.graph ||
-			object instanceof THREE.Light
-		)
+		object instanceof VecpadMesh ||
+		object instanceof VecpadVector
 	);
 
 	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
@@ -76,24 +93,26 @@ export default class SceneHelper {
 			return;
 		}
 		let { graph } = this.THREEScene;
-		graph.remove(
-			graph.xLabel,
-			graph.xMinusLabel,
-			graph.yLabel,
-			graph.yMinusLabel,
-			graph.zLabel,
-			graph.zMinusLabel
-		);
-
 		graph.material.dispose();
 		graph.geometry.dispose();
 		this.THREEScene.remove(graph);
 		let newGraph = ObjectHelper.createGraph(size);
 		newGraph.size = size;
 		this.THREEScene.graph = newGraph;
+		this.setLabelPosition(size);
 		this.addObjects(newGraph);
 		this.updateReact();
 	};
+
+	setLabelPosition = (size) => {
+		let labelDistance = (size / 2) + ((size / 2) * 0.05);
+		this.xLabel.position.set(labelDistance, 0, 0);
+		this.xMinusLabel.position.set(-labelDistance, 0, 0);
+		this.yLabel.position.set(0, labelDistance, 0);
+		this.yMinusLabel.position.set(0, -labelDistance, 0);
+		this.zLabel.position.set(0, 0, labelDistance);
+		this.zMinusLabel.position.set(0, 0, -labelDistance);
+	}
 
 	// This function changes the way an object is displayed
 	applyDisplayMode = (mode) => {

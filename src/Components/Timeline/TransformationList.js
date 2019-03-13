@@ -1,7 +1,7 @@
 import React from 'react';
 import TransformationInfo from './TransformationInfo';
 
-const TransformationList = ({transformationList, activeTransformation, updateTransformation, removeTransformation}) => {
+const TransformationList = ({transformationList, activeTransformation, removeTransformation}) => {
 	let transformations = transformationList.map((transformation, i) => (
 		<TransformationInfo
 			key={i}

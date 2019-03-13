@@ -109,14 +109,7 @@ export default function(label, reactUpdateFunc) {
 	}
 
 	this.updateLabel = (text) => {
-		this.remove(this.label);
-		this.name = text;
-		let objectLabel = ObjectHelper.createLabel(this.name);
-		objectLabel.matrixAutoUpdate = false;
-		objectLabel.element.classList.add('selected');
-		this.label = objectLabel;
-		this.add(this.label);
-		this.computeLabelPosition();
+		this.label.element.textContent = text;
 		this.updateReact();
 	}
 };
