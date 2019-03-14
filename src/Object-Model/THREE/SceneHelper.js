@@ -121,14 +121,7 @@ export default class SceneHelper {
 		}
 
 		this.currentDisplayMode = mode;
-		this.THREEScene.children.filter((object) =>
-			// We don't change the graph, lights and vector objects.
-			!(
-				object === this.THREEScene.graph ||
-				object instanceof THREE.Light ||
-				object instanceof VecpadVector
-			)
-		).forEach((object) => {
+		this.THREEScene.children.filter((object) => object instanceof VecpadMesh).forEach((object) => {
 
 			// See SceneHelper's display mode for details.
 			object.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.OUTLINE);

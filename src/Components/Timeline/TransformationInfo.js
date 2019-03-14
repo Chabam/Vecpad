@@ -93,15 +93,36 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			break;
 	}
 
+	const TransformationActionType = {
+		PRIORITIZE: 0,
+		DEPRIORITIZE: 1,
+		REMOVE: 2
+	}
+
+	const handleTransformationAction = (event) => {
+		switch (parseInt(event.target.value)) {
+			case TransformationActionType.PRIORITIZE:
+				transformation.prioritize();
+				break;
+			case TransformationActionType.DEPRIORITIZE:
+				transformation.deprioritize();
+				break;
+			case TransformationActionType.REMOVE:
+				removeTransformation(transformation);
+				break;
+		}
+	}
+
 	return (
 		<div className={`transformation-info ${activeTransformation ? 'active' :  ''}`}>
 			<h2>{transformation.name}</h2>
+			<select className="button-select" value={''} onChange={handleTransformationAction}>
+				<option>☰</option>
+				<option value={TransformationActionType.PRIORITIZE}>To the left</option>
+				<option value={TransformationActionType.DEPRIORITIZE}>To the right</option>
+				<option value={TransformationActionType.REMOVE}>Remove</option>
+			</select>
 			{controls}
-			<div className="transformation-list-controls">
-				<button className="prioritize text-only" onClick={transformation.prioritize}>&lt;</button>
-				<button className="delete text-only"  onClick={() => removeTransformation(transformation)}>−</button>
-				<button className="deprioritize text-only" onClick={transformation.deprioritize}>&gt;</button>
-			</div>
 		</div>
 	);
 }

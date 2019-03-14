@@ -54,7 +54,7 @@ const TransformationEditor = ({object}) => {
 				/>
 			</div>
 			<div id="add-transformation">
-				<select className="add-select" value={''} onChange={createTransformation}>
+				<select className="button-select add" value={''} onChange={createTransformation}>
 					<option>＋</option>
 					{
 						object.type !== 'Vector' &&

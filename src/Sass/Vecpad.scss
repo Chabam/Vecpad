@@ -10,6 +10,7 @@ $light-delete-color: #F44336;
 $add-color: #2E7D32;
 $light-add-color: #4CAF50;
 $sidebar-width: 300px;
+$timeline-height: 400px;
 
 html, body {
 	padding: 0;
@@ -66,7 +67,7 @@ html, body {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		height: 400px;
+		height: $timeline-height;
 		padding: 15px;
 		border-top: 1px solid $border-color;
 		box-sizing: border-box;
@@ -79,7 +80,7 @@ html, body {
 			display: inline-flex;
 
 			#transformation-list-container {
-				width: 100%;
+				width: calc(100% - 30px);
 				height: 100%;
 				display: flex;
 				flex-flow: column;
@@ -117,6 +118,17 @@ html, body {
 						height: 100%;
 						overflow-y: auto;
 						background-color: $dark-background-color;
+						border-left: 1px solid $border-color;
+
+						&:first-child {
+							border: none;
+						}
+
+						.button-select {
+							position: absolute;
+							top: 15px;
+							right: 15px;
+						}
 
 						h2 {
 							margin-top: 0;
@@ -124,15 +136,6 @@ html, body {
 
 						.transformation-controls > * {
 							margin-bottom: 10px;
-						}
-
-						.transformation-list-controls {
-							width: 300px - 2 * 15px;
-							display: flex;
-							justify-content: space-evenly;
-							position: absolute;
-							box-sizing: border-box;
-							bottom: 15px;
 						}
 
 						&.active {
@@ -145,10 +148,11 @@ html, body {
 			#add-transformation {
 				height: 80%;
 				top: 20%;
-				margin-left: 15px;
+				width: 30px;
 				position: relative;
 				display: flex;
 				align-items: center;
+				justify-content: flex-end;
 				box-sizing: border-box;
 			}
 		}
@@ -223,6 +227,15 @@ html, body {
 .input-group {
 	display: flex;
 	align-items: center;
+	width: 100%;
+
+	input, select {
+		flex: 1;
+	}
+
+	input[type="checkbox"] {
+		flex: none;
+	}
 
 	label {
 		margin-right: 5px;
@@ -302,20 +315,27 @@ select {
 	}
 }
 
-.add-select {
+.button-select {
 	appearance: none;
-	color: $add-color;
+	color: $foreground-color;
 	background: none;
 	font-size: 20px;
 	font-weight: bolder;
-	width: 27px;
-	padding: 3px;
+	width: 1.05em;
 	padding: 0;
 	margin: 0;
 
+	&.add {
+		color: $add-color;
+
+		&:hover {
+			color: $light-add-color;
+		}
+	}
+
 	&:hover {
 		background: none;
-		color: $light-add-color;
+		color: $light-background-color;
 	}
 
 	optgroup {
