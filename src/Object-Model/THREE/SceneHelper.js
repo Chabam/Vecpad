@@ -133,6 +133,7 @@ export default class SceneHelper {
 	// Function used to add object to the scene and to the object list.
 	addVecpadObject = (object) => {
 		this.addObjects(object);
+		this.selectObject(object);
 		this.updateReact();
 	}
 

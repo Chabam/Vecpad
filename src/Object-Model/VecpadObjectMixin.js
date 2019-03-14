@@ -110,6 +110,7 @@ export default function(label, reactUpdateFunc) {
 
 	this.updateLabel = (text) => {
 		this.label.element.textContent = text;
+		this.name = text;
 		this.updateReact();
 	}
 };
