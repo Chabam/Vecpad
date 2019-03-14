@@ -24,6 +24,10 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 	const updateZX = (event) => updateTransformationValue('zX', parseFloat(event.target.value));
 	const updateZY = (event) => updateTransformationValue('zY', parseFloat(event.target.value));
 	const updateAngle = (event) => updateTransformationValue('angle', parseFloat(event.target.value));
+	const toggleMatrix = () => {
+		transformation.showMatrix = !transformation.showMatrix;
+		transformation.updateReact();
+	}
 
 	let controls;
 	switch(transformation.name) {
@@ -32,7 +36,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			let { x, y, z} = transformation;
 
 			controls = (
-				<div className="transformation-controls">
+				<React.Fragment>
 					<InputGroup name="Amount X">
 						<input type="number" step={0.01} defaultValue={x} onChange={updateX}/>
 					</InputGroup>
@@ -42,13 +46,13 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 					<InputGroup name="Amount Z">
 						<input type="number" step={0.01} defaultValue={z} onChange={updateZ}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		case 'Rotation':
 			let { axis, angle } = transformation;
 			controls = (
-				<div className="transformation-controls">
+				<React.Fragment>
 					<CoordinatesPicker
 						name="Axis"
 						updateCoordinates={(axis) => updateTransformationValue('axis', axis)}
@@ -57,13 +61,13 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 					<InputGroup name="Angle">
 						<input type="number" step={0.01} defaultValue={angle} onChange={updateAngle}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		case 'Shear':
 			let { xY, xZ, yX, yZ, zX, zY } = transformation;
 			controls = (
-				<div className="transformation-controls">
+				<React.Fragment>
 					<InputGroup name="Amount XY">
 						<input type="number" step={0.01} defaultValue={xY} onChange={updateXY}/>
 					</InputGroup>
@@ -82,14 +86,14 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 					<InputGroup name="Amount ZY">
 						<input type="number" step={0.01} defaultValue={zY} onChange={updateZY}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		default:
 			controls = (
-				<div className="transformation-controls">
+				<React.Fragment>
 					No transformation
-				</div>
+				</React.Fragment>
 			);
 			break;
 	}
@@ -117,19 +121,26 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 		}
 	}
 
+	let matrixToggle = transformation.showMatrix ?
+		(<span className="material-icons">expand_less</span>)
+		: (<span className="material-icons">expand_more</span>);
+
+
 	return (
 		<div className={`transformation-info ${activeTransformation ? 'active' :  ''}`}>
 			<h2>{transformation.name}</h2>
-			<select className="button-select" value={''} onChange={handleTransformationAction}>
-				<option>☰</option>
+			<select className="material-icons button-select" value={''} onChange={handleTransformationAction}>
+				<option>menu</option>
 				<option value={TransformationActionType.PRIORITIZE}>To the left</option>
 				<option value={TransformationActionType.DEPRIORITIZE}>To the right</option>
 				<option value={TransformationActionType.REMOVE}>Remove</option>
 			</select>
 			{controls}
 			<div className="matrix-tooltip">
-				Put your cursor <b>here</b> to see the matrix
-				<Matrix matrix={transformation.getMatrix()}/>
+				<h2 onClick={toggleMatrix}>Matrix{matrixToggle}</h2>
+				<div className={`matrix-container ${transformation.showMatrix ? 'visible' : ''}`}>
+					<Matrix matrix={transformation.getMatrix()}/>
+				</div>
 			</div>
 		</div>
 	);

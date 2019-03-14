@@ -14,6 +14,7 @@ export default function(label, reactUpdateFunc) {
 	this.currentStep = 1;
 	this.currentCallbackId = 0;
 	this.callbacks = []
+	this.intervalId = null;
 
 	this.computeLabelPosition = () => {
 		/*
@@ -112,5 +113,25 @@ export default function(label, reactUpdateFunc) {
 		this.label.element.textContent = text;
 		this.name = text;
 		this.updateReact();
+	}
+
+	this.play = () => {
+		this.pause();
+
+		const deltaTime = 1 / (60 * (this.transformations.length || 1));
+		this.currentStep = this.currentStep === 1 ? 0 : this.currentStep;
+		this.intervalId = setInterval(() => {
+			this.applyTransformations(this.currentStep + deltaTime);
+			if (this.currentStep >= 1) {
+				this.currentStep = 1;
+				clearInterval(this.intervalId);
+			}
+		}, deltaTime * 1000);
+	}
+
+	this.pause = () => {
+		if (this.intervalId) {
+			clearInterval(this.intervalId);
+		}
 	}
 };

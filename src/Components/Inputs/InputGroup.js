@@ -4,7 +4,9 @@ const InputGroup = ({name, children}) => {
 	return (
 		<div className="input-group">
 			<label>{name} :</label>
-			{children}
+			<div className="input-container">
+				{children}
+			</div>
 		</div>
 	);
 }

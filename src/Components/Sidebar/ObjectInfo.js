@@ -8,7 +8,7 @@ const ObjectInfo = ({object, selected, selectObject, removeObject}) => {
 	return (
 		<div className={`object-info ${selected ? 'selected' : ''}`} >
 			<p onClick={() => selectObject(object)}>{`${object.type}: ${object.name}`}</p>
-			<button className="delete text-only" onClick={() => removeObject(object)}>−</button>
+			<button className="material-icons delete text-only" onClick={() => removeObject(object)}>remove</button>
 		</div>
 	);
 }

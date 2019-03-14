@@ -62,7 +62,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 				sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
 			);
 			typeSpecificControls = (
-				<div className="type-specfic-controls">
+				<React.Fragment>
 					<InputGroup name="Vector 1">
 						<select onChange={updateV1} value={object.v1 ? object.v1.id : -1}>
 							<option value={-1}></option>
@@ -75,7 +75,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 							{v2s}
 						</select>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		case 'Vector':
@@ -85,11 +85,11 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 				object.updateReact();
 			}
 			typeSpecificControls = (
-				<div className="type-specfic-controls">
-				<InputGroup name="Normalize">
-					<input type="checkbox" checked={object.normalize} onChange={updateNormalize}/>
-				</InputGroup>
-				</div>
+				<React.Fragment>
+					<InputGroup name="Normalize">
+						<input type="checkbox" checked={object.normalize} onChange={updateNormalize}/>
+					</InputGroup>
+				</React.Fragment>
 			);
 			break;
 		case 'Triangle': {
@@ -99,11 +99,11 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			}
 
 			typeSpecificControls = (
-				<div className="type-specfic-controls">
+				<React.Fragment>
 					<InputGroup name="Width">
 						<input type="number" step={0.01} defaultValue={width} onChange={updateTriangleGeometry}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		}
@@ -117,14 +117,14 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			const updateHeight = (event) => updateQuadGeometry(width, parseFloat(event.target.value));
 
 			typeSpecificControls = (
-				<div className="type-specfic-controls">
+				<React.Fragment>
 					<InputGroup name="Width">
 						<input type="number" step={0.01} defaultValue={width} onChange={updateWidth}/>
 					</InputGroup>
 					<InputGroup name="Height">
 						<input type="number" step={0.01} defaultValue={height} onChange={updateHeight}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		}
@@ -139,7 +139,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			const updateDepth = (event) => updateQuadGeometry(width, height, parseFloat(event.target.value));
 
 			typeSpecificControls = (
-				<div className="type-specfic-controls">
+				<React.Fragment>
 					<InputGroup name="Width">
 						<input type="number" step={0.01} defaultValue={width} onChange={updateWidth}/>
 					</InputGroup>
@@ -149,12 +149,12 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 					<InputGroup name="Depth">
 						<input type="number" step={0.01} defaultValue={depth} onChange={updateDepth}/>
 					</InputGroup>
-				</div>
+				</React.Fragment>
 			);
 			break;
 		}
 		default:
-			typeSpecificControls = (<div>No type</div>);
+			typeSpecificControls = (<React.Fragment>No type</React.Fragment>);
 			break;
 
 	}

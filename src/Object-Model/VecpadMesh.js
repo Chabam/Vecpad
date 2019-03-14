@@ -12,7 +12,7 @@ export default class VecpadMesh extends THREE.Mesh {
 		}));
 
 		this.type = type;
-		this.originalPosition = this.position;
+		this.originalPosition = this.position.clone();
 
 		let edgesGeometry = new THREE.EdgesGeometry(geometry);
 		this.outline = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({

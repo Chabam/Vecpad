@@ -54,8 +54,8 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 				sceneHelper={sceneHelper}
 			/>
 			<div id="add-object">
-				<select className="button-select add" value={''} onChange={createObject}>
-					<option>＋</option>
+				<select className="material-icons button-select add" value={''} onChange={createObject}>
+					<option>add</option>
 					<optgroup label="3D Object">
 						<option value={objectType.VECTOR}>Vector</option>
 						<option value={objectType.TRIANGLE}>Triangle</option>

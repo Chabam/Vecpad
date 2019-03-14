@@ -37,15 +37,19 @@ const TransformationEditor = ({object}) => {
 			<div id="transformation-list-container">
 				<div id="transformations-controls">
 					<h1>Timeline</h1>
-					<input
-						id="transformations-slider"
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
-						value={object.currentStep}
-					/>
+					<div id="timeline-controls">
+						<button className="material-icons text-only add" onClick={object.play}>play_arrow</button>
+						<button className="material-icons text-only" onClick={object.pause}>pause</button>
+						<input
+							id="transformations-slider"
+							type="range"
+							min="0"
+							max="1"
+							step="0.01"
+							onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
+							value={object.currentStep}
+						/>
+					</div>
 				</div>
 				<TransformationList
 					transformationList={object.transformations}
@@ -54,8 +58,8 @@ const TransformationEditor = ({object}) => {
 				/>
 			</div>
 			<div id="add-transformation">
-				<select className="button-select add" value={''} onChange={createTransformation}>
-					<option>＋</option>
+				<select className="material-icons button-select add" value={''} onChange={createTransformation}>
+					<option>add</option>
 					{
 						object.type !== 'Vector' &&
 						<option value={transformationType.TRANSLATION}>Translation</option>
