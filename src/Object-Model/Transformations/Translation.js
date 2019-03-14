@@ -10,9 +10,9 @@ export default class Translation extends Transformation {
 		this.z = z;
 	}
 
-	getMatrix = (step) => new THREE.Matrix4().makeTranslation(
-		this.x * step,
-		this.y * step,
-		this.z * step,
+	getMatrix = () => new THREE.Matrix4().makeTranslation(
+		this.x * this.step,
+		this.y * this.step,
+		this.z * this.step,
 	);
 }

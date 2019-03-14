@@ -141,6 +141,22 @@ html, body {
 						&.active {
 							background-color: $border-color;
 						}
+
+						.matrix-tooltip {
+							margin-top: 20px;
+							text-align: center;
+							cursor: pointer;
+
+							.matrix {
+								display: none;
+							}
+
+							&:hover {
+								.matrix {
+									display: table;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -221,6 +237,41 @@ html, body {
 		& > *, .type-specfic-controls > * {
 			margin-bottom: 10px;
 		}
+	}
+}
+
+hr {
+	border: 0.5px solid $border-color;
+}
+
+.matrix {
+	position: relative;
+	margin: 20px auto;
+	text-align: center;
+	border-collapse: collapse;
+
+	& tbody {
+		display: table;
+		height: 12em;
+		width: 12em;
+	}
+
+	&:before, &:after {
+		content: "";
+		position: absolute;
+		top: 0;
+		border: 1px solid #000;
+		width: 6px;
+		height: 100%;
+	}
+
+	&:before {
+		left: -6px;
+		border-right: 0;
+	}
+	&:after {
+		right: -6px;
+		border-left: 0;
 	}
 }
 

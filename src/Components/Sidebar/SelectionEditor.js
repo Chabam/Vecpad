@@ -5,6 +5,7 @@ import CoordinatesPicker from '../Inputs/CoordinatesPicker';
 import ColorPicker from '../Inputs/ColorPicker';
 import VecpadMesh from '../../Object-Model/VecpadMesh';
 import ObjectHelper from '../../Object-Model/THREE/ObjectHelper';
+import Matrix from '../Inputs/Matrix';
 
 // This component will show the specific details of the currently selected object
 const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
@@ -157,6 +158,11 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			break;
 
 	}
+	let transformationMatrix = object.transformations.reduce((matrix, trans) =>
+		trans.getMatrix().multiply(matrix),
+		new THREE.Matrix4()
+	);
+
 	return (
 		<div id="selection-editor" key={object.uuid}>
 			<h1>{`${object.type}: ${object.name}`}</h1>
@@ -185,6 +191,9 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			}
 			{coordinatesEditor}
 			{typeSpecificControls}
+			<hr/>
+			<h1>Transformation matrix</h1>
+			<Matrix matrix={transformationMatrix}/>
 		</div>
 	);
 }

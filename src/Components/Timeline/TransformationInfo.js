@@ -1,5 +1,6 @@
 import React from 'react';
 import InputGroup from '../Inputs/InputGroup'
+import Matrix from '../Inputs/Matrix'
 import CoordinatesPicker from '../Inputs/CoordinatesPicker'
 
 /*
@@ -110,6 +111,9 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			case TransformationActionType.REMOVE:
 				removeTransformation(transformation);
 				break;
+			default:
+				event.preventDefault();
+				break;
 		}
 	}
 
@@ -123,6 +127,10 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 				<option value={TransformationActionType.REMOVE}>Remove</option>
 			</select>
 			{controls}
+			<div className="matrix-tooltip">
+				Put your cursor <b>here</b> to see the matrix
+				<Matrix matrix={transformation.getMatrix()}/>
+			</div>
 		</div>
 	);
 }

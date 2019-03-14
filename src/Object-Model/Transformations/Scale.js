@@ -10,11 +10,11 @@ export default class Scale extends Transformation {
 		this.z = z;
 	}
 
-	getMatrix = (step) => {
+	getMatrix = () => {
 		return new THREE.Matrix4().makeScale(
-			(1 + (this.x - 1) * step) || 0.00000001,
-			(1 + (this.y - 1) * step) || 0.00000001,
-			(1 + (this.z - 1) * step) || 0.00000001
+			(1 + (this.x - 1) * this.step) || 0.00000001,
+			(1 + (this.y - 1) * this.step) || 0.00000001,
+			(1 + (this.z - 1) * this.step) || 0.00000001
 		);
 	}
 }

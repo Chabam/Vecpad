@@ -31,17 +31,22 @@ export default class VecpadMesh extends THREE.Mesh {
 		let currentTrans = Math.floor(step / stepPerTrans);
 		let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
 
-		this.matrix.copy(this.originalMatrix);
+		this.transformations.forEach((trans, i) => {
+			if (i < currentTrans) {
+				trans.step = 1;
+			} else if (i > currentTrans) {
+				trans.step = 0;
+			} else {
+				trans.step = stepInCurrentTrans;
+			}
+		});
 
-		let transMatrix = this.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
-			trans.getMatrix(1).multiply(matrix),
+		let transMatrix = this.transformations.reduce((matrix, trans) =>
+			trans.getMatrix().multiply(matrix),
 			new THREE.Matrix4()
 		);
-		if (currentTrans < this.transformations.length) {
-			transMatrix = this.transformations[currentTrans]
-				.getMatrix(stepInCurrentTrans).multiply(transMatrix);
-		}
 
+		this.matrix.copy(this.originalMatrix);
 		this.applyMatrix(transMatrix);
 		this.computeLabelPosition();
 		this.callbacks.forEach(({func}) => {

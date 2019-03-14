@@ -9,8 +9,8 @@ export default class Rotation extends Transformation {
 		this.angle = angle;
 	}
 
-	getMatrix = (step) => new THREE.Matrix4().makeRotationAxis(
+	getMatrix = () => new THREE.Matrix4().makeRotationAxis(
 		this.axis,
-		this.angle * step
+		this.angle * this.step
 	);
 }

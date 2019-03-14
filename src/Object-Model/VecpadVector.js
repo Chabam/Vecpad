@@ -44,17 +44,22 @@ export default class VecpadVector extends THREE.Line {
 		let currentTrans = Math.floor(step / stepPerTrans);
 		let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
 
+		this.transformations.forEach((trans, i) => {
+			if (i < currentTrans) {
+				trans.step = 1;
+			} else if (i > currentTrans) {
+				trans.step = 0;
+			} else {
+				trans.step = stepInCurrentTrans;
+			}
+		});
+
 		this.matrix.copy(this.originalMatrix);
 
-		let transMatrix = this.transformations.slice(0, currentTrans).reduce((matrix, trans) =>
-			trans.getMatrix(1).multiply(matrix),
+		let transMatrix = this.transformations.reduce((matrix, trans) =>
+			trans.getMatrix().multiply(matrix),
 			new THREE.Matrix4()
 		);
-
-		if (currentTrans < this.transformations.length) {
-			transMatrix = this.transformations[currentTrans]
-				.getMatrix(stepInCurrentTrans).multiply(transMatrix);
-		}
 
 		this.vector = this.normalize ? this.originalVector.clone().normalize() : this.originalVector.clone();
 		this.vector.applyMatrix4(transMatrix);
