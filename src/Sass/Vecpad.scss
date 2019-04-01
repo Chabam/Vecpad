@@ -14,7 +14,7 @@ $light-delete-color: #F44336;
 $add-color: #2E7D32;
 $light-add-color: #4CAF50;
 $sidebar-width: 300px;
-$timeline-height: 400px;
+$timeline-height: 30%;
 
 html, body {
 	padding: 0;
@@ -86,29 +86,20 @@ html, body {
 			#transformation-list-container {
 				width: calc(100% - (24px + 15px));
 				height: 100%;
+				display: flex;
 				flex-flow: column;
 
 				#transformations-controls {
 					width: 100%;
-					height: 20%;
+					flex: 1;
 					box-sizing: border-box;
+					display: inline-flex;
 
-					h1 {
-						margin: 0;
-						margin-bottom: 10px;
-					}
-
-					#timeline-controls {
-						display: inline-flex;
-						width: 100%;
-
-
-						#transformations-slider {
-							flex: 1;
-							box-sizing: border-box;
-							padding: 0;
-							margin-left: 15px;
-						}
+					#transformations-slider {
+						flex: 1;
+						box-sizing: border-box;
+						padding: 0;
+						margin-left: 15px;
 					}
 				}
 
@@ -145,6 +136,7 @@ html, body {
 
 						h2 {
 							margin-top: 0;
+							font-size: 18px;
 						}
 
 						&> * {
@@ -454,7 +446,6 @@ input {
 
 	&[type=range] {
 		appearance: none;
-		height: 20px;
 		background: none;
 		outline: none;
 

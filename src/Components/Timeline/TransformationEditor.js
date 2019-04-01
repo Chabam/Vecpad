@@ -36,20 +36,17 @@ const TransformationEditor = ({object}) => {
 		<div id="transformations-editor" key={object.uuid}>
 			<div id="transformation-list-container">
 				<div id="transformations-controls">
-					<h1>Timeline</h1>
-					<div id="timeline-controls">
-						<button className="material-icons text-only add" onClick={object.play}>play_arrow</button>
-						<button className="material-icons text-only" onClick={object.pause}>pause</button>
-						<input
-							id="transformations-slider"
-							type="range"
-							min="0"
-							max="1"
-							step="0.01"
-							onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
-							value={object.currentStep}
-						/>
-					</div>
+					<button className="material-icons text-only add" onClick={object.play}>play_arrow</button>
+					<button className="material-icons text-only" onClick={object.pause}>pause</button>
+					<input
+						id="transformations-slider"
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						onChange={(e) => object.applyTransformations(parseFloat(e.target.value))}
+						value={object.currentStep}
+					/>
 				</div>
 				<TransformationList
 					transformationList={object.transformations}
