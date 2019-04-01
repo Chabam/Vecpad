@@ -2,6 +2,7 @@ import React from 'react';
 import InputGroup from '../Inputs/InputGroup'
 import Matrix from '../Inputs/Matrix'
 import CoordinatesPicker from '../Inputs/CoordinatesPicker'
+import * as THREE from 'three';
 
 /*
 	This component will show the specific details of a transformation.
@@ -23,7 +24,10 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 	const updateYZ = (event) => updateTransformationValue('yZ', parseFloat(event.target.value));
 	const updateZX = (event) => updateTransformationValue('zX', parseFloat(event.target.value));
 	const updateZY = (event) => updateTransformationValue('zY', parseFloat(event.target.value));
-	const updateAngle = (event) => updateTransformationValue('angle', parseFloat(event.target.value));
+	const updateAngle = (event) => updateTransformationValue(
+		'angle',
+		THREE.Math.degToRad(parseFloat(event.target.value))
+	);
 	const toggleMatrix = () => {
 		transformation.showMatrix = !transformation.showMatrix;
 		transformation.updateReact();
@@ -127,7 +131,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 
 
 	return (
-		<div className={`transformation-info ${activeTransformation ? 'active' :  ''}`}>
+		<div className={`transformation-info ${activeTransformation ? 'active' :  ''}`} key={transformation.uuid}>
 			<h2>{transformation.name}</h2>
 			<select className="material-icons button-select" value={''} onChange={handleTransformationAction}>
 				<option>menu</option>

@@ -110,5 +110,5 @@ export default class THREEHelper {
 		}
 	}
 
-	static displayFloat = (number) => number % 1 === 0 ? number : number.toFixed(2);
+	static displayFloat = (number) => Math.abs(number - Math.floor(number)) < 0.01 ? number : number.toFixed(2);
 }
