@@ -37,6 +37,7 @@ export default class THREEHelper {
 
 		let { THREE3DRendererDom, THREE2DRendererDom } = this.rendererHelper.init(this.width, this.height);
 		this.cameraHelper.init(this.width / this.height, THREE2DRendererDom);
+		this.sceneHelper.loadSavedObjects();
 
 		this.container.appendChild(THREE3DRendererDom);
 		this.container.appendChild(THREE2DRendererDom);

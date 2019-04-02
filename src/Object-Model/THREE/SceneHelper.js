@@ -3,6 +3,8 @@ import ObjectHelper from './ObjectHelper';
 import VecpadVector from '../VecpadVector';
 import VecpadOperation from '../VecpadOperation';
 import VecpadMesh from '../VecpadMesh';
+import IDBWrapper from '../IDBWrapper';
+import VecpadObjectLoader from '../VecpadObjectLoader';
 
 // A wrapper around the scene in THREE.js
 export default class SceneHelper {
@@ -14,9 +16,9 @@ export default class SceneHelper {
 			- BOTH is the combination of the two previous ones.
 	*/
 	static DisplayMode = {
-		FILL: 0,
-		OUTLINE: 1,
-		BOTH: 2
+		FILL: 1,
+		OUTLINE: 2,
+		BOTH: 3
 	}
 
 	static SELECTED_LINEWIDTH = 2;
@@ -29,7 +31,10 @@ export default class SceneHelper {
 		this.selectedObject = null;
 
 		// The information on the state of our application.
-		this.currentDisplayMode = SceneHelper.DisplayMode.BOTH;
+		this.autoSave = localStorage.getItem('autoSave') === 'true';
+		this.currentDisplayMode = parseInt(localStorage.getItem('displayMode')) || SceneHelper.DisplayMode.BOTH;
+		let groundSize = parseInt(localStorage.getItem('graphSize')) || 2;
+		this.IDBWrapper = new IDBWrapper();
 
 		// The different light sources are defined here.
 		this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
@@ -45,8 +50,8 @@ export default class SceneHelper {
 		this.zMinusLabel = ObjectHelper.createLabel('-Z');
 
 		// Information on the grid at Y=0 that act as a reference for our scene.
-		let graph = ObjectHelper.createGraph(2);
-		this.setLabelPosition(2);
+		let graph = ObjectHelper.createGraph(groundSize);
+		this.setLabelPosition(groundSize);
 		this.THREEScene.graph = graph;
 		this.addObjects(
 			this.directionalLight,
@@ -78,6 +83,22 @@ export default class SceneHelper {
 
 		this.THREEScene.remove(object);
 		this.updateReact();
+		if (this.autoSave) {
+			this.IDBWrapper.removeObject(object.uuid);
+		}
+	}
+
+	loadSavedObjects = () => {
+		if (this.autoSave) {
+			this.IDBWrapper.getAllObjects((jsonObjects) => {
+				let vecpadLoader = new VecpadObjectLoader();
+				let objects = vecpadLoader.parse(jsonObjects, this.currentDisplayMode, this.updateScene);
+				if (objects.length !== 0) {
+					this.addObjects(...objects);
+					this.updateReact();
+				}
+			});
+		}
 	}
 
 	getVecpadObjectList = () => this.THREEScene.children.filter((object) =>
@@ -102,6 +123,10 @@ export default class SceneHelper {
 		this.setLabelPosition(size);
 		this.addObjects(newGraph);
 		this.updateReact();
+
+		if (this.autoSave) {
+			localStorage.setItem('graphSize', size);
+		}
 	};
 
 	setLabelPosition = (size) => {
@@ -128,6 +153,10 @@ export default class SceneHelper {
 			object.outline.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.FILL);
 		});
 		this.updateReact();
+
+		if (this.autoSave) {
+			localStorage.setItem('displayMode', mode);
+		}
 	}
 
 	// Function used to add object to the scene and to the object list.
@@ -135,6 +164,10 @@ export default class SceneHelper {
 		this.addObjects(object);
 		this.selectObject(object);
 		this.updateReact();
+
+		if (this.autoSave) {
+			this.IDBWrapper.addObjects([object.toJSON()]);
+		}
 	}
 
 	// These functions are used to add certain type of objects to the scene.
@@ -148,7 +181,7 @@ export default class SceneHelper {
 		let addition = new VecpadOperation(
 			(v1, v2) => new THREE.Vector3().addVectors(v1, v2),
 			'New vector addtion',
-			this.updateReact
+			this.updateScene
 		);
 		this.addVecpadObject(addition);
 	}
@@ -157,7 +190,7 @@ export default class SceneHelper {
 		let addition = new VecpadOperation(
 			(v1, v2) => new THREE.Vector3().subVectors(v1, v2),
 			'New vector subtraction',
-			this.updateReact
+			this.updateScene
 		);
 		this.addVecpadObject(addition);
 	}
@@ -166,7 +199,7 @@ export default class SceneHelper {
 		let addition = new VecpadOperation(
 			(v1, v2) => new THREE.Vector3().crossVectors(v1, v2),
 			'New cross product',
-			this.updateReact
+			this.updateScene
 		);
 		this.addVecpadObject(addition);
 	}
@@ -179,7 +212,7 @@ export default class SceneHelper {
 			0xffffff,
 			0x000000,
 			'New triangle',
-			this.updateReact
+			this.updateScene
 		);
 		this.addVecpadObject(triangle);
 	}
@@ -226,4 +259,42 @@ export default class SceneHelper {
 		this.selectedObject = null;
 		this.updateReact();
 	};
+
+	updateAutoSave = () => {
+		this.autoSave = !this.autoSave;
+
+		if (this.autoSave) {
+			localStorage.setItem('autoSave', this.autoSave);
+			localStorage.setItem('displayMode', this.currentDisplayMode);
+			localStorage.setItem('graphSize', this.THREEScene.graph.size);
+			let objectsJson = this.getVecpadObjectList().reduce(
+				(objects, object) => {
+					objects.push(object.toJSON());
+					return objects;
+				},
+				[]
+			);
+			if (objectsJson.length !== 0) {
+				this.IDBWrapper.addObjects(objectsJson);
+			}
+		} else {
+			localStorage.clear();
+			this.IDBWrapper.clear();
+		}
+
+		this.updateReact();
+	}
+
+	updateScene = (updateReact=true, updateDatas=null) => {
+		if (this.autoSave && updateDatas) {
+			updateDatas.forEach((updateData) => {
+				let { uuid, valueName, value } = updateData;
+				this.IDBWrapper.updateObject(uuid, valueName, value);
+			});
+		}
+
+		if (updateReact) {
+			this.updateReact();
+		}
+	}
 }

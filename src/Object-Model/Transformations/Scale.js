@@ -17,4 +17,13 @@ export default class Scale extends Transformation {
 			(1 + (this.z - 1) * this.step) || 0.00000001
 		);
 	}
+
+	toJSON = () => {
+		return {
+			name: this.name,
+			x: this.x,
+			y: this.y,
+			z: this.z
+		}
+	}
 }

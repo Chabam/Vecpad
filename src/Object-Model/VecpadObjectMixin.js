@@ -6,7 +6,7 @@ import Shear from './Transformations/Shear';
 import VecpadMesh from './VecpadMesh';
 
 
-export default function(label, reactUpdateFunc) {
+export default function(label, updateSceneFunc) {
 	this.name = label;
 	this.matrixAutoUpdate = false;
 	this.originalMatrix = this.matrix.clone();
@@ -42,7 +42,7 @@ export default function(label, reactUpdateFunc) {
 	objectLabel.matrixAutoUpdate = false;
 	this.label = objectLabel;
 	this.add(this.label);
-	this.updateReact = reactUpdateFunc;
+	this.updateScene = updateSceneFunc;
 	this.computeLabelPosition();
 
 	this.registerCallback = (func) => {
@@ -64,6 +64,18 @@ export default function(label, reactUpdateFunc) {
 		});
 	}
 
+	this.updateTransformationList = () => this.updateScene(false, [{
+		uuid: this.uuid,
+		valueName: 'transformations',
+		value: this.transformations.reduce(
+			(trans, currentTrans) => {
+				trans.push(currentTrans.toJSON());
+				return trans;
+			},
+			[]
+		)
+	}]);
+
 	this.addTransformation = (transformation) => {
 		transformation.prioritize = () => {
 			let currentIndex = this.transformations.indexOf(transformation);
@@ -79,40 +91,56 @@ export default function(label, reactUpdateFunc) {
 			}
 		}
 
-		transformation.updateReact = this.updateReact;
+		transformation.updateTransformationList = this.updateTransformationList;
 		transformation.applyTransformations = this.applyTransformations;
 
 		this.transformations.push(transformation);
 		this.applyTransformations(1);
+		this.updateScene(false, [{
+			uuid: this.uuid,
+			valueName: 'transformations',
+			value: this.transformations.reduce(
+				(trans, currentTrans) => {
+					trans.push(currentTrans.toJSON());
+					return trans;
+				},
+				[]
+			)
+		}]);
 	}
 
-	this.addScale = () => {
-		this.addTransformation(new Scale(1, 1, 1));
+	this.addScale = (scale=new Scale(1, 1, 1)) => {
+		this.addTransformation(scale);
 	}
 
-	this.addShear = () => {
-		this.addTransformation(new Shear(0, 0, 0, 0, 0, 0));
+	this.addShear = (shear=new Shear(0, 0, 0, 0, 0, 0)) => {
+		this.addTransformation(shear);
 	}
 
-	this.addRotation = () => {
-		this.addTransformation(new Rotation(new THREE.Vector3(), 0));
+	this.addRotation = (rotation=new Rotation(new THREE.Vector3(), 0)) => {
+		this.addTransformation(rotation);
 	}
 
 	this.removeTransformation = (transformation) => {
 		this.transformations = this.transformations.filter((trans) => trans !== transformation);
 		this.applyTransformations(1);
-		this.updateReact();
+		this.updateTransformationList();
 	}
 
 	this.swapTransformations = (i, j) => {
 		[this.transformations[i], this.transformations[j]] = [this.transformations[j], this.transformations[i]];
 		this.applyTransformations(1);
+		this.updateTransformationList();
 	}
 
 	this.updateLabel = (text) => {
 		this.label.element.textContent = text;
 		this.name = text;
-		this.updateReact();
+		this.updateScene(true, [{
+			uuid: this.uuid,
+			valueName: 'name',
+			value: this.name
+		}]);
 	}
 
 	this.play = () => {

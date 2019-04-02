@@ -39,7 +39,7 @@ export default class CameraWrapper {
 			object
 		}
 		this.focusOnCoords(object.position);
-		object.updateReact();
+		object.updateScene();
 	}
 
 	unfocusObject = () => {
@@ -47,7 +47,7 @@ export default class CameraWrapper {
 
 		let { cbId, object } = this.focusedObject;
 		object.unregisterCallback(cbId);
-		object.updateReact();
+		object.updateScene();
 		this.focusedObject = null;
 		this.focusOnCoords(new THREE.Vector3(0, 0, 0));
 	}

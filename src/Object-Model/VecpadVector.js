@@ -3,7 +3,7 @@ import VecpadObjectMixin from './VecpadObjectMixin';
 import SceneHelper from './THREE/SceneHelper';
 
 export default class VecpadVector extends THREE.Line {
-	constructor(direction, color, label, reactUpdateFunc) {
+	constructor(direction, color, label, updateSceneFunc) {
 		let vectorGeometry = new THREE.Geometry();
 		let origin = new THREE.Vector3(0, 0, 0);
 
@@ -34,7 +34,7 @@ export default class VecpadVector extends THREE.Line {
 
 		this.alignArrowOnVector(direction);
 
-		VecpadObjectMixin.call(this, label, reactUpdateFunc);
+		VecpadObjectMixin.call(this, label, updateSceneFunc);
 	}
 
 	applyTransformations = (step) => {
@@ -76,8 +76,9 @@ export default class VecpadVector extends THREE.Line {
 				changedObject: this,
 				deleted: false
 			});
-		})
-		this.updateReact();
+		});
+
+		this.updateScene();
 	}
 
 	updateColor = (color) => {
@@ -85,6 +86,11 @@ export default class VecpadVector extends THREE.Line {
 		this.arrow.material.color.setHex(color);
 		this.deselect();
 		this.select();
+		this.updateScene(true, [{
+			uuid: this.uuid,
+			valueName: 'color',
+			value: color
+		}]);
 	}
 
 	select = () => {
@@ -113,11 +119,31 @@ export default class VecpadVector extends THREE.Line {
 		arrow.material.depthTest = true;
 	}
 
-	updateDirection = (direction) => {
+	updateNormalize = () => {
+		this.normalize = !this.normalize;
+
+		this.applyTransformations(1);
+
+		this.updateScene(true, [{
+			uuid: this.uuid,
+			valueName: 'normalize',
+			value: this.normalize
+		}]);
+	}
+
+	updateVector = (direction) => {
 		this.originalVector = direction.clone();
 
 		this.applyTransformations(1);
-		this.updateReact();
+		this.updateScene(false, [{
+			uuid: this.uuid,
+			valueName: 'originalVector',
+			value: {
+				x: this.originalVector.x,
+				y: this.originalVector.y,
+				z: this.originalVector.z
+			}
+		}]);
 	}
 
 	alignArrowOnVector = () => {
@@ -159,5 +185,27 @@ export default class VecpadVector extends THREE.Line {
 		this.material.dispose();
 		this.arrow.geometry.dispose();
 		this.arrow.material.dispose();
+	}
+
+	toJSON = () => {
+		return {
+			uuid: this.uuid,
+			name: this.name,
+			type: this.type,
+			color: this.material.color.getHex(),
+			normalize: this.normalize,
+			vector: {
+				x: this.vector.x,
+				y: this.vector.y,
+				z: this.vector.z
+			},
+			transformations: this.transformations.reduce(
+				(trans, currentTrans) => {
+					trans.push(currentTrans.toJSON());
+					return trans;
+				},
+				[]
+			)
+		}
 	}
 }

@@ -15,4 +15,13 @@ export default class Translation extends Transformation {
 		this.y * this.step,
 		this.z * this.step,
 	);
+
+	toJSON = () => {
+		return {
+			name: this.name,
+			x: this.x,
+			y: this.y,
+			z: this.z
+		}
+	}
 }
