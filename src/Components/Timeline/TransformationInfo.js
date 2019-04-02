@@ -2,7 +2,6 @@ import React from 'react';
 import InputGroup from '../Inputs/InputGroup'
 import Matrix from '../Inputs/Matrix'
 import CoordinatesPicker from '../Inputs/CoordinatesPicker'
-import * as THREE from 'three';
 
 /*
 	This component will show the specific details of a transformation.
@@ -12,7 +11,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 		transformation[valueName] = value;
 
 		transformation.applyTransformations(1);
-		transformation.updateReact();
+		transformation.updateTransformationList();
 	};
 
 	const updateX = (event) => updateTransformationValue('x', parseFloat(event.target.value));
@@ -26,7 +25,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 	const updateZY = (event) => updateTransformationValue('zY', parseFloat(event.target.value));
 	const updateAngle = (event) => updateTransformationValue(
 		'angle',
-		THREE.Math.degToRad(parseFloat(event.target.value))
+		parseFloat(event.target.value)
 	);
 	const toggleMatrix = () => {
 		transformation.showMatrix = !transformation.showMatrix;

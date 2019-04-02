@@ -11,6 +11,18 @@ export default class Rotation extends Transformation {
 
 	getMatrix = () => new THREE.Matrix4().makeRotationAxis(
 		this.axis,
-		this.angle * this.step
+		THREE.Math.degToRad(this.angle) * this.step
 	);
+
+	toJSON = () => {
+		return {
+			name: this.name,
+			axis: {
+				x: this.axis.x,
+				y: this.axis.y,
+				z: this.axis.z
+			},
+			angle: this.angle
+		}
+	}
 }

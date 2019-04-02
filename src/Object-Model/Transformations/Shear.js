@@ -28,4 +28,16 @@ export default class Shear extends Transformation {
 			0,        0,        0, 1
 		);
 	}
+
+	toJSON = () => {
+		return {
+			name: this.name,
+			xY: this.xY,
+			xZ: this.xZ,
+			yX: this.yX,
+			yZ: this.yZ,
+			zX: this.zX,
+			zY: this.zY
+		}
+	}
 }

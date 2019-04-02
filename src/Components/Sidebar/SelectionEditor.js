@@ -39,7 +39,7 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			<CoordinatesPicker
 				name="Direction"
 				coordinates={object.originalVector}
-				updateCoordinates={object.updateDirection}
+				updateCoordinates={object.updateVector}
 			/>
 		);
 	}
@@ -79,15 +79,10 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			);
 			break;
 		case 'Vector':
-			const updateNormalize = (event) => {
-				object.normalize = event.target.checked;
-				object.updateDirection(object.originalVector);
-				object.updateReact();
-			}
 			typeSpecificControls = (
 				<React.Fragment>
 					<InputGroup name="Normalize">
-						<input type="checkbox" checked={object.normalize} onChange={updateNormalize}/>
+						<input type="checkbox" checked={object.normalize} onChange={object.updateNormalize}/>
 					</InputGroup>
 				</React.Fragment>
 			);

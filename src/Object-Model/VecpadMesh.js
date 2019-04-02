@@ -4,7 +4,7 @@ import VecpadObjectMixin from './VecpadObjectMixin';
 import Translation from './Transformations/Translation';
 
 export default class VecpadMesh extends THREE.Mesh {
-	constructor(geometry, type, displayMode, color, outlineColor, label, reactUpdateFunc) {
+	constructor(geometry, type, displayMode, color, outlineColor, label, updateSceneFunc) {
 		super(geometry, new THREE.MeshLambertMaterial({
 			color: color,
 			side: THREE.DoubleSide,
@@ -21,7 +21,7 @@ export default class VecpadMesh extends THREE.Mesh {
 		}));
 		this.add(this.outline);
 
-		VecpadObjectMixin.call(this, label, reactUpdateFunc);
+		VecpadObjectMixin.call(this, label, updateSceneFunc);
 	}
 
 	applyTransformations = (step) => {
@@ -52,11 +52,12 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.callbacks.forEach(({func}) => {
 			func(this, false);
 		})
-		this.updateReact();
+
+		this.updateScene();
 	}
 
-	addTranslation = () => {
-		this.addTransformation(new Translation(0, 0, 0));
+	addTranslation = (translation=new Translation(0, 0, 0)) => {
+		this.addTransformation(translation);
 	}
 
 	select = () => {
@@ -81,14 +82,22 @@ export default class VecpadMesh extends THREE.Mesh {
 
 	updateColor = (color) => {
 		this.material.color.setHex(color);
-		this.updateReact();
+		this.updateScene(true, [{
+			uuid: this.uuid,
+			valueName: 'color',
+			value: color
+		}]);
 	}
 
 	updateOutlineColor = (outlineColor) => {
 		this.outline.material.color.setHex(outlineColor);
 		this.deselect();
 		this.select();
-		this.updateReact();
+		this.updateScene(true, [{
+			uuid: this.uuid,
+			valueName: 'outlineColor',
+			value: outlineColor
+		}]);
 	}
 
 	updatePosition = (position) => {
@@ -101,7 +110,15 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.applyMatrix(translationMatrix);
 
 		this.applyTransformations(1);
-		this.updateReact();
+		this.updateScene(false, [{
+			uuid: this.uuid,
+			valueName: 'originalPosition',
+			value: this.originalPosition
+		},{
+			uuid: this.uuid,
+			valueName: 'originalMatrix',
+			value: this.originalMatrix
+		}]);
 	}
 
 	updateGeometry = (geometry) => {
@@ -114,7 +131,11 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.deselect();
 		this.select();
 		this.applyTransformations(1);
-		this.updateReact();
+		this.updateScene(false, [{
+			uuid: this.uuid,
+			valueName: 'geometry',
+			value: this.geometry.toJSON()
+		}]);
 	}
 
 	clean = () => {
@@ -124,5 +145,25 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.material.dispose();
 		this.outline.geometry.dispose();
 		this.outline.material.dispose();
+	}
+
+	toJSON = () => {
+		return {
+			uuid: this.uuid,
+			name: this.name,
+			geometry: this.geometry.toJSON(),
+			type: this.type,
+			color: this.material.color.getHex(),
+			outlineColor: this.outline.material.color.getHex(),
+			originalPosition: this.originalPosition,
+			originalMatrix: this.originalMatrix,
+			transformations: this.transformations.reduce(
+				(trans, currentTrans) => {
+					trans.push(currentTrans.toJSON());
+					return trans;
+				},
+				[]
+			)
+		}
 	}
 }

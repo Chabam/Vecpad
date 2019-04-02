@@ -9,4 +9,8 @@ export default class Transformation {
 	}
 
 	getMatrix = () => new THREE.Matrix4();
+
+	toJSON = () => {
+		return {};
+	}
 }

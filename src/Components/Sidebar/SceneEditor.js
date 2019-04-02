@@ -82,12 +82,15 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 					</option>
 				</select>
 			</InputGroup>
-			<InputGroup name={`Graph size`}>
+			<InputGroup name="Graph size">
 				<input type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
 			</InputGroup>
 			<div>
 				<button onClick={cameraHelper.unfocusObject}>Reset camera</button>
 			</div>
+			<InputGroup name="Auto-Save">
+				<input type="checkbox" checked={sceneHelper.autoSave} onChange={sceneHelper.updateAutoSave}/>
+			</InputGroup>
 		</div>
 	);
 
