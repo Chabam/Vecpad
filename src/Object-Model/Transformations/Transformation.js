@@ -13,4 +13,11 @@ export default class Transformation {
 	toJSON = () => {
 		return {};
 	}
+
+	updateTransformationValue = (valueName, value) => {
+		this[valueName] = value;
+
+		this.applyTransformations(1);
+		this.updateTransformationList();
+	};
 }

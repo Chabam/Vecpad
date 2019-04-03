@@ -1,6 +1,9 @@
+import React from 'react';
 import * as THREE from 'three';
 import VecpadObjectMixin from './VecpadObjectMixin';
 import SceneHelper from './THREE/SceneHelper';
+import CoordinatesPicker from '../Components/Inputs/CoordinatesPicker';
+import InputGroup from '../Components/Inputs/InputGroup';
 
 export default class VecpadVector extends THREE.Line {
 	constructor(direction, color, label, updateSceneFunc) {
@@ -208,4 +211,20 @@ export default class VecpadVector extends THREE.Line {
 			)
 		}
 	}
+
+	getCoordinatesEditor = () => (
+		<CoordinatesPicker
+			name="Direction"
+			coordinates={this.originalVector}
+			updateCoordinates={this.updateVector}
+		/>
+	);
+
+	getTypeSpecificControls = () => (
+		<React.Fragment>
+			<InputGroup name="Normalize">
+				<input type="checkbox" checked={this.normalize} onChange={this.updateNormalize}/>
+			</InputGroup>
+		</React.Fragment>
+	);
 }

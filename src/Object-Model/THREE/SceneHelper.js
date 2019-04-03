@@ -1,8 +1,13 @@
 import * as THREE from 'three';
 import ObjectHelper from './ObjectHelper';
 import VecpadVector from '../VecpadVector';
-import VecpadOperation from '../VecpadOperation';
 import VecpadMesh from '../VecpadMesh';
+import VectorAddition from '../VectorAddition';
+import VectorSubtraction from '../VectorSubtraction';
+import VectorCrossProduct from '../VectorCrossProduct';
+import Triangle from '../Triangle';
+import Quad from '../Quad';
+import Cube from '../Cube';
 import IDBWrapper from '../IDBWrapper';
 import VecpadObjectLoader from '../VecpadObjectLoader';
 
@@ -173,74 +178,60 @@ export default class SceneHelper {
 	// These functions are used to add certain type of objects to the scene.
 
 	addVector = () => {
-		let vector = new VecpadVector(new THREE.Vector3(1, 1, 1), 0x000000, 'New vector', this.updateReact);
-		this.addVecpadObject(vector);
+		this.addVecpadObject(new VecpadVector(
+			new THREE.Vector3(1, 1, 1),
+			0x000000,
+			'New vector',
+			this.updateReact
+		));
 	}
 
 	addVectorAddition = () => {
-		let addition = new VecpadOperation(
-			(v1, v2) => new THREE.Vector3().addVectors(v1, v2),
-			'New vector addtion',
-			this.updateScene
-		);
-		this.addVecpadObject(addition);
+		this.addVecpadObject(new VectorAddition(this.updateScene));
 	}
 
 	addVectorSubtraction = () => {
-		let addition = new VecpadOperation(
-			(v1, v2) => new THREE.Vector3().subVectors(v1, v2),
-			'New vector subtraction',
-			this.updateScene
-		);
-		this.addVecpadObject(addition);
+		this.addVecpadObject(new VectorSubtraction(this.updateScene));
 	}
 
 	addVectorCross = () => {
-		let addition = new VecpadOperation(
-			(v1, v2) => new THREE.Vector3().crossVectors(v1, v2),
-			'New cross product',
-			this.updateScene
-		);
-		this.addVecpadObject(addition);
+		this.addVecpadObject(new VectorCrossProduct(this.updateScene));
 	}
 
 	addTriangle = () => {
-		let triangle = new VecpadMesh(
-			ObjectHelper.createTriangleGeometry(1),
-			'Triangle',
+		this.addVecpadObject(new Triangle(
+			1,
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			'New triangle',
+			'New Triangle',
 			this.updateScene
-		);
-		this.addVecpadObject(triangle);
+		));
 	}
 
 	addQuad = () => {
-		let quad = new VecpadMesh(
-			new THREE.PlaneGeometry(1, 1),
-			'Quad',
+		this.addVecpadObject(new Quad(
+			1,
+			1,
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			'New quad',
-			this.updateReact
-		);
-		this.addVecpadObject(quad);
+			'New Quad',
+			this.updateScene
+		));
 	}
 
 	addCube = () => {
-		let cube = new VecpadMesh(
-			new THREE.BoxGeometry(1, 1, 1),
-			'Cube',
+		this.addVecpadObject(new Cube(
+			1,
+			1,
+			1,
 			this.currentDisplayMode,
 			0xffffff,
 			0x000000,
-			'New cube',
-			this.updateReact
-		);
-		this.addVecpadObject(cube);
+			'New Cube',
+			this.updateScene
+		));
 	}
 
 	selectObject = (object) => {

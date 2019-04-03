@@ -1,5 +1,7 @@
+import React from 'react';
 import * as THREE from 'three';
 import VecpadVector from './VecpadVector';
+import InputGroup from '../Components/Inputs/InputGroup';
 
 export default class VecpadOperation extends VecpadVector {
 	constructor(operation, label, reactUpdateFunc) {
@@ -88,5 +90,39 @@ export default class VecpadOperation extends VecpadVector {
 	removeOperation = () => {
 		this.label.element.classList.add('hidden');
 		this.updateVector(new THREE.Vector3());
+	}
+
+	getTypeSpecificControls = (sceneHelper) => {
+		let availableVectors = sceneHelper.getVectors();
+		let v1s = availableVectors.map((vector, i) => (
+			<option key={i} value={vector.id}>{vector.name}</option>
+		));
+		let v2s = availableVectors.map((vector, i) => (
+			<option key={i} value={vector.id}>{vector.name}</option>
+		));
+
+		const updateV1 = (event) => this.setV1(
+			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
+		);
+		const updateV2 = (event) => this.setV2(
+			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
+		);
+
+		return (
+			<React.Fragment>
+				<InputGroup name="Vector 1">
+					<select onChange={updateV1} value={this.v1 ? this.v1.id : -1}>
+						<option value={-1}></option>
+						{v1s}
+					</select>
+				</InputGroup>
+				<InputGroup name="Vector 2">
+					<select onChange={updateV2} value={this.v2 ? this.v2.id : -1}>
+						<option value={-1}></option>
+						{v2s}
+					</select>
+				</InputGroup>
+			</React.Fragment>
+		);
 	}
 }

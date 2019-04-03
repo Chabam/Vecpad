@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import VecpadMesh from './VecpadMesh';
 import Translation from './Transformations/Translation';
 import Rotation from './Transformations/Rotation';
 import Shear from './Transformations/Shear';
 import Scale from './Transformations/Scale';
-import ObjectHelper from './THREE/ObjectHelper';
 import VecpadVector from './VecpadVector';
+import Triangle from './Triangle';
+import Cube from './Cube';
+import Quad from './Quad';
 
 export default class VecpadObjectLoader {
 	constructor() {
@@ -25,30 +26,56 @@ export default class VecpadObjectLoader {
 	parseObject = (json, displayMode, updateSceneFunc) => {
 		let object;
 		switch (json.type) {
-			case 'Triangle':
-			case 'Quad':
-			case 'Cube': {
+			case 'Triangle': {
 				let {
 					name,
-					geometry,
-					type,
+					width,
 					color,
 					outlineColor,
 					originalMatrix,
 					originalPosition
 				} = json;
-				let parsedGeometry = type === 'Triangle'
-					? ObjectHelper.createTriangleGeometry(geometry.width)
-					: this.objectLoader.parseGeometries([geometry])[geometry.uuid]
-				object = new VecpadMesh(
-					parsedGeometry,
-					type,
-					displayMode,
+
+				object = new Triangle(width, displayMode, color, outlineColor, name, updateSceneFunc);
+
+				object.originalPosition = originalPosition;
+				object.originalMatrix = originalMatrix;
+				object.applyMatrix(originalMatrix);
+
+				break;
+			}
+			case 'Quad': {
+				let {
+					name,
+					width,
+					heigth,
 					color,
 					outlineColor,
+					originalMatrix,
+					originalPosition
+				} = json;
+
+				object = new Quad(width, heigth, displayMode, color, outlineColor, name, updateSceneFunc);
+
+				object.originalPosition = originalPosition;
+				object.originalMatrix = originalMatrix;
+				object.applyMatrix(originalMatrix);
+
+				break;
+			}
+			case 'Cube': {
+				let {
 					name,
-					updateSceneFunc
-				);
+					width,
+					heigth,
+					depth,
+					color,
+					outlineColor,
+					originalMatrix,
+					originalPosition
+				} = json;
+
+				object = new Cube(width, heigth, depth, displayMode, color, outlineColor, name, updateSceneFunc);
 
 				object.originalPosition = originalPosition;
 				object.originalMatrix = originalMatrix;

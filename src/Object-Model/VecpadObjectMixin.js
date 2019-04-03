@@ -93,6 +93,7 @@ export default function(label, updateSceneFunc) {
 
 		transformation.updateTransformationList = this.updateTransformationList;
 		transformation.applyTransformations = this.applyTransformations;
+		transformation.updateScene = this.updateScene;
 
 		this.transformations.push(transformation);
 		this.applyTransformations(1);

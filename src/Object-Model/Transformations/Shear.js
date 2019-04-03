@@ -1,5 +1,7 @@
+import React from 'react';
 import Transformation from "./Transformation";
 import * as THREE from 'three';
+import InputGroup from '../../Components/Inputs/InputGroup';
 
 export default class Shear extends Transformation {
 	constructor(xY, xZ, yX, yZ, zX, zY) {
@@ -39,5 +41,37 @@ export default class Shear extends Transformation {
 			zX: this.zX,
 			zY: this.zY
 		}
+	}
+
+	getControls = () => {
+		const updateXY = (event) => this.updateTransformationValue('xY', parseFloat(event.target.value));
+		const updateXZ = (event) => this.updateTransformationValue('xZ', parseFloat(event.target.value));
+		const updateYX = (event) => this.updateTransformationValue('yX', parseFloat(event.target.value));
+		const updateYZ = (event) => this.updateTransformationValue('yZ', parseFloat(event.target.value));
+		const updateZX = (event) => this.updateTransformationValue('zX', parseFloat(event.target.value));
+		const updateZY = (event) => this.updateTransformationValue('zY', parseFloat(event.target.value));
+
+		return (
+			<React.Fragment>
+				<InputGroup name="Amount XY">
+					<input type="number" step={0.01} defaultValue={this.xY} onChange={updateXY}/>
+				</InputGroup>
+				<InputGroup name="Amount XZ">
+					<input type="number" step={0.01} defaultValue={this.xZ} onChange={updateXZ}/>
+				</InputGroup>
+				<InputGroup name="Amount YX">
+					<input type="number" step={0.01} defaultValue={this.yX} onChange={updateYX}/>
+				</InputGroup>
+				<InputGroup name="Amount YZ">
+					<input type="number" step={0.01} defaultValue={this.yZ} onChange={updateYZ}/>
+				</InputGroup>
+				<InputGroup name="Amount ZX">
+					<input type="number" step={0.01} defaultValue={this.zX} onChange={updateZX}/>
+				</InputGroup>
+				<InputGroup name="Amount ZY">
+					<input type="number" step={0.01} defaultValue={this.zY} onChange={updateZY}/>
+				</InputGroup>
+			</React.Fragment>
+		);
 	}
 }

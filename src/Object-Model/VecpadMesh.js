@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import SceneHelper from './THREE/SceneHelper';
 import VecpadObjectMixin from './VecpadObjectMixin';
 import Translation from './Transformations/Translation';
+import React from 'react';
+import CoordinatesPicker from '../Components/Inputs/CoordinatesPicker';
 
 export default class VecpadMesh extends THREE.Mesh {
 	constructor(geometry, type, displayMode, color, outlineColor, label, updateSceneFunc) {
@@ -147,23 +149,11 @@ export default class VecpadMesh extends THREE.Mesh {
 		this.outline.material.dispose();
 	}
 
-	toJSON = () => {
-		return {
-			uuid: this.uuid,
-			name: this.name,
-			geometry: this.geometry.toJSON(),
-			type: this.type,
-			color: this.material.color.getHex(),
-			outlineColor: this.outline.material.color.getHex(),
-			originalPosition: this.originalPosition,
-			originalMatrix: this.originalMatrix,
-			transformations: this.transformations.reduce(
-				(trans, currentTrans) => {
-					trans.push(currentTrans.toJSON());
-					return trans;
-				},
-				[]
-			)
-		}
-	}
+	getCoordinatesEditor = () => (
+		<CoordinatesPicker
+			name="Position"
+			coordinates={this.originalPosition}
+			updateCoordinates={this.updatePosition}
+		/>
+	);
 }

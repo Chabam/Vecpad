@@ -1,5 +1,8 @@
+import React from 'react';
 import Transformation from "./Transformation";
 import * as THREE from 'three';
+import InputGroup from '../../Components/Inputs/InputGroup';
+import CoordinatesPicker from '../../Components/Inputs/CoordinatesPicker';
 
 export default class Rotation extends Transformation {
 	constructor(axis, angle) {
@@ -24,5 +27,26 @@ export default class Rotation extends Transformation {
 			},
 			angle: this.angle
 		}
+	}
+
+	getControls = () => {
+		const updateAngle = (event) => this.updateTransformationValue(
+			'angle',
+			parseFloat(event.target.value)
+		);
+
+		return (
+			<React.Fragment>
+				<CoordinatesPicker
+					name="Axis"
+					updateCoordinates={(axis) => this.updateTransformationValue('axis', axis)}
+					coordinates={this.axis}
+				/>
+				<InputGroup name="Angle">
+					<input type="number" step={0.01} defaultValue={this.angle} onChange={updateAngle}/>
+				</InputGroup>
+			</React.Fragment>
+		)
+
 	}
 }
