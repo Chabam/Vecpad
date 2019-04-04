@@ -4,8 +4,8 @@ import * as THREE from 'three';
 import InputGroup from '../../Components/Inputs/InputGroup';
 
 export default class Shear extends Transformation {
-	constructor(xY, xZ, yX, yZ, zX, zY) {
-		super();
+	constructor(xY, xZ, yX, yZ, zX, zY, object) {
+		super(object);
 		this.name = 'Shear';
 		this.xY = xY;
 		this.xZ = xZ;

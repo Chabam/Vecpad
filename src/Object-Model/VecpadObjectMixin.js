@@ -58,7 +58,7 @@ export default function(label, updateSceneFunc) {
 		this.callbacks = this.callbacks.filter((callback) => callback.id !== id);
 	}
 
-	this.notifyRegistree = () => {
+	this.notifyRegistreeOfDeletion = () => {
 		this.callbacks.forEach(({func}) => {
 			func(this, true);
 		});
@@ -76,25 +76,31 @@ export default function(label, updateSceneFunc) {
 		)
 	}]);
 
+	this.applyTransformations = (step) => {
+		this.currentStep = step;
+
+		let stepPerTrans = 1 / (this.transformations.length);
+		let currentTrans = Math.floor(step / stepPerTrans);
+		let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
+
+		this.transformations.forEach((trans, i) => {
+			if (i < currentTrans) {
+				trans.step = 1;
+			} else if (i > currentTrans) {
+				trans.step = 0;
+			} else {
+				trans.step = stepInCurrentTrans;
+			}
+		});
+
+		this.computeTransformations();
+
+		this.callbacks.forEach(({func}) => func(this, false));
+
+		this.updateScene();
+	}
+
 	this.addTransformation = (transformation) => {
-		transformation.prioritize = () => {
-			let currentIndex = this.transformations.indexOf(transformation);
-			if (currentIndex !== 0) {
-				this.swapTransformations(currentIndex, currentIndex - 1);
-			}
-		}
-
-		transformation.deprioritize = () => {
-			let currentIndex = this.transformations.indexOf(transformation);
-			if (currentIndex !== this.transformations.length - 1) {
-				this.swapTransformations(currentIndex, currentIndex + 1);
-			}
-		}
-
-		transformation.updateTransformationList = this.updateTransformationList;
-		transformation.applyTransformations = this.applyTransformations;
-		transformation.updateScene = this.updateScene;
-
 		this.transformations.push(transformation);
 		this.applyTransformations(1);
 		this.updateScene(false, [{
@@ -162,5 +168,33 @@ export default function(label, updateSceneFunc) {
 		if (this.intervalId) {
 			clearInterval(this.intervalId);
 		}
+	}
+
+	this.addTransformation = (transformation) => {
+		this.transformations.push(transformation);
+		this.applyTransformations(1);
+		this.updateScene(false, [{
+			uuid: this.uuid,
+			valueName: 'transformations',
+			value: this.transformations.reduce(
+				(trans, currentTrans) => {
+					trans.push(currentTrans.toJSON());
+					return trans;
+				},
+				[]
+			)
+		}]);
+	}
+
+	this.addScale = (scale=new Scale(1, 1, 1, this)) => {
+		this.addTransformation(scale);
+	}
+
+	this.addShear = (shear=new Shear(0, 0, 0, 0, 0, 0, this)) => {
+		this.addTransformation(shear);
+	}
+
+	this.addRotation = (rotation=new Rotation(new THREE.Vector3(), 0, this)) => {
+		this.addTransformation(rotation);
 	}
 };

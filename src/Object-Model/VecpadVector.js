@@ -40,23 +40,7 @@ export default class VecpadVector extends THREE.Line {
 		VecpadObjectMixin.call(this, label, updateSceneFunc);
 	}
 
-	applyTransformations = (step) => {
-		this.currentStep = step;
-
-		let stepPerTrans = 1 / (this.transformations.length);
-		let currentTrans = Math.floor(step / stepPerTrans);
-		let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
-
-		this.transformations.forEach((trans, i) => {
-			if (i < currentTrans) {
-				trans.step = 1;
-			} else if (i > currentTrans) {
-				trans.step = 0;
-			} else {
-				trans.step = stepInCurrentTrans;
-			}
-		});
-
+	computeTransformations = () => {
 		this.matrix.copy(this.originalMatrix);
 
 		let transMatrix = this.transformations.reduce((matrix, trans) =>
@@ -66,22 +50,16 @@ export default class VecpadVector extends THREE.Line {
 
 		this.vector = this.normalize ? this.originalVector.clone().normalize() : this.originalVector.clone();
 		this.vector.applyMatrix4(transMatrix);
+
 		this.arrow.position.copy(origin);
 		this.arrow.matrix = new THREE.Matrix4();
 		this.alignArrowOnVector();
+
 		this.geometry.vertices[1] = this.vector;
 		this.geometry.verticesNeedUpdate = true;
 		this.geometry.computeBoundingSphere();
 
 		this.computeLabelPosition();
-		this.callbacks.forEach(({func}) => {
-			func({
-				changedObject: this,
-				deleted: false
-			});
-		});
-
-		this.updateScene();
 	}
 
 	updateColor = (color) => {
@@ -182,7 +160,7 @@ export default class VecpadVector extends THREE.Line {
 	}
 
 	clean = () => {
-		this.notifyRegistree();
+		this.notifyRegistreeOfDeletion();
 		this.remove(this.label);
 		this.geometry.dispose();
 		this.material.dispose();
@@ -190,27 +168,25 @@ export default class VecpadVector extends THREE.Line {
 		this.arrow.material.dispose();
 	}
 
-	toJSON = () => {
-		return {
-			uuid: this.uuid,
-			name: this.name,
-			type: this.type,
-			color: this.material.color.getHex(),
-			normalize: this.normalize,
-			vector: {
-				x: this.vector.x,
-				y: this.vector.y,
-				z: this.vector.z
+	toJSON = () => ({
+		uuid: this.uuid,
+		name: this.name,
+		type: this.type,
+		color: this.material.color.getHex(),
+		normalize: this.normalize,
+		originalVector: {
+			x: this.originalVector.x,
+			y: this.originalVector.y,
+			z: this.originalVector.z
+		},
+		transformations: this.transformations.reduce(
+			(trans, currentTrans) => {
+				trans.push(currentTrans.toJSON());
+				return trans;
 			},
-			transformations: this.transformations.reduce(
-				(trans, currentTrans) => {
-					trans.push(currentTrans.toJSON());
-					return trans;
-				},
-				[]
-			)
-		}
-	}
+			[]
+		)
+	});
 
 	getCoordinatesEditor = () => (
 		<CoordinatesPicker

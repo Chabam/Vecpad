@@ -5,8 +5,8 @@ import InputGroup from '../../Components/Inputs/InputGroup';
 import CoordinatesPicker from '../../Components/Inputs/CoordinatesPicker';
 
 export default class Rotation extends Transformation {
-	constructor(axis, angle) {
-		super();
+	constructor(axis, angle, object) {
+		super(object);
 		this.name = 'Rotation';
 		this.axis = axis;
 		this.angle = angle;

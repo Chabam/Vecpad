@@ -182,20 +182,20 @@ export default class SceneHelper {
 			new THREE.Vector3(1, 1, 1),
 			0x000000,
 			'New vector',
-			this.updateReact
+			this.updateScene
 		));
 	}
 
 	addVectorAddition = () => {
-		this.addVecpadObject(new VectorAddition(this.updateScene));
+		this.addVecpadObject(new VectorAddition(0x000000, 'New vector addition', this.updateScene));
 	}
 
 	addVectorSubtraction = () => {
-		this.addVecpadObject(new VectorSubtraction(this.updateScene));
+		this.addVecpadObject(new VectorSubtraction(0x000000, 'New vector subtraction', this.updateScene));
 	}
 
 	addVectorCross = () => {
-		this.addVecpadObject(new VectorCrossProduct(this.updateScene));
+		this.addVecpadObject(new VectorCrossProduct(0x000000, 'New cross product', this.updateScene));
 	}
 
 	addTriangle = () => {

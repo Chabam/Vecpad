@@ -7,6 +7,9 @@ import VecpadVector from './VecpadVector';
 import Triangle from './Triangle';
 import Cube from './Cube';
 import Quad from './Quad';
+import VectorAddition from './VectorAddition';
+import VectorSubtraction from './VectorSubtraction';
+import VectorCrossProduct from './VectorCrossProduct';
 
 export default class VecpadObjectLoader {
 	constructor() {
@@ -14,13 +17,23 @@ export default class VecpadObjectLoader {
 	}
 
 	parse = (json, displayMode, updateSceneFunc) => {
-		return json.reduce(
+		let nonOperations = json.filter((object) => object.type !== 'Operation');
+		let operations = json.filter((object) => object.type === 'Operation');
+		let nonOperationsObjects = nonOperations.reduce(
 			(objects, objectJSON) => {
-				objects.push(this.parseObject(objectJSON, displayMode, updateSceneFunc))
+				objects.push(this.parseObject(objectJSON, displayMode, updateSceneFunc));
 				return objects;
 			},
 			[]
 		);
+		let operationsObjects = operations.reduce(
+			(objects, objectJSON) => {
+				objects.push(this.parseOperation(objectJSON, nonOperationsObjects, updateSceneFunc));
+				return objects;
+			},
+			[]
+		);
+		return nonOperationsObjects.concat(operationsObjects);
 	}
 
 	parseObject = (json, displayMode, updateSceneFunc) => {
@@ -80,76 +93,127 @@ export default class VecpadObjectLoader {
 				object.originalPosition = originalPosition;
 				object.originalMatrix = originalMatrix;
 				object.applyMatrix(originalMatrix);
-
 				break;
 			}
 			case 'Vector': {
 				let {
 					name,
 					color,
-					vector,
+					originalVector,
 					normalize
 				} = json;
 
 				object = new VecpadVector(
-					new THREE.Vector3(vector.x, vector.y, vector.z),
+					new THREE.Vector3(originalVector.x, originalVector.y, originalVector.z),
 					color,
 					name,
 					updateSceneFunc
 				);
-				if (normalize) {
-					object.normalize = normalize;
-
-					object.applyTransformations(1);
-				}
+				object.normalize = normalize;
 				break;
 			}
 			default:
-				console.error(`Could not parse object ${json.uuid}`)
+				console.error(`Error with the type of ${json.uuid}`)
 				break;
 		}
 		object.uuid = json.uuid;
-		json.transformations.forEach(trans => {
-				switch (trans.name) {
-					case 'Translation':
-						object.addTranslation(new Translation(
-							trans.x,
-							trans.y,
-							trans.z
-						));
-						break;
-					case 'Rotation':
-						object.addRotation(new Rotation(
-							new THREE.Vector3(
-								trans.axis.x,
-								trans.axis.y,
-								trans.axis.z
-							),
-							trans.angle
-						));
-						break;
-					case 'Shear':
-						object.addShear(new Shear(
-							trans.xY,
-							trans.xZ,
-							trans.yX,
-							trans.yZ,
-							trans.zX,
-							trans.zY
-						));
-						break;
-					case 'Scale':
-						object.addScale(new Scale(
-							trans.x,
-							trans.y,
-							trans.z
-						));
-						break;
-					default:
-						console.error('Could not parse transformation');
-				}
-				return trans;
-		});
+		object.transformations = json.transformations.reduce((trans, currentJson) => {
+			trans.push(this.parseTransformation(object, currentJson));
+			return trans;
+		},[]);
+		object.computeTransformations();
 		return object;
+	}
+
+	parseOperation = (json, objects, updateSceneFunc) => {
+		let {
+			name,
+			operation,
+			color,
+			v1,
+			v2,
+			transformations
+		} = json;
+		let object;
+		switch (operation) {
+			case 'Addition':
+				object = new VectorAddition(color, name, updateSceneFunc);
+				break;
+			case 'Subtraction':
+				object = new VectorSubtraction(color, name, updateSceneFunc);
+				break;
+			case 'Cross Product':
+				object = new VectorCrossProduct(color, name, updateSceneFunc);
+				break;
+			default:
+				console.error(`Error with the operation of ${json.uuid}`)
+				break;
+		}
+
+		let v1Object = objects.find((object) => object.uuid === v1);
+		let v2Object = objects.find((object) => object.uuid === v2);
+		object.v1 = v1Object;
+		object.v1CbId = object.v1 ? object.v1.registerCallback(object.updateVectors) : null;
+		object.v2 = v2Object;
+		object.v2CbId = object.v2 ? object.v2.registerCallback(object.updateVectors) : null;
+
+		object.uuid = json.uuid;
+		object.transformations = transformations.reduce((trans, currentJson) => {
+			trans.push(this.parseTransformation(object, currentJson));
+			return trans;
+		},[]);
+
+		object.computeTransformations();
+
+		if (object.v1 && object.v2) {
+			object.showOperation();
+		}
+		return object;
+	}
+
+	parseTransformation = (object, json) => {
+		let trans;
+		switch (json.name) {
+			case 'Translation':
+				trans = new Translation(
+					json.x,
+					json.y,
+					json.z,
+					object
+				);
+				break;
+			case 'Rotation':
+				trans = new Rotation(new THREE.Vector3(
+						json.axis.x,
+						json.axis.y,
+						json.axis.z
+					),
+					json.angle,
+					object
+				);
+				break;
+			case 'Shear':
+				trans = new Shear(
+					json.xY,
+					json.xZ,
+					json.yX,
+					json.yZ,
+					json.zX,
+					json.zY,
+					object
+				);
+				break;
+			case 'Scale':
+				trans = new Scale(
+					json.x,
+					json.y,
+					json.z,
+					object
+				);
+				break;
+			default:
+				console.error('Could not parse transformation');
+		}
+		return trans;
 	}
 }

@@ -4,8 +4,8 @@ import Transformation from "./Transformation";
 import * as THREE from 'three';
 
 export default class Translation extends Transformation {
-	constructor(x, y, z) {
-		super();
+	constructor(x, y, z, object) {
+		super(object);
 		this.name = 'Translation';
 		this.x = x;
 		this.y = y;

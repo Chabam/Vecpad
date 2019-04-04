@@ -26,23 +26,7 @@ export default class VecpadMesh extends THREE.Mesh {
 		VecpadObjectMixin.call(this, label, updateSceneFunc);
 	}
 
-	applyTransformations = (step) => {
-		this.currentStep = step;
-
-		let stepPerTrans = 1 / (this.transformations.length);
-		let currentTrans = Math.floor(step / stepPerTrans);
-		let stepInCurrentTrans = (step * this.transformations.length) - currentTrans;
-
-		this.transformations.forEach((trans, i) => {
-			if (i < currentTrans) {
-				trans.step = 1;
-			} else if (i > currentTrans) {
-				trans.step = 0;
-			} else {
-				trans.step = stepInCurrentTrans;
-			}
-		});
-
+	computeTransformations = () => {
 		let transMatrix = this.transformations.reduce((matrix, trans) =>
 			trans.getMatrix().multiply(matrix),
 			new THREE.Matrix4()
@@ -50,15 +34,11 @@ export default class VecpadMesh extends THREE.Mesh {
 
 		this.matrix.copy(this.originalMatrix);
 		this.applyMatrix(transMatrix);
-		this.computeLabelPosition();
-		this.callbacks.forEach(({func}) => {
-			func(this, false);
-		})
 
-		this.updateScene();
+		this.computeLabelPosition();
 	}
 
-	addTranslation = (translation=new Translation(0, 0, 0)) => {
+	addTranslation = (translation=new Translation(0, 0, 0, this)) => {
 		this.addTransformation(translation);
 	}
 
@@ -141,7 +121,7 @@ export default class VecpadMesh extends THREE.Mesh {
 	}
 
 	clean = () => {
-		this.notifyRegistree();
+		this.notifyRegistreeOfDeletion();
 		this.remove(this.label);
 		this.geometry.dispose();
 		this.material.dispose();

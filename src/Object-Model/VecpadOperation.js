@@ -4,8 +4,8 @@ import VecpadVector from './VecpadVector';
 import InputGroup from '../Components/Inputs/InputGroup';
 
 export default class VecpadOperation extends VecpadVector {
-	constructor(operation, label, reactUpdateFunc) {
-		super(new THREE.Vector3(), 0x000000, label, reactUpdateFunc);
+	constructor(operation, color, label, reactUpdateFunc) {
+		super(new THREE.Vector3(), color, label, reactUpdateFunc);
 		this.type = 'Operation';
 
 		this.operation = operation;
@@ -18,79 +18,70 @@ export default class VecpadOperation extends VecpadVector {
 	}
 
 	setV1 = (vector) => {
-		if (this.v1) {
-			this.v1.unregisterCallback(this.v1CbId);
-		}
-
-		if (typeof vector !== 'undefined') {
-			this.v1 = vector;
-			this.v1CbId = this.v1.registerCallback(this.updateVectors);
-
-			if (this.v2) {
-				this.createOperation();
-			}
-		} else {
-			this.v1 = null;
-			this.v1CbId = null;
-			this.removeOperation();
-		}
-
-		this.updateReact();
+		this.setVectors(vector, this.v2);
 	}
 
 	setV2 = (vector) => {
-		if (this.v2) {
-			this.v2.unregisterCallback(this.v2CbId);
-		}
+		this.setVectors(this.v1, vector);
+	}
 
-		if (typeof vector !== 'undefined') {
-			this.v2 = vector;
-			this.v2CbId = this.v2.registerCallback(this.updateVectors);
-
+	setVectors = (v1, v2) => {
+		if (v1 !== this.v1) {
 			if (this.v1) {
-				this.createOperation();
+				this.v1.unregisterCallback(this.v1CbId);
 			}
-		} else {
-			this.v2 = null;
-			this.v2CbId = null;
-			this.removeOperation();
+
+			this.v1 = v1;
+			this.v1CbId = this.v1 ? this.v1.registerCallback(this.updateVectors) : null;
+
+			this.updateScene(true, [{
+				uuid: this.uuid,
+				valueName: 'v1',
+				value: this.v1 ? this.v1.uuid : null
+			}]);
 		}
 
-		this.updateReact();
-	}
-
-	updateVectors = (changedObject, deleted) => {
-
-		if (deleted) {
-			if (!this.v1 || !this.v2) {
-				this.v1 = this.v2 = null;
-				this.v1CbId = this.v2CbId = null;
-				this.updateReact();
-				return;
-			} else if (changedObject.uuid === this.v1.uuid) {
-				this.v1 = null;
-				this.v1CbId = null;
-			} else {
-				this.v2 = null;
-				this.v2CbId = null;
+		if (v2 !== this.v2) {
+			if (this.v2) {
+				this.v2.unregisterCallback(this.v2CbId);
 			}
-			this.removeOperation();
-		} else {
-			this.createOperation();
+
+			this.v2 = v2;
+			this.v2CbId = this.v2 ? this.v2.registerCallback(this.updateVectors) : null;
+
+			this.updateScene(true, [{
+				uuid: this.uuid,
+				valueName: 'v2',
+				value: this.v2 ? this.v2.uuid : null
+			}]);
 		}
 
-		this.updateReact();
+		if (this.v1 && this.v2) {
+			this.showOperation();
+		} else {
+			this.hideOperation();
+		}
 	}
 
-	createOperation = () => {
+	showOperation = () => {
 		this.label.element.classList.remove('hidden');
 		this.updateVector(this.operation(this.v1.vector, this.v2.vector));
 	}
 
-	removeOperation = () => {
+	hideOperation = () => {
 		this.label.element.classList.add('hidden');
-		this.updateVector(new THREE.Vector3());
+		this.updateVector(new THREE.Vector3(0, 0, 0));
 	}
+
+	updateVectors = (changedObject, deleted) => {
+		if (this.v1 && changedObject.uuid === this.v1.uuid) {
+			this.setV1(deleted ? null : changedObject);
+		} else if (this.v2 && changedObject.uuid === this.v2.uuid) {
+			this.setV2(deleted ? null : changedObject);
+		}
+	}
+
+	getCoordinatesEditor = () => (<React.Fragment/>);
 
 	getTypeSpecificControls = (sceneHelper) => {
 		let availableVectors = sceneHelper.getVectors();
@@ -102,10 +93,10 @@ export default class VecpadOperation extends VecpadVector {
 		));
 
 		const updateV1 = (event) => this.setV1(
-			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
+			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value)) || null
 		);
 		const updateV2 = (event) => this.setV2(
-			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value))
+			sceneHelper.THREEScene.getObjectById(parseInt(event.target.value)) || null
 		);
 
 		return (
