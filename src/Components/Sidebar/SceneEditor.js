@@ -53,7 +53,7 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 				objectList={sceneHelper.getVecpadObjectList()}
 				sceneHelper={sceneHelper}
 			/>
-			<div id="add-object">
+			<div id="add-clear-object">
 				<select className="material-icons button-select add" value={''} onChange={createObject}>
 					<option>add</option>
 					<optgroup label="3D Object">
@@ -68,6 +68,7 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 						<option value={objectType.CROSS}>Cross product</option>
 					</optgroup>
 				</select>
+				<button className="material-icons text-only delete" onClick={sceneHelper.clearTransformations}>clear</button>
 			</div>
 			<InputGroup name='Display Mode'>
 				<select onChange={callApplyDisplayMode} value={sceneHelper.currentDisplayMode}>

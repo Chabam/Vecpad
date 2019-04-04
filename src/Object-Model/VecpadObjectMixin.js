@@ -134,6 +134,8 @@ export default function(label, updateSceneFunc) {
 		this.updateTransformationList();
 	}
 
+	this.clearTransformations = () => this.transformations.forEach((trans) => this.removeTransformation(trans));
+
 	this.swapTransformations = (i, j) => {
 		[this.transformations[i], this.transformations[j]] = [this.transformations[j], this.transformations[i]];
 		this.applyTransformations(1);

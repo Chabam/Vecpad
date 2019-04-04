@@ -113,6 +113,8 @@ export default class SceneHelper {
 
 	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
 
+	clearScene = () => this.getVecpadObjectList().forEach(object => this.removeObject(object));
+
 	// A function used to change the size of the grid at Y=0
 	updateGraph = (size) => {
 		if (size === this.THREEScene.graph.size) {
