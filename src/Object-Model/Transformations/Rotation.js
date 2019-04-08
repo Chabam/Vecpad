@@ -51,8 +51,7 @@ export default class Rotation extends Transformation {
 					coordinates={this.axis}
 				/>
 				<InputGroup name="Normalize">
-					<input type="checkbox" checked={this.normalize} onChange={this.updateNormalize}
-						checked={this.normalize}/>
+					<input type="checkbox" checked={this.normalize} onChange={this.updateNormalize}/>
 				</InputGroup>
 				<InputGroup name="Angle">
 					<input type="number" step={0.01} defaultValue={this.angle} onChange={updateAngle}/>
