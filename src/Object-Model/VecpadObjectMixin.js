@@ -112,6 +112,12 @@ export default function(label, updateSceneFunc) {
 		this.updateScene();
 	};
 
+	this.removeTransformation = (transformation) => {
+		this.transformations = this.transformations.filter((trans) => trans !== transformation);
+		this.applyTransformations(1);
+		this.updateTransformationList();
+	};
+
 	// Remove all transformations
 	this.clearTransformations = () => this.transformations.forEach((trans) => this.removeTransformation(trans));
 

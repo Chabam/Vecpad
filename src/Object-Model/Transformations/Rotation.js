@@ -1,6 +1,6 @@
 import React from 'react';
-import Transformation from './Transformation';
 import * as THREE from 'three';
+import Transformation from './Transformation';
 import InputGroup from '../../Components/Inputs/InputGroup';
 import CoordinatesPicker from '../../Components/Inputs/CoordinatesPicker';
 
@@ -10,10 +10,11 @@ export default class Rotation extends Transformation {
 		this.name = 'Rotation';
 		this.axis = axis;
 		this.angle = angle;
+		this.normalize = true;
 	}
 
 	getMatrix = () => new THREE.Matrix4().makeRotationAxis(
-		this.axis,
+		this.normalize ? this.axis.clone().normalize() : this.axis,
 		THREE.Math.degToRad(this.angle) * this.step
 	);
 
@@ -29,6 +30,13 @@ export default class Rotation extends Transformation {
 		};
 	}
 
+	updateNormalize = () => {
+		this.normalize = !this.normalize;
+
+		this.applyTransformations(1);
+		this.updateTransformationList();
+	}
+
 	getControls = () => {
 		const updateAngle = (event) => this.updateTransformationValue(
 			'angle',
@@ -42,6 +50,10 @@ export default class Rotation extends Transformation {
 					updateCoordinates={(axis) => this.updateTransformationValue('axis', axis)}
 					coordinates={this.axis}
 				/>
+				<InputGroup name="Normalize">
+					<input type="checkbox" checked={this.normalize} onChange={this.updateNormalize}
+						checked={this.normalize}/>
+				</InputGroup>
 				<InputGroup name="Angle">
 					<input type="number" step={0.01} defaultValue={this.angle} onChange={updateAngle}/>
 				</InputGroup>
