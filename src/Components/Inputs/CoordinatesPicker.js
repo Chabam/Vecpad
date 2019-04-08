@@ -1,6 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 
+// A simple component used to render three inputs for (X, Y, Z) coordinates.
 const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
 	let {x, y, z} = coordinates;
 

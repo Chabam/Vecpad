@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import VecpadVector from './VecpadVector';
 import InputGroup from '../Components/Inputs/InputGroup';
 
+// A general class to represent all vector operations
 export default class VecpadOperation extends VecpadVector {
 	constructor(operation, color, label, reactUpdateFunc) {
 		super(new THREE.Vector3(), color, label, reactUpdateFunc);
@@ -26,8 +27,11 @@ export default class VecpadOperation extends VecpadVector {
 	}
 
 	setVectors = (v1, v2) => {
+		// If the vector changed
 		if (v1 !== this.v1) {
+			// and another one existed before
 			if (this.v1) {
+				// We unregister from its changes
 				this.v1.unregisterCallback(this.v1CbId);
 			}
 
@@ -56,6 +60,7 @@ export default class VecpadOperation extends VecpadVector {
 			}]);
 		}
 
+		// If both vectors are there, render the operation
 		if (this.v1 && this.v2) {
 			this.showOperation();
 		} else {
@@ -77,6 +82,7 @@ export default class VecpadOperation extends VecpadVector {
 		this.applyTransformations(1);
 	}
 
+	// The function called when one of the vector changed
 	updateVectors = (changedObject, deleted) => {
 		if (this.v1 && changedObject.uuid === this.v1.uuid) {
 			this.setV1(deleted ? null : changedObject);

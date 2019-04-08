@@ -20,7 +20,7 @@ export default class Vecpad extends Component {
 		};
 	}
 
-	// Whenever THREEHelper changes it will call this function to update the UI.
+	// Whenever THREEHelper changes, it will call this function to update the UI.
 	updateReactState = (newTHREEState) => this.setState({
 		THREEHelper: newTHREEState
 	});

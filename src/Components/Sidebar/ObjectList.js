@@ -1,6 +1,7 @@
 import React from 'react';
 import ObjectInfo from './ObjectInfo';
 
+// This component will hold all the objectInfos of the scene.
 const ObjectList = ({objectList, sceneHelper}) => {
 	let objects = objectList.map((object, i) => (
 		<ObjectInfo

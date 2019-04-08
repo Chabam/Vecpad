@@ -1,23 +1,20 @@
 import React from 'react';
-import ObjectList from './ObjectList';
 import SceneHelper from '../../Object-Model/THREE/SceneHelper';
+import ObjectList from './ObjectList';
 import InputGroup from '../Inputs/InputGroup';
 
+const objectType = {
+	VECTOR: 0,
+	TRIANGLE: 1,
+	QUAD: 2,
+	CUBE: 3,
+	ADDITION: 4,
+	SUBTRACTION: 5,
+	CROSS: 6
+};
 
+// This component holds all the controls used for the entire scene.
 const SceneEditor = ({sceneHelper, cameraHelper}) => {
-	const callApplyDisplayMode = (event) => sceneHelper.applyDisplayMode(parseInt(event.target.value));
-	const callUpdateGraph = (event) => sceneHelper.updateGraph(parseInt(event.target.value));
-
-	const objectType = {
-		VECTOR: 0,
-		TRIANGLE: 1,
-		QUAD: 2,
-		CUBE: 3,
-		ADDITION: 4,
-		SUBTRACTION: 5,
-		CROSS: 6
-	};
-
 	const createObject = (event) => {
 		switch(parseInt(event.target.value)) {
 		case objectType.VECTOR:
@@ -49,13 +46,11 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 
 	return (
 		<div id="scene-editor">
-			<ObjectList
-				objectList={sceneHelper.getVecpadObjectList()}
-				sceneHelper={sceneHelper}
-			/>
+			<ObjectList objectList={sceneHelper.getVecpadObjectList()} sceneHelper={sceneHelper}/>
 			<div id="scene-controls">
 				<div>
-					<select className="material-icons button-select add" value={''} onChange={createObject} title="Add an object to the scene">
+					<select className="material-icons button-select add"  value={''} onChange={createObject}
+						title="Add an object to the scene">
 						<option>add</option>
 						<optgroup label="3D Object">
 							<option value={objectType.VECTOR}>Vector</option>
@@ -69,18 +64,27 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 							<option value={objectType.CROSS}>Cross product</option>
 						</optgroup>
 					</select>
-					<button className="material-icons text-only delete" onClick={sceneHelper.clearScene} title="Remove all objects from the scene">clear</button>
+					<button className="material-icons text-only delete" onClick={sceneHelper.clearScene}
+						title="Remove all objects from the scene">
+						clear
+					</button>
 				</div>
 				<div>
-					<label id="file-chooser" htmlFor="file" className="material-icons" title="Load a scene from a file">open_in_browser</label>
+					<label id="file-chooser" htmlFor="file" className="material-icons" title="Load a scene from a file">
+						open_in_browser
+					</label>
 					<input id="file" type="file" accept="application/json"
 						onChange={(event) => sceneHelper.loadSceneFromFile(event.target.files)}
 						onClick={(event) => event.target.value = null}/>
-					<button className="material-icons text-only" onClick={sceneHelper.exportScene} title="Export the scene to a file">save_alt</button>
+					<button className="material-icons text-only" onClick={sceneHelper.exportScene}
+						title="Export the scene to a file">
+						save_alt
+					</button>
 				</div>
 			</div>
 			<InputGroup name='Display Mode'>
-				<select onChange={callApplyDisplayMode} value={sceneHelper.currentDisplayMode}>
+				<select value={sceneHelper.currentDisplayMode}
+					onChange={(event) => sceneHelper.applyDisplayMode(parseInt(event.target.value))}>
 					<option value={SceneHelper.DisplayMode.OUTLINE}>
 						Outline
 					</option>
@@ -93,7 +97,8 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 				</select>
 			</InputGroup>
 			<InputGroup name="Graph size">
-				<input type="range" min="2" max="100" step="2" onChange={callUpdateGraph} value={sceneHelper.THREEScene.graph.size}/>
+				<input type="range" min="2" max="100" step="2" value={sceneHelper.THREEScene.graph.size}
+					onChange={(event) => sceneHelper.updateGraph(parseInt(event.target.value))}/>
 			</InputGroup>
 			<div>
 				<button onClick={cameraHelper.unfocusObject}>Reset camera</button>

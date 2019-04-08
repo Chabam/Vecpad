@@ -1,7 +1,7 @@
 import React from 'react';
 import THREEHelper from '../../Object-Model/THREE/THREEHelper';
 
-
+// A simple component used to render a matrix.
 const Matrix = ({matrix}) => {
 	let matrixList = matrix.toArray();
 	return (

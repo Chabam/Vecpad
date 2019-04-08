@@ -1,8 +1,4 @@
 import * as THREE from 'three';
-import Translation from './Transformations/Translation';
-import Rotation from './Transformations/Rotation';
-import Shear from './Transformations/Shear';
-import Scale from './Transformations/Scale';
 import VecpadVector from './VecpadVector';
 import Triangle from './Triangle';
 import Cube from './Cube';
@@ -10,7 +6,13 @@ import Quad from './Quad';
 import VectorAddition from './VectorAddition';
 import VectorSubtraction from './VectorSubtraction';
 import VectorCrossProduct from './VectorCrossProduct';
+import Translation from './Transformations/Translation';
+import Rotation from './Transformations/Rotation';
+import Shear from './Transformations/Shear';
+import Scale from './Transformations/Scale';
+import VecpadMesh from './VecpadMesh';
 
+// Convert a Vecpad scene from a Json format
 export default class VecpadObjectLoader {
 	constructor() {
 		this.objectLoader = new THREE.ObjectLoader();
@@ -19,8 +21,13 @@ export default class VecpadObjectLoader {
 	parse = (json, displayMode, updateSceneFunc) => {
 		try {
 
+			/*
+				We need to parse all the object that are not operation first since
+				the operation require existing object
+			*/
 			let nonOperations = json.filter((object) => object.type !== 'Operation');
 			let operations = json.filter((object) => object.type === 'Operation');
+
 			let nonOperationsObjects = nonOperations.reduce(
 				(objects, objectJSON) => {
 					objects.push(this.parseObject(objectJSON, displayMode, updateSceneFunc));
@@ -52,16 +59,10 @@ export default class VecpadObjectLoader {
 				name,
 				width,
 				color,
-				outlineColor,
-				originalMatrix,
-				originalPosition
+				outlineColor
 			} = json;
 
 			object = new Triangle(width, displayMode, color, outlineColor, name, updateSceneFunc);
-
-			object.originalPosition = originalPosition;
-			object.originalMatrix = originalMatrix;
-			object.applyMatrix(originalMatrix);
 
 			break;
 		}
@@ -71,16 +72,10 @@ export default class VecpadObjectLoader {
 				width,
 				heigth,
 				color,
-				outlineColor,
-				originalMatrix,
-				originalPosition
+				outlineColor
 			} = json;
 
 			object = new Quad(width, heigth, displayMode, color, outlineColor, name, updateSceneFunc);
-
-			object.originalPosition = originalPosition;
-			object.originalMatrix = originalMatrix;
-			object.applyMatrix(originalMatrix);
 
 			break;
 		}
@@ -92,15 +87,10 @@ export default class VecpadObjectLoader {
 				depth,
 				color,
 				outlineColor,
-				originalMatrix,
-				originalPosition
 			} = json;
 
 			object = new Cube(width, heigth, depth, displayMode, color, outlineColor, name, updateSceneFunc);
 
-			object.originalPosition = originalPosition;
-			object.originalMatrix = originalMatrix;
-			object.applyMatrix(originalMatrix);
 			break;
 		}
 		case 'Vector': {
@@ -118,17 +108,29 @@ export default class VecpadObjectLoader {
 				updateSceneFunc
 			);
 			object.normalize = normalize;
+
 			break;
 		}
 		default:
 			throw new Error(`Unkown Object type: ${json.type}`);
 		}
+
+		// Apply common settings on the VecpadObject
+		if (object instanceof VecpadMesh) {
+			let { originalPosition, originalMatrix } = json;
+
+			object.originalPosition = originalPosition;
+			object.originalMatrix = originalMatrix;
+			object.applyMatrix(originalMatrix);
+		}
+
 		object.uuid = json.uuid;
 		object.transformations = json.transformations.reduce((trans, currentJson) => {
 			trans.push(this.parseTransformation(object, currentJson));
 			return trans;
 		},[]);
 		object.computeTransformations();
+
 		return object;
 	}
 
@@ -156,10 +158,14 @@ export default class VecpadObjectLoader {
 			throw new Error(`Unkown operation: ${operation}`);
 		}
 
+		// Search for the associated vectors
 		let v1Object = objects.find((object) => object.uuid === v1);
 		let v2Object = objects.find((object) => object.uuid === v2);
+
 		object.v1 = v1Object;
+		// If the object exist we register to its changes notification
 		object.v1CbId = object.v1 ? object.v1.registerCallback(object.updateVectors) : null;
+
 		object.v2 = v2Object;
 		object.v2CbId = object.v2 ? object.v2.registerCallback(object.updateVectors) : null;
 
@@ -171,9 +177,11 @@ export default class VecpadObjectLoader {
 
 		object.computeTransformations();
 
+		// If all the vectors are there show the operation
 		if (object.v1 && object.v2) {
 			object.showOperation();
 		}
+
 		return object;
 	}
 

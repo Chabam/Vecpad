@@ -17,12 +17,15 @@ export default class RendereHelper {
 		this.THREE3DRenderer = new THREE.WebGLRenderer({
 			antialias: true
 		});
-		this.THREE2DRenderer = new CSS2DRenderer();
 
 		this.THREE3DRenderer.setClearColor(0xbdbdbd);
+		this.THREE3DRenderer.setPixelRatio(window.devicePixelRatio);
+
+		// The second renderer used to display labels
+		this.THREE2DRenderer = new CSS2DRenderer();
 		this.THREE2DRenderer.domElement.style.position = 'absolute';
 		this.THREE2DRenderer.domElement.id = 'label-renderer';
-		this.THREE3DRenderer.setPixelRatio(window.devicePixelRatio);
+
 		this.setSize(width, height);
 
 		return {

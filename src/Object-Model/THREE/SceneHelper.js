@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import ObjectHelper from './ObjectHelper';
+import IDBWrapper from '../IDBWrapper';
+import VecpadObjectLoader from '../VecpadObjectLoader';
 import VecpadVector from '../VecpadVector';
 import VecpadMesh from '../VecpadMesh';
 import VectorAddition from '../VectorAddition';
@@ -8,8 +10,6 @@ import VectorCrossProduct from '../VectorCrossProduct';
 import Triangle from '../Triangle';
 import Quad from '../Quad';
 import Cube from '../Cube';
-import IDBWrapper from '../IDBWrapper';
-import VecpadObjectLoader from '../VecpadObjectLoader';
 
 // A wrapper around the scene in THREE.js
 export default class SceneHelper {
@@ -35,7 +35,7 @@ export default class SceneHelper {
 		this.THREEScene = new THREE.Scene();
 		this.selectedObject = null;
 
-		// The information on the state of our application.
+		// We retreive the cached information on the state of our application.
 		this.autoSave = localStorage.getItem('autoSave') === 'true';
 		this.currentDisplayMode = parseInt(localStorage.getItem('displayMode')) || SceneHelper.DisplayMode.BOTH;
 		let groundSize = parseInt(localStorage.getItem('graphSize')) || 2;
@@ -47,17 +47,19 @@ export default class SceneHelper {
 		this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 		this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.5);
 
+		// The graph's labels
 		this.xLabel = ObjectHelper.createLabel('X');
 		this.xMinusLabel = ObjectHelper.createLabel('-X');
 		this.yLabel = ObjectHelper.createLabel('Y');
 		this.yMinusLabel = ObjectHelper.createLabel('-Y');
 		this.zLabel = ObjectHelper.createLabel('Z');
 		this.zMinusLabel = ObjectHelper.createLabel('-Z');
+		this.setGraphLabelPosition(groundSize);
 
 		// Information on the grid at Y=0 that act as a reference for our scene.
 		let graph = ObjectHelper.createGraph(groundSize);
-		this.setLabelPosition(groundSize);
 		this.THREEScene.graph = graph;
+
 		this.addObjects(
 			this.directionalLight,
 			this.ambientLight,
@@ -88,6 +90,7 @@ export default class SceneHelper {
 
 		this.THREEScene.remove(object);
 		this.updateReact();
+
 		if (this.autoSave) {
 			this.IDBWrapper.removeObject(object.uuid);
 		}
@@ -105,6 +108,7 @@ export default class SceneHelper {
 		let file = new Blob([JSON.stringify(jsonScene)], {type: 'application/json'});
 		let url = URL.createObjectURL(file);
 
+		// We use a hidden 'a' element to download autmatically the file.
 		let downloader = document.createElement('a');
 		downloader.href = url;
 		downloader.download = 'vecpad-scene';
@@ -122,18 +126,22 @@ export default class SceneHelper {
 	loadSceneFromFile = (files) => {
 		let [file] = files;
 		let fileReader = new FileReader();
+
 		fileReader.onload = (event) => {
 			this.loadSavedObjects(JSON.parse(event.target.result));
 			if (this.autoSave) {
 				this.saveSettings();
 			}
 		};
+
 		fileReader.readAsText(file);
 	}
 
 	loadSavedObjects = (jsonObjects) => {
 		let vecpadLoader = new VecpadObjectLoader();
 		let objects = vecpadLoader.parse(jsonObjects, this.currentDisplayMode, this.updateScene);
+
+		// If have loaded objects
 		if (objects.length !== 0) {
 			this.clearScene();
 			this.addObjects(...objects);
@@ -141,6 +149,7 @@ export default class SceneHelper {
 		}
 	}
 
+	// Get all objects that are VecpadObjects
 	getVecpadObjectList = () => this.THREEScene.children.filter((object) =>
 		object instanceof VecpadMesh ||
 		object instanceof VecpadVector
@@ -148,6 +157,7 @@ export default class SceneHelper {
 
 	getVectors = () => this.getVecpadObjectList().filter((object) => object.type === 'Vector');
 
+	// Delete all objects
 	clearScene = () => this.getVecpadObjectList().forEach(object => this.removeObject(object));
 
 	// A function used to change the size of the grid at Y=0
@@ -155,15 +165,20 @@ export default class SceneHelper {
 		if (size === this.THREEScene.graph.size) {
 			return;
 		}
+
 		let { graph } = this.THREEScene;
+
 		graph.material.dispose();
 		graph.geometry.dispose();
 		this.THREEScene.remove(graph);
+
 		let newGraph = ObjectHelper.createGraph(size);
 		newGraph.size = size;
+
 		this.THREEScene.graph = newGraph;
-		this.setLabelPosition(size);
 		this.addObjects(newGraph);
+
+		this.setGraphLabelPosition(size);
 		this.updateReact();
 
 		if (this.autoSave) {
@@ -171,12 +186,15 @@ export default class SceneHelper {
 		}
 	};
 
-	setLabelPosition = (size) => {
+	setGraphLabelPosition = (size) => {
 		let labelDistance = (size / 2) + ((size / 2) * 0.05);
+
 		this.xLabel.position.set(labelDistance, 0, 0);
 		this.xMinusLabel.position.set(-labelDistance, 0, 0);
+
 		this.yLabel.position.set(0, labelDistance, 0);
 		this.yMinusLabel.position.set(0, -labelDistance, 0);
+
 		this.zLabel.position.set(0, 0, labelDistance);
 		this.zMinusLabel.position.set(0, 0, -labelDistance);
 	}
@@ -194,6 +212,7 @@ export default class SceneHelper {
 			object.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.OUTLINE);
 			object.outline.material.visible = (this.currentDisplayMode !== SceneHelper.DisplayMode.FILL);
 		});
+
 		this.updateReact();
 
 		if (this.autoSave) {
@@ -211,8 +230,6 @@ export default class SceneHelper {
 			this.IDBWrapper.addObjects([object.toJSON()]);
 		}
 	}
-
-	// These functions are used to add certain type of objects to the scene.
 
 	addVector = () => {
 		this.addVecpadObject(new VecpadVector(
@@ -271,13 +288,17 @@ export default class SceneHelper {
 		));
 	}
 
+	// Set the given object as the selection
 	selectObject = (object) => {
+
+		// If there's another selected item we need to deselect it!
 		if (this.selectedObject) {
 			this.selectedObject.deselect();
 		}
 
 		this.selectedObject = object;
 		object.select();
+
 		this.updateReact();
 	};
 
@@ -285,9 +306,11 @@ export default class SceneHelper {
 		this.selectedObject.deselect();
 		this.selectedObject.unregisterCallback();
 		this.selectedObject = null;
+
 		this.updateReact();
 	};
 
+	// Update the settings to cache the user data
 	updateAutoSave = () => {
 		this.autoSave = !this.autoSave;
 
@@ -301,10 +324,13 @@ export default class SceneHelper {
 		this.updateReact();
 	}
 
+	// Cache the user's settings
 	saveSettings = () => {
+
 		localStorage.setItem('autoSave', this.autoSave);
 		localStorage.setItem('displayMode', this.currentDisplayMode);
 		localStorage.setItem('graphSize', this.THREEScene.graph.size);
+
 		let objectsJson = this.getVecpadObjectList().reduce(
 			(objects, object) => {
 				objects.push(object.toJSON());
@@ -312,11 +338,16 @@ export default class SceneHelper {
 			},
 			[]
 		);
+
 		if (objectsJson.length !== 0) {
 			this.IDBWrapper.addObjects(objectsJson);
 		}
 	}
 
+	/*
+		A function used to call 'updateReact' and/or updating cached data.
+		This function will only be called by VecpadObject.
+	*/
 	updateScene = (updateReact=true, updateDatas=null) => {
 		if (this.autoSave && updateDatas) {
 			updateDatas.forEach((updateData) => {

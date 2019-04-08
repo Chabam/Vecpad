@@ -1,7 +1,9 @@
 import React from 'react';
 import TransformationList from './TransformationList';
 
-const TransformationEditor = ({object}) => {
+// A component used to edit the transformations of a given object.
+const TransformationsEditor = ({object}) => {
+	// Information used to find which transformation is 'active'.
 	let stepPerTrans = 1 / (object.transformations.length);
 	let currentTrans = Math.floor(object.currentStep / stepPerTrans);
 
@@ -73,4 +75,4 @@ const TransformationEditor = ({object}) => {
 	);
 };
 
-export default TransformationEditor;
+export default TransformationsEditor;

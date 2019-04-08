@@ -2,8 +2,8 @@ const dbName = 'vecpad';
 const dbVersion = 1;
 const objectStoreName = 'objects';
 
+// A wrapper class around IndexedDB
 export default class IDBWrapper {
-
 	constructor() {
 		this.db = null;
 
@@ -13,6 +13,10 @@ export default class IDBWrapper {
 			return;
 		}
 
+		/*
+			We use a promise since the connection to the DB is aynchronous and the
+			object manage the connection internally. Hence, we need it at the creation.
+		*/
 		let loadDB = new Promise((resolve) => {
 			let request = window.indexedDB.open(dbName, dbVersion);
 			request.onupgradeneeded = this.createIDB;
@@ -26,6 +30,7 @@ export default class IDBWrapper {
 		});
 	}
 
+	// Create the table
 	createIDB = (event) => {
 		let db = event.target.result;
 
@@ -35,6 +40,7 @@ export default class IDBWrapper {
 	getAllObjects = (callback) => {
 		let transaction = this.db.transaction([objectStoreName]);
 		let objectStore = transaction.objectStore(objectStoreName);
+
 		objectStore.getAll().onsuccess = (event) => {
 			callback(event.target.result);
 		};
@@ -52,12 +58,14 @@ export default class IDBWrapper {
 	removeObject = (uuid) => {
 		let transaction = this.db.transaction([objectStoreName], 'readwrite');
 		let objectStore = transaction.objectStore(objectStoreName);
+
 		objectStore.delete(uuid);
 	}
 
 	updateObject = (uuid, valueName, value) => {
 		let transaction = this.db.transaction([objectStoreName], 'readwrite');
 		let objectStore = transaction.objectStore(objectStoreName);
+
 		let request = objectStore.get(uuid);
 		request.onsuccess = (event) => {
 			let object = event.target.result;
@@ -68,9 +76,11 @@ export default class IDBWrapper {
 		};
 	}
 
+	// Remove all the objects
 	clear = () => {
 		let transaction = this.db.transaction([objectStoreName], 'readwrite');
 		let objectStore = transaction.objectStore(objectStoreName);
+
 		objectStore.clear();
 	}
 }

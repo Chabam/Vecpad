@@ -15,14 +15,17 @@ export default class VecpadVector extends THREE.Line {
 			direction
 		);
 		vectorGeometry.computeBoundingBox();
+		// Tell THREE that the coordinates will change, this allow us to reuse the same object
 		vectorGeometry.dynamic = true;
 
+		// The line is created here
 		super(vectorGeometry, new THREE.LineBasicMaterial({
 			color: color
 		}));
 
 		this.type = 'Vector';
 
+		// The arrow tip is created here
 		let arrowGeometry = new THREE.ConeGeometry(0.05, 0.05, 10);
 		let arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({
 			color: color
@@ -74,6 +77,7 @@ export default class VecpadVector extends THREE.Line {
 		}]);
 	}
 
+	// Makes the vector pop when selected
 	select = () => {
 		this.label.element.classList.add('selected');
 
@@ -82,11 +86,13 @@ export default class VecpadVector extends THREE.Line {
 		let { arrow, material } = this;
 		material.linewidth = SceneHelper.SELECTED_LINEWIDTH;
 
+		// Render vector on top of other objects
 		arrow.renderOrder = 1;
 		material.depthTest = false;
 		arrow.material.depthTest = false;
 	}
 
+	// Reset the vector to its initial state
 	deselect = () => {
 		this.label.element.classList.remove('selected');
 
@@ -100,6 +106,7 @@ export default class VecpadVector extends THREE.Line {
 		arrow.material.depthTest = true;
 	}
 
+	// Update to set wether or not to normalize the vector
 	updateNormalize = () => {
 		this.normalize = !this.normalize;
 
@@ -112,6 +119,7 @@ export default class VecpadVector extends THREE.Line {
 		}]);
 	}
 
+	// Update the original vector
 	updateVector = (direction) => {
 		this.originalVector = direction.clone();
 
@@ -127,6 +135,7 @@ export default class VecpadVector extends THREE.Line {
 		}]);
 	}
 
+	// Sets the cone on along the top of the vector
 	alignArrowOnVector = () => {
 		let up = new THREE.Vector3(0, 1, 0);
 
@@ -137,8 +146,11 @@ export default class VecpadVector extends THREE.Line {
 		let rotationAxis;
 		let rotationAngle;
 		let normalizedDirection = this.vector.clone().normalize();
-		// This code section aligns the vector object to the direction.
-		// If the vector we are trying to align to is exactly the opposite of our up vector
+
+		/*
+			This code section aligns the vector object to the vector.
+			If the vector we are trying to align to is exactly the opposite of our up vector
+		*/
 		if (normalizedDirection.equals(new THREE.Vector3(0, -1, 0))) {
 			// We just flip the vector upside down
 			rotationAxis = new THREE.Vector3(1, 0, 0);
@@ -162,6 +174,7 @@ export default class VecpadVector extends THREE.Line {
 	clean = () => {
 		this.notifyRegistreeOfDeletion();
 		this.remove(this.label);
+
 		this.geometry.dispose();
 		this.material.dispose();
 		this.arrow.geometry.dispose();
@@ -187,6 +200,8 @@ export default class VecpadVector extends THREE.Line {
 			[]
 		)
 	});
+
+	getCenter = () => this.vector.clone().multiplyScalar(1 / 2);
 
 	getCoordinatesEditor = () => (
 		<CoordinatesPicker

@@ -12,6 +12,10 @@ export default class Scale extends Transformation {
 		this.z = z;
 	}
 
+	/*
+		All the value in this matrix must be greater than 0 since
+		it will not be invertible otherwise. The values starts at 1.
+	*/
 	getMatrix = () => {
 		return new THREE.Matrix4().makeScale(
 			(1 + (this.x - 1) * this.step) || 0.00000001,

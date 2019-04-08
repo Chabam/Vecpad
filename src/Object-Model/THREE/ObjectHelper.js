@@ -32,11 +32,13 @@ export default class ObjectHelper {
 	}
 
 	static createTriangleGeometry = (width) => {
+		let triangleGeometry = new THREE.Geometry();
+
 		let p1 = new THREE.Vector3(0, 0, 0);
 		let p2 = new THREE.Vector3(width, 0, 0);
 		let p3 = new THREE.Vector3(0, width, 0);
-		let triangleGeometry = new THREE.Geometry();
 		triangleGeometry.vertices.push(p1, p2, p3);
+
 		triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
 		triangleGeometry.computeFaceNormals();
 		triangleGeometry.type = 'TriangleGeometry';

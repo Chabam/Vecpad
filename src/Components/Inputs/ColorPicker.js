@@ -1,6 +1,7 @@
 import React from 'react';
 import InputGroup from './InputGroup';
 
+// A simple component rendering a dropdown list for basic colors.
 const ColorPicker = ({name, updateColor, defaultColor=0x000000}) => {
 	const callUpdateColor = (event) => updateColor(parseInt(event.target.value));
 	return <InputGroup name={name}>

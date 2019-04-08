@@ -1,19 +1,17 @@
 import React from 'react';
 import Matrix from '../Inputs/Matrix';
 
-/*
-	This component will show the specific details of a transformation.
-*/
+const TransformationActionType = {
+	PRIORITIZE: 0,
+	DEPRIORITIZE: 1,
+	REMOVE: 2
+};
+
+// This component will show the specific details of a transformation.
 const TransformationInfo = ({transformation, activeTransformation, removeTransformation}) => {
 	const toggleMatrix = () => {
 		transformation.showMatrix = !transformation.showMatrix;
 		transformation.updateScene();
-	};
-
-	const TransformationActionType = {
-		PRIORITIZE: 0,
-		DEPRIORITIZE: 1,
-		REMOVE: 2
 	};
 
 	const handleTransformationAction = (event) => {
@@ -33,6 +31,7 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 		}
 	};
 
+	// A button to show the expandability of the matrix.
 	let matrixToggle = transformation.showMatrix
 		? (<span className="material-icons">expand_less</span>)
 		: (<span className="material-icons">expand_more</span>);
