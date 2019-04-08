@@ -34,6 +34,6 @@ const Matrix = ({matrix}) => {
 			</tbody>
 		</table>
 	);
-}
+};
 
 export default Matrix;

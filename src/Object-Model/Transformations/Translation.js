@@ -1,6 +1,6 @@
 import React from 'react';
 import InputGroup from '../../Components/Inputs/InputGroup';
-import Transformation from "./Transformation";
+import Transformation from './Transformation';
 import * as THREE from 'three';
 
 export default class Translation extends Transformation {
@@ -24,7 +24,7 @@ export default class Translation extends Transformation {
 			x: this.x,
 			y: this.y,
 			z: this.z
-		}
+		};
 	}
 
 	getControls = () => {

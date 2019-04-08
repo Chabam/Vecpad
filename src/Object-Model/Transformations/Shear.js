@@ -1,5 +1,5 @@
 import React from 'react';
-import Transformation from "./Transformation";
+import Transformation from './Transformation';
 import * as THREE from 'three';
 import InputGroup from '../../Components/Inputs/InputGroup';
 
@@ -40,7 +40,7 @@ export default class Shear extends Transformation {
 			yZ: this.yZ,
 			zX: this.zX,
 			zY: this.zY
-		}
+		};
 	}
 
 	getControls = () => {

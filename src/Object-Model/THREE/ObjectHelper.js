@@ -13,7 +13,6 @@ export default class ObjectHelper {
 			to be at (0,0,0).
 		*/
 		if (subdivision % 2 === 1) {
-			console.warn(`The graph has to be divisible by two, you provided ${subdivision}. It will be changed to ${subdivision + 1}.`)
 			subdivision = subdivision + 1;
 		}
 
@@ -26,7 +25,7 @@ export default class ObjectHelper {
 		);
 		graph.yAxis = new THREE.Line(yAxisGeo, new THREE.LineBasicMaterial({
 			color: 0x000000
-		}))
+		}));
 		graph.size = subdivision;
 		graph.add(graph.yAxis);
 		return graph;
@@ -47,7 +46,7 @@ export default class ObjectHelper {
 
 		// This line is to set the center of the triangle at (0,0,0)
 		triangleGeometry.translate(-(width/3), -(width/3), 0);
-		return triangleGeometry
+		return triangleGeometry;
 	}
 
 	// This function create a CSS2DObject containing the text we want.

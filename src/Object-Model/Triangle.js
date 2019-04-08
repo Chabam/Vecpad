@@ -20,7 +20,7 @@ export default class Triangle extends VecpadMesh {
 		let { width } = this.geometry.parameters;
 		const updateTriangleGeometry = (event) => {
 			this.updateGeometry(ObjectHelper.createTriangleGeometry(parseFloat(event.target.value)));
-		}
+		};
 
 		return (
 			<React.Fragment>
@@ -48,6 +48,6 @@ export default class Triangle extends VecpadMesh {
 				},
 				[]
 			)
-		}
+		};
 	}
 }

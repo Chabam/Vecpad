@@ -20,7 +20,7 @@ export default class Cube extends VecpadMesh {
 		let { width, height, depth } = this.geometry.parameters;
 		const updateQuadGeometry = (width, height, depth) => {
 			this.updateGeometry(new THREE.BoxGeometry(width, height, depth));
-		}
+		};
 
 		const updateWidth = (event) => updateQuadGeometry(parseFloat(event.target.value), height, depth);
 		const updateHeight = (event) => updateQuadGeometry(width, parseFloat(event.target.value), depth);
@@ -60,6 +60,6 @@ export default class Cube extends VecpadMesh {
 				},
 				[]
 			)
-		}
+		};
 	}
 }

@@ -45,7 +45,7 @@ export default class VecpadVector extends THREE.Line {
 
 		let transMatrix = this.transformations.reduce((matrix, trans) =>
 			trans.getMatrix().multiply(matrix),
-			new THREE.Matrix4()
+		new THREE.Matrix4()
 		);
 
 		this.vector = this.normalize ? this.originalVector.clone().normalize() : this.originalVector.clone();

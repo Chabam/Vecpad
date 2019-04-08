@@ -1,5 +1,5 @@
 import React from 'react';
-import Matrix from '../Inputs/Matrix'
+import Matrix from '../Inputs/Matrix';
 
 /*
 	This component will show the specific details of a transformation.
@@ -8,30 +8,30 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 	const toggleMatrix = () => {
 		transformation.showMatrix = !transformation.showMatrix;
 		transformation.updateScene();
-	}
+	};
 
 	const TransformationActionType = {
 		PRIORITIZE: 0,
 		DEPRIORITIZE: 1,
 		REMOVE: 2
-	}
+	};
 
 	const handleTransformationAction = (event) => {
 		switch (parseInt(event.target.value)) {
-			case TransformationActionType.PRIORITIZE:
-				transformation.prioritize();
-				break;
-			case TransformationActionType.DEPRIORITIZE:
-				transformation.deprioritize();
-				break;
-			case TransformationActionType.REMOVE:
-				removeTransformation(transformation);
-				break;
-			default:
-				event.preventDefault();
-				break;
+		case TransformationActionType.PRIORITIZE:
+			transformation.prioritize();
+			break;
+		case TransformationActionType.DEPRIORITIZE:
+			transformation.deprioritize();
+			break;
+		case TransformationActionType.REMOVE:
+			removeTransformation(transformation);
+			break;
+		default:
+			event.preventDefault();
+			break;
 		}
-	}
+	};
 
 	let matrixToggle = transformation.showMatrix
 		? (<span className="material-icons">expand_less</span>)
@@ -56,6 +56,6 @@ const TransformationInfo = ({transformation, activeTransformation, removeTransfo
 			</div>
 		</div>
 	);
-}
+};
 
 export default TransformationInfo;

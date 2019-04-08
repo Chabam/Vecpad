@@ -16,36 +16,36 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 		ADDITION: 4,
 		SUBTRACTION: 5,
 		CROSS: 6
-	}
+	};
 
 	const createObject = (event) => {
 		switch(parseInt(event.target.value)) {
-			case objectType.VECTOR:
-				sceneHelper.addVector();
-				break;
-			case objectType.TRIANGLE:
-				sceneHelper.addTriangle();
-				break;
-			case objectType.QUAD:
-				sceneHelper.addQuad();
-				break;
-			case objectType.CUBE:
-				sceneHelper.addCube();
-				break;
-			case objectType.ADDITION:
-				sceneHelper.addVectorAddition();
-				break;
-			case objectType.SUBTRACTION:
-				sceneHelper.addVectorSubtraction();
-				break;
-			case objectType.CROSS:
-				sceneHelper.addVectorCross();
-				break;
-			default:
-				event.preventDefault();
-				break;
+		case objectType.VECTOR:
+			sceneHelper.addVector();
+			break;
+		case objectType.TRIANGLE:
+			sceneHelper.addTriangle();
+			break;
+		case objectType.QUAD:
+			sceneHelper.addQuad();
+			break;
+		case objectType.CUBE:
+			sceneHelper.addCube();
+			break;
+		case objectType.ADDITION:
+			sceneHelper.addVectorAddition();
+			break;
+		case objectType.SUBTRACTION:
+			sceneHelper.addVectorSubtraction();
+			break;
+		case objectType.CROSS:
+			sceneHelper.addVectorCross();
+			break;
+		default:
+			event.preventDefault();
+			break;
 		}
-	}
+	};
 
 	return (
 		<div id="scene-editor">
@@ -104,6 +104,6 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 		</div>
 	);
 
-}
+};
 
 export default SceneEditor;

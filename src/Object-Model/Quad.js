@@ -20,7 +20,7 @@ export default class Quad extends VecpadMesh {
 		let { width, height } = this.geometry.parameters;
 		const updateQuadGeometry = (width, height) => {
 			this.updateGeometry(new THREE.PlaneGeometry(width, height));
-		}
+		};
 
 		const updateWidth = (event) => updateQuadGeometry(parseFloat(event.target.value), height);
 		const updateHeight = (event) => updateQuadGeometry(width, parseFloat(event.target.value));
@@ -55,6 +55,6 @@ export default class Quad extends VecpadMesh {
 				},
 				[]
 			)
-		}
+		};
 	}
 }

@@ -127,7 +127,7 @@ export default class SceneHelper {
 			if (this.autoSave) {
 				this.saveSettings();
 			}
-		}
+		};
 		fileReader.readAsText(file);
 	}
 
@@ -303,18 +303,18 @@ export default class SceneHelper {
 
 	saveSettings = () => {
 		localStorage.setItem('autoSave', this.autoSave);
-			localStorage.setItem('displayMode', this.currentDisplayMode);
-			localStorage.setItem('graphSize', this.THREEScene.graph.size);
-			let objectsJson = this.getVecpadObjectList().reduce(
-				(objects, object) => {
-					objects.push(object.toJSON());
-					return objects;
-				},
-				[]
-			);
-			if (objectsJson.length !== 0) {
-				this.IDBWrapper.addObjects(objectsJson);
-			}
+		localStorage.setItem('displayMode', this.currentDisplayMode);
+		localStorage.setItem('graphSize', this.THREEScene.graph.size);
+		let objectsJson = this.getVecpadObjectList().reduce(
+			(objects, object) => {
+				objects.push(object.toJSON());
+				return objects;
+			},
+			[]
+		);
+		if (objectsJson.length !== 0) {
+			this.IDBWrapper.addObjects(objectsJson);
+		}
 	}
 
 	updateScene = (updateReact=true, updateDatas=null) => {

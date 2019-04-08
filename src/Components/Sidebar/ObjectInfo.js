@@ -11,6 +11,6 @@ const ObjectInfo = ({object, selected, selectObject, removeObject}) => {
 			<button className="material-icons delete text-only" onClick={() => removeObject(object)} title={`Remove '${object.name}' from the scene`}>remove</button>
 		</div>
 	);
-}
+};
 
 export default ObjectInfo;

@@ -13,13 +13,13 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 		} else {
 			cameraHelper.unfocusObject();
 		}
-	}
+	};
 
 	let objectIsFocused = cameraHelper.focusedObject !== null && cameraHelper.focusedObject.object === object;
 
 	let transformationMatrix = object.transformations.reduce((matrix, trans) =>
 		trans.getMatrix().multiply(matrix),
-		new THREE.Matrix4()
+	new THREE.Matrix4()
 	);
 
 	return (
@@ -55,6 +55,6 @@ const SelectionEditor = ({object, sceneHelper, cameraHelper}) => {
 			<Matrix matrix={transformationMatrix}/>
 		</div>
 	);
-}
+};
 
 export default SelectionEditor;

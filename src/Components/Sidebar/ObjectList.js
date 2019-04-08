@@ -20,6 +20,6 @@ const ObjectList = ({objectList, sceneHelper}) => {
 			{objects}
 		</div>
 	);
-}
+};
 
 export default ObjectList;

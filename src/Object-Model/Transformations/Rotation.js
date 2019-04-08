@@ -1,5 +1,5 @@
 import React from 'react';
-import Transformation from "./Transformation";
+import Transformation from './Transformation';
 import * as THREE from 'three';
 import InputGroup from '../../Components/Inputs/InputGroup';
 import CoordinatesPicker from '../../Components/Inputs/CoordinatesPicker';
@@ -26,7 +26,7 @@ export default class Rotation extends Transformation {
 				z: this.axis.z
 			},
 			angle: this.angle
-		}
+		};
 	}
 
 	getControls = () => {
@@ -46,7 +46,7 @@ export default class Rotation extends Transformation {
 					<input type="number" step={0.01} defaultValue={this.angle} onChange={updateAngle}/>
 				</InputGroup>
 			</React.Fragment>
-		)
+		);
 
 	}
 }

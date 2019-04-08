@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import THREEHelper from '../Object-Model/THREE/THREEHelper';
 import SelectionEditor from './Sidebar/SelectionEditor';
 import Sidebar from './Sidebar/Sidebar';
-import logo from '../Images/logo.svg'
+import logo from '../Images/logo.svg';
 import SceneEditor from './Sidebar/SceneEditor';
 import Timeline from './Timeline/Timeline';
 import TransformationEditor from './Timeline/TransformationEditor';
@@ -17,7 +17,7 @@ export default class Vecpad extends Component {
 		// This is our only state, which is an instance of THREEHelper.
 		this.state = {
 			THREEHelper: new THREEHelper(this.updateReactState)
-		}
+		};
 	}
 
 	// Whenever THREEHelper changes it will call this function to update the UI.

@@ -12,10 +12,10 @@ const TransformationList = ({transformationList, activeTransformation, removeTra
 	));
 
 	return (
-	<div id="transformation-list">
-		{transformations}
-	</div>
+		<div id="transformation-list">
+			{transformations}
+		</div>
 	);
-}
+};
 
 export default TransformationList;

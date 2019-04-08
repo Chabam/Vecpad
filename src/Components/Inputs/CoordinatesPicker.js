@@ -17,6 +17,6 @@ const CoordinatesPicker = ({name, updateCoordinates, coordinates}) => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default CoordinatesPicker;

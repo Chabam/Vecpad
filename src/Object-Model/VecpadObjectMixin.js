@@ -13,7 +13,7 @@ export default function(label, updateSceneFunc) {
 	this.transformations = [];
 	this.currentStep = 1;
 	this.currentCallbackId = 0;
-	this.callbacks = []
+	this.callbacks = [];
 	this.intervalId = null;
 
 	this.computeLabelPosition = () => {
@@ -36,7 +36,7 @@ export default function(label, updateSceneFunc) {
 		let translationToPos = new THREE.Matrix4().makeTranslation(x, y + 0.1, z);
 		this.label.matrix.copy(new THREE.Matrix4());
 		this.label.applyMatrix(new THREE.Matrix4().getInverse(this.matrix, false).multiply(translationToPos));
-	}
+	};
 
 	let objectLabel = ObjectHelper.createLabel(this.name);
 	objectLabel.matrixAutoUpdate = false;
@@ -52,17 +52,17 @@ export default function(label, updateSceneFunc) {
 			func
 		});
 		return id;
-	}
+	};
 
 	this.unregisterCallback = (id) => {
 		this.callbacks = this.callbacks.filter((callback) => callback.id !== id);
-	}
+	};
 
 	this.notifyRegistreeOfDeletion = () => {
 		this.callbacks.forEach(({func}) => {
 			func(this, true);
 		});
-	}
+	};
 
 	this.updateTransformationList = () => this.updateScene(false, [{
 		uuid: this.uuid,
@@ -98,7 +98,7 @@ export default function(label, updateSceneFunc) {
 		this.callbacks.forEach(({func}) => func(this, false));
 
 		this.updateScene();
-	}
+	};
 
 	this.addTransformation = (transformation) => {
 		this.transformations.push(transformation);
@@ -114,25 +114,25 @@ export default function(label, updateSceneFunc) {
 				[]
 			)
 		}]);
-	}
+	};
 
 	this.addScale = (scale=new Scale(1, 1, 1)) => {
 		this.addTransformation(scale);
-	}
+	};
 
 	this.addShear = (shear=new Shear(0, 0, 0, 0, 0, 0)) => {
 		this.addTransformation(shear);
-	}
+	};
 
 	this.addRotation = (rotation=new Rotation(new THREE.Vector3(), 0)) => {
 		this.addTransformation(rotation);
-	}
+	};
 
 	this.removeTransformation = (transformation) => {
 		this.transformations = this.transformations.filter((trans) => trans !== transformation);
 		this.applyTransformations(1);
 		this.updateTransformationList();
-	}
+	};
 
 	this.clearTransformations = () => this.transformations.forEach((trans) => this.removeTransformation(trans));
 
@@ -140,7 +140,7 @@ export default function(label, updateSceneFunc) {
 		[this.transformations[i], this.transformations[j]] = [this.transformations[j], this.transformations[i]];
 		this.applyTransformations(1);
 		this.updateTransformationList();
-	}
+	};
 
 	this.updateLabel = (text) => {
 		this.label.element.textContent = text;
@@ -150,7 +150,7 @@ export default function(label, updateSceneFunc) {
 			valueName: 'name',
 			value: this.name
 		}]);
-	}
+	};
 
 	this.play = () => {
 		this.pause();
@@ -164,13 +164,13 @@ export default function(label, updateSceneFunc) {
 				clearInterval(this.intervalId);
 			}
 		}, deltaTime * 1000);
-	}
+	};
 
 	this.pause = () => {
 		if (this.intervalId) {
 			clearInterval(this.intervalId);
 		}
-	}
+	};
 
 	this.addTransformation = (transformation) => {
 		this.transformations.push(transformation);
@@ -186,17 +186,17 @@ export default function(label, updateSceneFunc) {
 				[]
 			)
 		}]);
-	}
+	};
 
 	this.addScale = (scale=new Scale(1, 1, 1, this)) => {
 		this.addTransformation(scale);
-	}
+	};
 
 	this.addShear = (shear=new Shear(0, 0, 0, 0, 0, 0, this)) => {
 		this.addTransformation(shear);
-	}
+	};
 
 	this.addRotation = (rotation=new Rotation(new THREE.Vector3(), 0, this)) => {
 		this.addTransformation(rotation);
-	}
-};
+	};
+}

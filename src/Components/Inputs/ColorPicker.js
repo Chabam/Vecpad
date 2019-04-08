@@ -12,6 +12,6 @@ const ColorPicker = ({name, updateColor, defaultColor=0x000000}) => {
 			<option value={0x0000ff}>Blue</option>
 		</select>
 	</InputGroup>;
-}
+};
 
 export default ColorPicker;

@@ -29,7 +29,7 @@ export default class VecpadMesh extends THREE.Mesh {
 	computeTransformations = () => {
 		let transMatrix = this.transformations.reduce((matrix, trans) =>
 			trans.getMatrix().multiply(matrix),
-			new THREE.Matrix4()
+		new THREE.Matrix4()
 		);
 
 		this.matrix.copy(this.originalMatrix);

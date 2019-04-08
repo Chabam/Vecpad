@@ -10,27 +10,27 @@ const TransformationEditor = ({object}) => {
 		ROTATION: 1,
 		SHEAR: 2,
 		SCALE: 3
-	}
+	};
 
 	const createTransformation = (event) => {
 		switch(parseInt(event.target.value)) {
-			case transformationType.TRANSLATION:
-				object.addTranslation();
-				break;
-			case transformationType.ROTATION:
-				object.addRotation();
-				break;
-			case transformationType.SHEAR:
-				object.addShear();
-				break;
-			case transformationType.SCALE:
-				object.addScale();
-				break;
-			default:
-				event.preventDefault();
-				break;
+		case transformationType.TRANSLATION:
+			object.addTranslation();
+			break;
+		case transformationType.ROTATION:
+			object.addRotation();
+			break;
+		case transformationType.SHEAR:
+			object.addShear();
+			break;
+		case transformationType.SCALE:
+			object.addScale();
+			break;
+		default:
+			event.preventDefault();
+			break;
 		}
-	}
+	};
 
 	return (
 		<div id="transformations-editor" key={object.uuid}>
@@ -71,6 +71,6 @@ const TransformationEditor = ({object}) => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default TransformationEditor;

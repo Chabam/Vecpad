@@ -37,7 +37,8 @@ export default class VecpadObjectLoader {
 			);
 			return nonOperationsObjects.concat(operationsObjects);
 		} catch (parseError) {
-			alert(`The saved scene cannot be read!`);
+			alert('The saved scene cannot be read!');
+			// eslint-disable-next-line no-console
 			console.error(parseError);
 			return [];
 		}
@@ -46,81 +47,81 @@ export default class VecpadObjectLoader {
 	parseObject = (json, displayMode, updateSceneFunc) => {
 		let object;
 		switch (json.type) {
-			case 'Triangle': {
-				let {
-					name,
-					width,
-					color,
-					outlineColor,
-					originalMatrix,
-					originalPosition
-				} = json;
+		case 'Triangle': {
+			let {
+				name,
+				width,
+				color,
+				outlineColor,
+				originalMatrix,
+				originalPosition
+			} = json;
 
-				object = new Triangle(width, displayMode, color, outlineColor, name, updateSceneFunc);
+			object = new Triangle(width, displayMode, color, outlineColor, name, updateSceneFunc);
 
-				object.originalPosition = originalPosition;
-				object.originalMatrix = originalMatrix;
-				object.applyMatrix(originalMatrix);
+			object.originalPosition = originalPosition;
+			object.originalMatrix = originalMatrix;
+			object.applyMatrix(originalMatrix);
 
-				break;
-			}
-			case 'Quad': {
-				let {
-					name,
-					width,
-					heigth,
-					color,
-					outlineColor,
-					originalMatrix,
-					originalPosition
-				} = json;
+			break;
+		}
+		case 'Quad': {
+			let {
+				name,
+				width,
+				heigth,
+				color,
+				outlineColor,
+				originalMatrix,
+				originalPosition
+			} = json;
 
-				object = new Quad(width, heigth, displayMode, color, outlineColor, name, updateSceneFunc);
+			object = new Quad(width, heigth, displayMode, color, outlineColor, name, updateSceneFunc);
 
-				object.originalPosition = originalPosition;
-				object.originalMatrix = originalMatrix;
-				object.applyMatrix(originalMatrix);
+			object.originalPosition = originalPosition;
+			object.originalMatrix = originalMatrix;
+			object.applyMatrix(originalMatrix);
 
-				break;
-			}
-			case 'Cube': {
-				let {
-					name,
-					width,
-					heigth,
-					depth,
-					color,
-					outlineColor,
-					originalMatrix,
-					originalPosition
-				} = json;
+			break;
+		}
+		case 'Cube': {
+			let {
+				name,
+				width,
+				heigth,
+				depth,
+				color,
+				outlineColor,
+				originalMatrix,
+				originalPosition
+			} = json;
 
-				object = new Cube(width, heigth, depth, displayMode, color, outlineColor, name, updateSceneFunc);
+			object = new Cube(width, heigth, depth, displayMode, color, outlineColor, name, updateSceneFunc);
 
-				object.originalPosition = originalPosition;
-				object.originalMatrix = originalMatrix;
-				object.applyMatrix(originalMatrix);
-				break;
-			}
-			case 'Vector': {
-				let {
-					name,
-					color,
-					originalVector,
-					normalize
-				} = json;
+			object.originalPosition = originalPosition;
+			object.originalMatrix = originalMatrix;
+			object.applyMatrix(originalMatrix);
+			break;
+		}
+		case 'Vector': {
+			let {
+				name,
+				color,
+				originalVector,
+				normalize
+			} = json;
 
-				object = new VecpadVector(
-					new THREE.Vector3(originalVector.x, originalVector.y, originalVector.z),
-					color,
-					name,
-					updateSceneFunc
-				);
-				object.normalize = normalize;
-				break;
-			}
-			default:
-				throw new Error(`Unkown Object type: ${json.type}`)
+			object = new VecpadVector(
+				new THREE.Vector3(originalVector.x, originalVector.y, originalVector.z),
+				color,
+				name,
+				updateSceneFunc
+			);
+			object.normalize = normalize;
+			break;
+		}
+		default:
+			throw new Error(`Unkown Object type: ${json.type}`);
 		}
 		object.uuid = json.uuid;
 		object.transformations = json.transformations.reduce((trans, currentJson) => {
@@ -142,17 +143,17 @@ export default class VecpadObjectLoader {
 		} = json;
 		let object;
 		switch (operation) {
-			case 'Addition':
-				object = new VectorAddition(color, name, updateSceneFunc);
-				break;
-			case 'Subtraction':
-				object = new VectorSubtraction(color, name, updateSceneFunc);
-				break;
-			case 'Cross Product':
-				object = new VectorCrossProduct(color, name, updateSceneFunc);
-				break;
-			default:
-				throw new Error(`Unkown operation: ${operation}`)
+		case 'Addition':
+			object = new VectorAddition(color, name, updateSceneFunc);
+			break;
+		case 'Subtraction':
+			object = new VectorSubtraction(color, name, updateSceneFunc);
+			break;
+		case 'Cross Product':
+			object = new VectorCrossProduct(color, name, updateSceneFunc);
+			break;
+		default:
+			throw new Error(`Unkown operation: ${operation}`);
 		}
 
 		let v1Object = objects.find((object) => object.uuid === v1);
@@ -179,45 +180,45 @@ export default class VecpadObjectLoader {
 	parseTransformation = (object, json) => {
 		let trans;
 		switch (json.name) {
-			case 'Translation':
-				trans = new Translation(
-					json.x,
-					json.y,
-					json.z,
-					object
-				);
-				break;
-			case 'Rotation':
-				trans = new Rotation(new THREE.Vector3(
-						json.axis.x,
-						json.axis.y,
-						json.axis.z
-					),
-					json.angle,
-					object
-				);
-				break;
-			case 'Shear':
-				trans = new Shear(
-					json.xY,
-					json.xZ,
-					json.yX,
-					json.yZ,
-					json.zX,
-					json.zY,
-					object
-				);
-				break;
-			case 'Scale':
-				trans = new Scale(
-					json.x,
-					json.y,
-					json.z,
-					object
-				);
-				break;
-			default:
-				throw new Error(`Unkown transformation: ${json.name}`)
+		case 'Translation':
+			trans = new Translation(
+				json.x,
+				json.y,
+				json.z,
+				object
+			);
+			break;
+		case 'Rotation':
+			trans = new Rotation(new THREE.Vector3(
+				json.axis.x,
+				json.axis.y,
+				json.axis.z
+			),
+			json.angle,
+			object
+			);
+			break;
+		case 'Shear':
+			trans = new Shear(
+				json.xY,
+				json.xZ,
+				json.yX,
+				json.yZ,
+				json.zX,
+				json.zY,
+				object
+			);
+			break;
+		case 'Scale':
+			trans = new Scale(
+				json.x,
+				json.y,
+				json.z,
+				object
+			);
+			break;
+		default:
+			throw new Error(`Unkown transformation: ${json.name}`);
 		}
 		return trans;
 	}

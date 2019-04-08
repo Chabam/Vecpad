@@ -9,6 +9,6 @@ const InputGroup = ({name, children}) => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default InputGroup;

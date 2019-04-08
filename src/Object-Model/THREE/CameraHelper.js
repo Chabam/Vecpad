@@ -29,7 +29,7 @@ export default class CameraWrapper {
 	focusObject = (object) => {
 		let cbId = object.registerCallback((changedObject, deleted) => {
 			if (!deleted) {
-				this.focusOnCoords(changedObject.position)
+				this.focusOnCoords(changedObject.position);
 			} else {
 				this.unfocusObject();
 			}
@@ -37,7 +37,7 @@ export default class CameraWrapper {
 		this.focusedObject = {
 			cbId,
 			object
-		}
+		};
 		this.focusOnCoords(object.position);
 		object.updateScene();
 	}

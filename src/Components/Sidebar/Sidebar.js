@@ -3,7 +3,7 @@ import React from 'react';
 const Sidebar = ({children}) => {
 	return <nav id="sidebar">
 		{children}
-	</nav>
-}
+	</nav>;
+};
 
 export default Sidebar;
