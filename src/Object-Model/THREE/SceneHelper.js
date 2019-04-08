@@ -93,16 +93,51 @@ export default class SceneHelper {
 		}
 	}
 
-	loadSavedObjects = () => {
+	exportScene = () => {
+		let jsonScene = this.getVecpadObjectList().reduce(
+			(objects, object) => {
+				objects.push(object.toJSON());
+				return objects;
+			},
+			[]
+		);
+
+		let file = new Blob([JSON.stringify(jsonScene)], {type: 'application/json'});
+		let url = URL.createObjectURL(file);
+
+		let downloader = document.createElement('a');
+		downloader.href = url;
+		downloader.download = 'vecpad-scene';
+		downloader.click();
+
+		window.URL.revokeObjectURL(url);
+	}
+
+	loadSceneFromCache = () => {
 		if (this.autoSave) {
-			this.IDBWrapper.getAllObjects((jsonObjects) => {
-				let vecpadLoader = new VecpadObjectLoader();
-				let objects = vecpadLoader.parse(jsonObjects, this.currentDisplayMode, this.updateScene);
-				if (objects.length !== 0) {
-					this.addObjects(...objects);
-					this.updateReact();
-				}
-			});
+			this.IDBWrapper.getAllObjects(this.loadSavedObjects);
+		}
+	}
+
+	loadSceneFromFile = (files) => {
+		let [file] = files;
+		let fileReader = new FileReader();
+		fileReader.onload = (event) => {
+			this.loadSavedObjects(JSON.parse(event.target.result));
+			if (this.autoSave) {
+				this.saveSettings();
+			}
+		}
+		fileReader.readAsText(file);
+	}
+
+	loadSavedObjects = (jsonObjects) => {
+		let vecpadLoader = new VecpadObjectLoader();
+		let objects = vecpadLoader.parse(jsonObjects, this.currentDisplayMode, this.updateScene);
+		if (objects.length !== 0) {
+			this.clearScene();
+			this.addObjects(...objects);
+			this.updateReact();
 		}
 	}
 
@@ -257,7 +292,17 @@ export default class SceneHelper {
 		this.autoSave = !this.autoSave;
 
 		if (this.autoSave) {
-			localStorage.setItem('autoSave', this.autoSave);
+			this.saveSettings();
+		} else {
+			localStorage.clear();
+			this.IDBWrapper.clear();
+		}
+
+		this.updateReact();
+	}
+
+	saveSettings = () => {
+		localStorage.setItem('autoSave', this.autoSave);
 			localStorage.setItem('displayMode', this.currentDisplayMode);
 			localStorage.setItem('graphSize', this.THREEScene.graph.size);
 			let objectsJson = this.getVecpadObjectList().reduce(
@@ -270,12 +315,6 @@ export default class SceneHelper {
 			if (objectsJson.length !== 0) {
 				this.IDBWrapper.addObjects(objectsJson);
 			}
-		} else {
-			localStorage.clear();
-			this.IDBWrapper.clear();
-		}
-
-		this.updateReact();
 	}
 
 	updateScene = (updateReact=true, updateDatas=null) => {

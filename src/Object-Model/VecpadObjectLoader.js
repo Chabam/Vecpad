@@ -17,23 +17,30 @@ export default class VecpadObjectLoader {
 	}
 
 	parse = (json, displayMode, updateSceneFunc) => {
-		let nonOperations = json.filter((object) => object.type !== 'Operation');
-		let operations = json.filter((object) => object.type === 'Operation');
-		let nonOperationsObjects = nonOperations.reduce(
-			(objects, objectJSON) => {
-				objects.push(this.parseObject(objectJSON, displayMode, updateSceneFunc));
-				return objects;
-			},
-			[]
-		);
-		let operationsObjects = operations.reduce(
-			(objects, objectJSON) => {
-				objects.push(this.parseOperation(objectJSON, nonOperationsObjects, updateSceneFunc));
-				return objects;
-			},
-			[]
-		);
-		return nonOperationsObjects.concat(operationsObjects);
+		try {
+
+			let nonOperations = json.filter((object) => object.type !== 'Operation');
+			let operations = json.filter((object) => object.type === 'Operation');
+			let nonOperationsObjects = nonOperations.reduce(
+				(objects, objectJSON) => {
+					objects.push(this.parseObject(objectJSON, displayMode, updateSceneFunc));
+					return objects;
+				},
+				[]
+			);
+			let operationsObjects = operations.reduce(
+				(objects, objectJSON) => {
+					objects.push(this.parseOperation(objectJSON, nonOperationsObjects, updateSceneFunc));
+					return objects;
+				},
+				[]
+			);
+			return nonOperationsObjects.concat(operationsObjects);
+		} catch (parseError) {
+			alert(`The saved scene cannot be read!`);
+			console.error(parseError);
+			return [];
+		}
 	}
 
 	parseObject = (json, displayMode, updateSceneFunc) => {
@@ -113,8 +120,7 @@ export default class VecpadObjectLoader {
 				break;
 			}
 			default:
-				console.error(`Error with the type of ${json.uuid}`)
-				break;
+				throw new Error(`Unkown Object type: ${json.type}`)
 		}
 		object.uuid = json.uuid;
 		object.transformations = json.transformations.reduce((trans, currentJson) => {
@@ -146,8 +152,7 @@ export default class VecpadObjectLoader {
 				object = new VectorCrossProduct(color, name, updateSceneFunc);
 				break;
 			default:
-				console.error(`Error with the operation of ${json.uuid}`)
-				break;
+				throw new Error(`Unkown operation: ${operation}`)
 		}
 
 		let v1Object = objects.find((object) => object.uuid === v1);
@@ -212,7 +217,7 @@ export default class VecpadObjectLoader {
 				);
 				break;
 			default:
-				console.error('Could not parse transformation');
+				throw new Error(`Unkown transformation: ${json.name}`)
 		}
 		return trans;
 	}

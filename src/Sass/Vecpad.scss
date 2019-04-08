@@ -206,9 +206,17 @@ html, body {
 			margin-bottom: 10px;
 		}
 
-		#add-clear-object {
+		#scene-controls {
 			display: flex;
-			justify-content: center;
+			justify-content: space-between;
+
+			#file-chooser {
+				cursor: pointer;
+
+				&:hover {
+					color: $dark-background-color;
+				}
+			}
 		}
 
 		#object-list {
@@ -443,6 +451,10 @@ input {
 
 	&:focus {
 		border: 0;
+	}
+
+	&[type="file"] {
+		display: none;
 	}
 
 	&[type=range] {

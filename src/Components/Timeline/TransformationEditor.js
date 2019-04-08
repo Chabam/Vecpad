@@ -55,7 +55,8 @@ const TransformationEditor = ({object}) => {
 				/>
 			</div>
 			<div id="add-clear-transformation">
-				<select className="material-icons button-select add" value={''} onChange={createTransformation}>
+				<select className="material-icons button-select add" value={''} onChange={createTransformation}
+					title={`Add a transformation to '${object.name}'`}>
 					<option>add</option>
 					{
 						object.type !== 'Vector' &&
@@ -65,7 +66,8 @@ const TransformationEditor = ({object}) => {
 					<option value={transformationType.SHEAR}>Shear</option>
 					<option value={transformationType.SCALE}>Scale</option>
 				</select>
-				<button className="material-icons text-only delete" onClick={object.clearTransformations}>clear</button>
+				<button className="material-icons text-only delete" onClick={object.clearTransformations}
+					title={`Remove all transformations from '${object.name}'`}>clear</button>
 			</div>
 		</div>
 	);

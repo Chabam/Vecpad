@@ -65,12 +65,16 @@ export default class VecpadOperation extends VecpadVector {
 
 	showOperation = () => {
 		this.label.element.classList.remove('hidden');
-		this.updateVector(this.operation(this.v1.vector, this.v2.vector));
+		this.originalVector = this.operation(this.v1.vector, this.v2.vector);
+
+		this.applyTransformations(1);
 	}
 
 	hideOperation = () => {
 		this.label.element.classList.add('hidden');
-		this.updateVector(new THREE.Vector3(0, 0, 0));
+		this.originalVector = new THREE.Vector3(0, 0, 0);
+
+		this.applyTransformations(1);
 	}
 
 	updateVectors = (changedObject, deleted) => {
