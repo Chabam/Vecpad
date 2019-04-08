@@ -32,7 +32,7 @@ export default class THREEHelper {
 
 	// The function used to create our THREE.js context with all the required elements.
 	init = () => {
-		this.container = document.getElementById('visualizer-container');
+		this.container = document.getElementById('visualiser-container');
 		this.setDimensions();
 
 		let { THREE3DRendererDom, THREE2DRendererDom } = this.rendererHelper.init(this.width, this.height);

@@ -40,7 +40,7 @@ export default class Vecpad extends Component {
 		const { sceneHelper, cameraHelper } = THREEHelper;
 		return (
 			<div id="vecpad-container">
-				<div id="visualizer-container">
+				<div id="visualiser-container">
 					<div id='logo'>
 						<img src={logo} alt={'Vecpad\'s logo'}></img>
 					</div>
