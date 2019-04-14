@@ -83,13 +83,13 @@ export default class VecpadObjectLoader {
 			let {
 				name,
 				width,
-				heigth,
+				height,
 				depth,
 				color,
 				outlineColor,
 			} = json;
 
-			object = new Cube(width, heigth, depth, displayMode, color, outlineColor, name, updateSceneFunc);
+			object = new Cube(width, height, depth, displayMode, color, outlineColor, name, updateSceneFunc);
 
 			break;
 		}
