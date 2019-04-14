@@ -106,6 +106,11 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 			<InputGroup name="Auto-Save">
 				<input type="checkbox" checked={sceneHelper.autoSave} onChange={sceneHelper.updateAutoSave}/>
 			</InputGroup>
+			<div>
+				<a href="https://github.com/Chabam/Vecpad">Source code</a>
+				<span>|</span>
+				<a href="https://github.com/Chabam/Vecpad/wiki">Wiki</a>
+			</div>
 		</div>
 	);
 

@@ -219,6 +219,15 @@ html, body {
 			}
 		}
 
+		a {
+			text-decoration: none;
+			color: #3F51B5;
+		}
+
+		span {
+			margin: 5px;
+		}
+
 		#object-list {
 			border: 1px solid $border-color;
 			overflow-y: auto;
