@@ -1,7 +1,11 @@
 # Vecpad
 Vecpad is an open-source linear algebra visualiser tool used mainly in computer graphics. It's an educationnal tool that was developped as a projet during my bachelor's degree at the Université de Sherbrooke. If you found a bug, submit an issue and I'll see what I can do. For any help please refer to the wiki!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was made possible with these wonderful librairies :
+* [React](https://reactjs.org/)
+* [Three.js](https://threejs.org/)
+* [Create React App](https://github.com/facebook/create-react-app)
+* [Material design icons](https://material.io/tools/icons/?style=baseline)
 
 ## Available Scripts
 
