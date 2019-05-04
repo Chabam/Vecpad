@@ -42,7 +42,8 @@ export default class IDBWrapper {
 		let objectStore = transaction.objectStore(objectStoreName);
 
 		objectStore.getAll().onsuccess = (event) => {
-			callback(event.target.result);
+			let selectedObject = localStorage.getItem("selectedObject");
+			callback(event.target.result, selectedObject === "null" ? null : selectedObject);
 		};
 	}
 

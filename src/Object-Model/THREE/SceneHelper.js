@@ -97,13 +97,20 @@ export default class SceneHelper {
 	}
 
 	exportScene = () => {
-		let jsonScene = this.getVecpadObjectList().reduce(
+		let jsonObjects = this.getVecpadObjectList().reduce(
 			(objects, object) => {
 				objects.push(object.toJSON());
 				return objects;
 			},
 			[]
 		);
+
+		let jsonScene = {
+			selectedObject: this.selectedObject ? this.selectedObject.uuid : null,
+			graphSize: this.THREEScene.graph.size,
+			displayMode: this.displayMode,
+			objects: jsonObjects
+		}
 
 		let file = new Blob([JSON.stringify(jsonScene)], {type: 'application/json'});
 		let url = URL.createObjectURL(file);
@@ -128,16 +135,21 @@ export default class SceneHelper {
 		let fileReader = new FileReader();
 
 		fileReader.onload = (event) => {
-			this.loadSavedObjects(JSON.parse(event.target.result));
+			let json = JSON.parse(event.target.result);
+
+			this.loadSavedObjects(json.objects, json.selectedObject);
 			if (this.autoSave) {
 				this.saveSettings();
 			}
+
+			this.applyDisplayMode(json.displayMode);
+			this.updateGraphSize(json.graphSize);
 		};
 
 		fileReader.readAsText(file);
 	}
 
-	loadSavedObjects = (jsonObjects) => {
+	loadSavedObjects = (jsonObjects, selectedObject) => {
 		let vecpadLoader = new VecpadObjectLoader();
 		let objects = vecpadLoader.parse(jsonObjects, this.currentDisplayMode, this.updateScene);
 
@@ -146,6 +158,10 @@ export default class SceneHelper {
 			this.clearScene();
 			this.addObjects(...objects);
 			this.updateReact();
+
+			if (selectedObject) {
+				this.selectObject(this.getVecpadObjectList().find((object) => object.uuid === selectedObject));
+			}
 		}
 	}
 
@@ -161,7 +177,7 @@ export default class SceneHelper {
 	clearScene = () => this.getVecpadObjectList().forEach(object => this.removeObject(object));
 
 	// A function used to change the size of the grid at Y=0
-	updateGraph = (size) => {
+	updateGraphSize = (size) => {
 		if (size === this.THREEScene.graph.size) {
 			return;
 		}
@@ -299,6 +315,10 @@ export default class SceneHelper {
 		this.selectedObject = object;
 		object.select();
 
+		if (this.autoSave) {
+			localStorage.setItem('selectedObject', object.uuid);
+		}
+
 		this.updateReact();
 	};
 
@@ -306,6 +326,10 @@ export default class SceneHelper {
 		this.selectedObject.deselect();
 		this.selectedObject.unregisterCallback();
 		this.selectedObject = null;
+
+		if (this.autoSave) {
+			localStorage.setItem('selectedObject', null);
+		}
 
 		this.updateReact();
 	};
