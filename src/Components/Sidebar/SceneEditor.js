@@ -101,7 +101,7 @@ const SceneEditor = ({sceneHelper, cameraHelper}) => {
 					onChange={(event) => sceneHelper.updateGraphSize(parseInt(event.target.value))}/>
 			</InputGroup>
 			<div>
-				<button onClick={cameraHelper.unfocusObject}>Reset camera</button>
+				<button onClick={cameraHelper.unfocusObject}>Unfollow objects</button>
 			</div>
 			<InputGroup name="Auto-Save">
 				<input type="checkbox" checked={sceneHelper.autoSave} onChange={sceneHelper.updateAutoSave}/>
