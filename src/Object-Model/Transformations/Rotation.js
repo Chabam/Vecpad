@@ -54,7 +54,7 @@ export default class Rotation extends Transformation {
 					<input type="checkbox" checked={this.normalize} onChange={this.updateNormalize}/>
 				</InputGroup>
 				<InputGroup name="Angle">
-					<input type="number" step={0.01} defaultValue={this.angle} onChange={updateAngle}/>
+					<input type="number" step={1} defaultValue={this.angle} onChange={updateAngle}/>
 				</InputGroup>
 			</React.Fragment>
 		);
