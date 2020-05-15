@@ -45,7 +45,7 @@ export default class THREEHelper {
 		// The events we are registered to.
 		window.addEventListener('resize', this.setDimensions);
 		THREE2DRendererDom.addEventListener('click', this.setSelectionFromMouse, false);
-
+		this.sceneHelper.generateRandomCube(10);
 		this.renderLoop();
 	}
 

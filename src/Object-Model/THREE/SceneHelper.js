@@ -10,6 +10,10 @@ import VectorCrossProduct from '../VectorCrossProduct';
 import Triangle from '../Triangle';
 import Quad from '../Quad';
 import Cube from '../Cube';
+import Translation from '../Transformations/Translation';
+import Shear from '../Transformations/Shear';
+import Rotation from '../Transformations/Rotation';
+import Scale from '../Transformations/Scale';
 
 // A wrapper around the scene in THREE.js
 export default class SceneHelper {
@@ -389,5 +393,58 @@ export default class SceneHelper {
 		if (updateReact) {
 			this.updateReact();
 		}
+	}
+
+	generateRandomCube = (nbOfTransformations) => {
+		let ghost = new Cube(
+			1,
+			1,
+			1,
+			this.currentDisplayMode,
+			0x00ff00,
+			0x000000,
+			'Target',
+			this.updateScene
+		);
+
+		const knownTransformations = {
+			TRANSLATION: 0,
+			ROTATION: 1,
+			SHEAR: 2,
+			SCALE: 3,
+		}
+
+		for (let i = 0; i < nbOfTransformations; i++) {
+			let transformation;
+			const getRandomRoundedNumber = (begin, end) => {
+				const number = Math.random() * end + begin;
+				return (Math.round(number * 2) / 2).toFixed(2)
+			}
+			const axis = new THREE.Vector3(
+				getRandomRoundedNumber(0, 2),
+				getRandomRoundedNumber(0, 2),
+				getRandomRoundedNumber(0, 2)
+			);
+			let choice = Math.floor(Math.random() * 3);
+			switch (choice) {
+				case knownTransformations.TRANSLATION:
+					transformation = new Translation(axis.x, axis.y, axis.z, ghost);
+					break;
+				case knownTransformations.ROTATION:
+					transformation = new Rotation(axis, getRandomRoundedNumber(0, 360), ghost);
+					break;
+				case knownTransformations.SHEAR:
+					transformation = new Shear(axis.x, axis.y, axis.z, axis.z, axis.y, axis.x, ghost);
+					break;
+				case knownTransformations.SCALE:
+					transformation = new Scale(axis.x, axis.y, axis.z, ghost);
+					break;
+			}
+
+			ghost.addTransformation(transformation);
+		}
+
+		this.addVecpadObject(ghost);
+
 	}
 }
